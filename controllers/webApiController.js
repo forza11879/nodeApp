@@ -12,6 +12,7 @@ exports.webApi = (req, res) => {
   // let curValue = req.query.symbol
   console.log(`${curValue} - seacrhBox value`)
   console.log(typeof curValue)
+  console.log(curValue)
 
   const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=6BUYSS9QR8Y9HH15`
 
