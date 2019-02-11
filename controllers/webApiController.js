@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const axios = require('axios')
 
-//NEED Stock model
+//NEED Stock model here
 const { Stock, validateJoi } = require('../models/Stock')
 
 exports.webApi = (req, res) => {
