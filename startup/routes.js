@@ -8,6 +8,7 @@ const dbFetchController = require('../controllers/dbFetchController')
 const formController = require('../controllers/formController')
 const searchWebApiController = require('../controllers/searchWebApiController')
 const dbSearchController = require('../controllers/dbSearchController')
+const notFound = require('../controllers/notFound')
 
 
 router.get('/', mainController.main)
@@ -18,6 +19,13 @@ router.get('/dbsearch/:symbol', dbSearchController.dbSearchApi)
 router.get('/app/:symbol', webApiController.webApi)
 router.get('/dbapi/:symbol', dbFetchController.dbFetch)
 // router.post('/api/:symbol', webApiController.createWebApi)
+
+
+// router.use((req, res) => {
+//   res.status(404).send('<p>Page not found</p>')
+// })
+
+router.use('/', notFound.notFoundPage)
 
 module.exports = router
 

@@ -10,7 +10,7 @@ const routes = require('./startup/routes')
 require('./startup/db')()
 const port = 3000
 
-// Takes the raw requests ant turns them into usable properties on req.body
+// Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
