@@ -20,11 +20,6 @@ router.get('/app/:symbol', webApiController.webApi)
 router.get('/dbapi/:symbol', dbFetchController.dbFetch)
 // router.post('/api/:symbol', webApiController.createWebApi)
 
-
-// router.use((req, res) => {
-//   res.status(404).send('<p>Page not found</p>')
-// })
-
 router.use('/', notFound.notFoundPage)
 
 module.exports = router

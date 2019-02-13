@@ -20,10 +20,11 @@ app.use(bodyParser.json())
 // app.set('view engine', 'hbs');
 
 // Handlebars Middleware
-app.engine('handlebars', exphbs({
-  defaultLayout: 'main'
+app.engine('hbs', exphbs({
+  defaultLayout: 'main',
+  extname: 'hbs' 
 }))
-app.set('view engine', 'handlebars')
+app.set('view engine', 'hbs')
 
 //serves up static files from the public folder.Anything in public folder will just served up as the file it is
 
