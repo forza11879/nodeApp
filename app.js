@@ -7,6 +7,7 @@ const exphbs  = require('express-handlebars')
 const routesWebApi = require('./routes/webApiRoutes')
 const routesDB = require('./routes/dbRoutes')
 const routes = require('./routes/routes')
+const routesError = require('./routes/error')
 // const helpers = require('./helpers')
 // const moment = require('moment')
 require('./startup/db')()
@@ -50,6 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routesWebApi)
 app.use('/', routesDB)
 app.use('/', routes)
+app.use('/', routesError)
 
 // hbs.registerHelper('getCurrentYear', () => {
 //   return new Date().getFullYear();
