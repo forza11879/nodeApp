@@ -4,7 +4,9 @@ const path = require('path')
 const bodyParser = require('body-parser')
 // const hbs = require('hbs');
 const exphbs  = require('express-handlebars')
-const routes = require('./startup/routes')
+const routesWebApi = require('./routes/webApiRoutes')
+const routesDB = require('./routes/dbRoutes')
+const routes = require('./routes/routes')
 // const helpers = require('./helpers')
 // const moment = require('moment')
 require('./startup/db')()
@@ -45,7 +47,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // const stamp = moment().endOf('day').fromNow()
 
 // console.log(stamp)
-
+app.use('/', routesWebApi)
+app.use('/', routesDB)
 app.use('/', routes)
 
 // hbs.registerHelper('getCurrentYear', () => {
