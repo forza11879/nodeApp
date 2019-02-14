@@ -1,7 +1,7 @@
 
 // const moment = require('moment')
 
-exports.main= (req, res) => {
+exports.getMain= (req, res) => {
 
 
 

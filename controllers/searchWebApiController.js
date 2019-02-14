@@ -1,7 +1,7 @@
 const axios = require('axios')
 // const { validateJoi } = require('../models/Stock')
 
-exports.searchWebApi = (req, res) => {
+exports.getSearchWebApi = (req, res) => {
   let curValue = req.params.symbol
   const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=TUVR`
 

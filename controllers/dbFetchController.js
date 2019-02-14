@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const ParentSchemaSymbol = mongoose.model('Stock')
 
-exports.dbFetch = (req, res) => {
+exports.getDbFetch = (req, res) => {
   // let curValueDbFetch = req.params.symbol
   let curValueDbFetch = req.params.symbol
 

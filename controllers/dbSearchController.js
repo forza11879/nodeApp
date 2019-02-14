@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const ParentSchemaSymbol = mongoose.model('Stock')
 
-exports.dbSearchApi = (req, res) => {
+exports.getDbSearchApi = (req, res) => {
 
   let curValueDbSearch = req.params.symbol
   let queryRegex = `^${curValueDbSearch}`

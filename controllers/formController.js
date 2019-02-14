@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-exports.formApi = (req, res) => {
+exports.getFormApi = (req, res) => {
   let curValue = req.query.symbol
   // console.log(curValue)
 

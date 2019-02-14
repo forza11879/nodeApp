@@ -4,7 +4,7 @@ const axios = require('axios')
 //NEED Stock model 
 const { Stock, validateJoi } = require('../models/Stock')
 
-exports.webApi = (req, res) => {
+exports.getWebApi = (req, res) => {
   let curValue = req.params.symbol
   // console.log(req.body)
   // console.log(req.params.symbol)

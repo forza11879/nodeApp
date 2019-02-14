@@ -11,13 +11,13 @@ const dbSearchController = require('../controllers/dbSearchController')
 const notFound = require('../controllers/notFound')
 
 
-router.get('/', mainController.main)
+router.get('/', mainController.getMain)
 
-router.get('/form', formController.formApi)
-router.get('/search/:symbol', searchWebApiController.searchWebApi)
-router.get('/dbsearch/:symbol', dbSearchController.dbSearchApi)
-router.get('/app/:symbol', webApiController.webApi)
-router.get('/dbapi/:symbol', dbFetchController.dbFetch)
+router.get('/form', formController.getFormApi)
+router.get('/search/:symbol', searchWebApiController.getSearchWebApi)
+router.get('/dbsearch/:symbol', dbSearchController.getDbSearchApi)
+router.get('/app/:symbol', webApiController.getWebApi)
+router.get('/dbapi/:symbol', dbFetchController.getDbFetch)
 // router.post('/api/:symbol', webApiController.createWebApi)
 
 router.use('/', notFound.notFoundPage)
