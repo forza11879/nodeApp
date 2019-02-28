@@ -3,6 +3,7 @@ const axios = require('axios')
 //NEED Stock model 
 const { Stock } = require('../models/Stock')
 
+
 exports.getWebApi = (req, res) => {
   let curValue = req.params.symbol
   console.log(`${curValue} - seacrhBox value`)
@@ -170,3 +171,6 @@ exports.getSearchWebApi = (req, res) => {
   //   .catch(function (error) {
   //     console.log(error)
   //   })
+
+
+   

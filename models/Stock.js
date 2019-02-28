@@ -31,6 +31,7 @@ const ParentSchemaSymbol = new mongoose.Schema({
 
 })
 
+
 // ParentSchemaSymbol.methods.fetchWebApi = async function (url) {
 //   try {
 //     const response = await axios.get(url)
