@@ -4,6 +4,7 @@ const symbolTagsOptions = document.querySelector('#api')
 const urlsObject = {
   dbsearch: '/dbsearch/',
   search: '/search/'
+  // list: '/list/'
 }
 
 symbolTags.addEventListener('input', _.debounce(() => {
