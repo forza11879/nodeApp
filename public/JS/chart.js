@@ -1,6 +1,6 @@
 //GLOBAl values
-let symbolTagsValue = symbolTags.value
-let curValueAjax = (symbolTagsValue) ? symbolTagsValue : 'RY'
+// let symbolTagsValue = symbolTags.value
+// let curValueAjax = (symbolTagsValue) ? symbolTagsValue : 'RY'
 
 function drawChart(data) {
   // split the data set into ohlc and volume

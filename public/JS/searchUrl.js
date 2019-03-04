@@ -1,10 +1,10 @@
+//GLOBAL value
 const symbolTags = document.querySelector('#symbolTags')
 const symbolTagsOptions = document.querySelector('#api')
 
 const urlsObject = {
   dbsearch: '/dbsearch/',
   search: '/search/'
-  // list: '/list/'
 }
 
 symbolTags.addEventListener('input', _.debounce(() => {
@@ -14,7 +14,7 @@ symbolTags.addEventListener('input', _.debounce(() => {
 }, 2000))
 
 function requestSymbolSearch(arg) {
-  getData(arg)
+  getDataList(arg)
     .then(data => {
       console.log(data)
       $('#symbolTags').autocomplete({
@@ -25,11 +25,11 @@ function requestSymbolSearch(arg) {
     .catch(error => console.error('Error:', error))
 }
 
- function getData(url) {
-  let curValueSymbol = symbolTags.value
+function getDataList(url) {
+  let curValueSymbol = symbolTagsList.value
   let urlPlus = `${url}${curValueSymbol}`
   console.log(urlPlus)
-  return  fetchData(urlPlus)
+  return fetchData(urlPlus)
 }
 
 async function fetchData(urlPlus) {

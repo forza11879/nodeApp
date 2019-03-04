@@ -8,7 +8,7 @@ export function executeEnterKey(event) {
 }
 
 export function getSymbolWebApi () {
-  let symbolTagsValue = symbolTags.value
+  let symbolTagsValue = symbolTagsList.value
   
   // console.log(symbolTagsValue)
   // console.log(typeof symbolTagsValue)

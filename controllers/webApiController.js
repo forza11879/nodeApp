@@ -30,6 +30,7 @@ exports.getWebApi = (req, res) => {
       console.log(`fetchWebApi error: ${ex}`)
     }
   }
+  
 
   (async function creatStock() {
     try {
