@@ -8,22 +8,21 @@ exports.getWebApiList = (req, res) => {
 
   const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
 
-  // const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=6BUYSS9QR8Y9HH15`
-
   async function fetchWebApiList(url) {
     try {
       const myJson = await axios.get(url)
       // console.log(myJson)
       return {
         symbol: myJson.data['Global Quote']['01. symbol'],
-        open: myJson.data['Global Quote']['02. open'],
-        high: myJson.data['Global Quote']['03. high'],
-        low: myJson.data['Global Quote']['04. low'],
-        price: myJson.data['Global Quote']['05. price'],
-        volume: myJson.data['Global Quote']['06. volume'],
-        latestTrdDay: myJson.data['Global Quote']['07. latest trading day'],
-        previousClose: myJson.data['Global Quote']['08. previous close'],
-        change: myJson.data['Global Quote']['09. change'],
+        open: Math.round(parseFloat(myJson.data['Global Quote']['02. open'])* 100) / 100,
+        
+        high: Math.round(parseFloat(myJson.data['Global Quote']['03. high']) * 100) / 100,
+        low: Math.round(parseFloat(myJson.data['Global Quote']['04. low']) * 100) / 100,
+        price: Math.round(parseFloat(myJson.data['Global Quote']['05. price']) * 100) / 100,
+        volume: parseInt(myJson.data['Global Quote']['06. volume']),
+        latestTrdDay: Date.parse(myJson.data['Global Quote']['07. latest trading day']),
+        previousClose: Math.round(parseFloat(myJson.data['Global Quote']['08. previous close']) * 100) / 100,
+        change: Math.round(parseFloat(myJson.data['Global Quote']['09. change']) * 100) / 100,
         changePercent: myJson.data['Global Quote']['10. change percent']
       }
     } catch (ex) {

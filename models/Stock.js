@@ -20,7 +20,7 @@ const ParentSchemaSymbol = new mongoose.Schema({
   symbol: {
     type: String,
     trim: true,
-    minlength: 2,
+    minlength: 1,
     maxlength: 50,
     uppercase: true,
     required: 'Please enter a valid symbol, min 2 character'

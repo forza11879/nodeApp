@@ -26,7 +26,7 @@ function requestSymbolSearch(arg) {
 }
 
 function getDataList(url) {
-  let curValueSymbol = symbolTagsList.value
+  let curValueSymbol = symbolTags.value
   let urlPlus = `${url}${curValueSymbol}`
   console.log(urlPlus)
   return fetchData(urlPlus)
