@@ -14,8 +14,7 @@ exports.getWebApiList = (req, res) => {
       // console.log(myJson)
       return {
         symbol: myJson.data['Global Quote']['01. symbol'],
-        open: Math.round(parseFloat(myJson.data['Global Quote']['02. open'])* 100) / 100,
-        
+        open: Math.round(parseFloat(myJson.data['Global Quote']['02. open']) * 100) / 100,
         high: Math.round(parseFloat(myJson.data['Global Quote']['03. high']) * 100) / 100,
         low: Math.round(parseFloat(myJson.data['Global Quote']['04. low']) * 100) / 100,
         price: Math.round(parseFloat(myJson.data['Global Quote']['05. price']) * 100) / 100,
@@ -23,7 +22,7 @@ exports.getWebApiList = (req, res) => {
         latestTrdDay: Date.parse(myJson.data['Global Quote']['07. latest trading day']),
         previousClose: Math.round(parseFloat(myJson.data['Global Quote']['08. previous close']) * 100) / 100,
         change: Math.round(parseFloat(myJson.data['Global Quote']['09. change']) * 100) / 100,
-        changePercent: myJson.data['Global Quote']['10. change percent']
+        changePercent: Math.round(parseFloat((myJson.data['Global Quote']['10. change percent']).substring(0, myJson.data['Global Quote']['10. change percent'].length - 1)) * 100) / 100
       }
     } catch (ex) {
       console.log(`creatStock error: ${ex}`)
