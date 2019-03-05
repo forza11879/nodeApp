@@ -23,7 +23,7 @@ function getSymbolWebApi() {
       // split the data set into ohlc and volume
       var ohlc = [],
         volume = [],
-        dataLength = data.length,
+        // dataLength = data.length,
         // set the allowed units for data grouping
         groupingUnits = [[
           'week',                         // unit name
