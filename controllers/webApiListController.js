@@ -38,7 +38,6 @@ exports.getWebApiList = (req, res) => {
       const stockList = new StockList({
         symbol: webApiDataList.symbol,
         data: webApiDataList
-        // symbol: webApiDataList.symbol,
         // open: webApiDataList.open,
         // high: webApiDataList.high,
         // low: webApiDataList.low,
@@ -52,6 +51,20 @@ exports.getWebApiList = (req, res) => {
       console.log(stockList)
       const query = { symbol: `${webApiDataList.symbol}` }
       const update = {$addToSet: { data: stockList.data }}
+      // const update = {
+      //   $addToSet: { 
+      //     symbol: stockList.symbol,
+      //     open: stockList.open,
+      //     high: stockList.high,
+      //     low: stockList.low,
+      //     price: stockList.price,
+      //     volume: stockList.volume,
+      //     latestTrdDay: stockList.latestTrdDay,
+      //     previousClose: stockList.previousClose,
+      //     change: stockList.change,
+      //     changePercent: stockList.changePercent 
+      //   }
+      // }
       const options = { upsert: true, new: true }
 
       const stockResult = await StockList.findOneAndUpdate(query, update, options)
