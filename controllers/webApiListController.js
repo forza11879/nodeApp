@@ -1,6 +1,6 @@
 const axios = require('axios')
 //NEED Stock model 
-// const { StockList } = require('../models/List')
+const { StockList } = require('../models/List')
 
 exports.getWebApiList = (req, res) => {
 
@@ -35,29 +35,30 @@ exports.getWebApiList = (req, res) => {
     try {
       const webApiDataList = await fetchWebApiList(urlCompact)
       console.log(webApiDataList)
-      // const stockList = new StockList({
-      //   webApiDataList
-      //   //         symbol:,
-      //   //         open:, 
-      //   // high: 
-      //   // low: ,
-      //   // price: ,
-      //   // volume: ,
-      //   // latestTrdDay: ,
-      //   // previousClose: ,
-      //   // change: ,
-      //   // changePercent: 
-      // })
-      // console.log(stockList)
-      // const query = { symbol: `${stockList.symbol}` }
-      // const update = { $addToSet: { stockList } }
-      // const options = { upsert: true, new: true }
+      const stockList = new StockList({
+        symbol: webApiDataList.symbol,
+        data: webApiDataList
+        // symbol: webApiDataList.symbol,
+        // open: webApiDataList.open,
+        // high: webApiDataList.high,
+        // low: webApiDataList.low,
+        // price: webApiDataList.price,
+        // volume: webApiDataList.volume,
+        // latestTrdDay: webApiDataList.latestTrdDay,
+        // previousClose: webApiDataList.previousClose,
+        // change: webApiDataList.change,
+        // changePercent: webApiDataList.changePercent
+      })
+      console.log(stockList)
+      const query = { symbol: `${webApiDataList.symbol}` }
+      const update = {$addToSet: { data: stockList.data }}
+      const options = { upsert: true, new: true }
 
-      // const stockResult = await StockList.findOneAndUpdate(query, update, options)
-      // console.log('Saved the symbol web TO dbList', stockResult.symbol)
+      const stockResult = await StockList.findOneAndUpdate(query, update, options)
+      console.log('Saved the symbol web TO dbList', stockResult.symbol)
       return res.send(webApiDataList)
     } catch (ex) {
-      console.log(`creatStock error: ${ex}`)
+      console.log(`creatStockList error: ${ex}`)
     }
   })()
 }

@@ -26,13 +26,8 @@ class UI {
                                       </tr>`
   }
 }
-
 const ui = new UI
-
 symbolTagsList.addEventListener('input', _.debounce(() => {
-  // let symbolTagsOptionsValue = symbolTagsOptionsList.value
-  // let arg = urlsObjectList[symbolTagsOptionsValue]
-  // const arg = '/list/'
   if (symbolTagsOptionsList.checked) {
     // requestSymbolSearchList(arg)
     requestSymbolSearchList()
