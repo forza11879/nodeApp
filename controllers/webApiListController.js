@@ -1,4 +1,6 @@
 const axios = require('axios')
+//NEED Stock model 
+// const { StockList } = require('../models/List')
 
 exports.getWebApiList = (req, res) => {
 
@@ -33,12 +35,33 @@ exports.getWebApiList = (req, res) => {
     try {
       const webApiDataList = await fetchWebApiList(urlCompact)
       console.log(webApiDataList)
+      // const stockList = new StockList({
+      //   webApiDataList
+      //   //         symbol:,
+      //   //         open:, 
+      //   // high: 
+      //   // low: ,
+      //   // price: ,
+      //   // volume: ,
+      //   // latestTrdDay: ,
+      //   // previousClose: ,
+      //   // change: ,
+      //   // changePercent: 
+      // })
+      // console.log(stockList)
+      // const query = { symbol: `${stockList.symbol}` }
+      // const update = { $addToSet: { stockList } }
+      // const options = { upsert: true, new: true }
+
+      // const stockResult = await StockList.findOneAndUpdate(query, update, options)
+      // console.log('Saved the symbol web TO dbList', stockResult.symbol)
       return res.send(webApiDataList)
     } catch (ex) {
       console.log(`creatStock error: ${ex}`)
     }
   })()
 }
+
 
 
 
