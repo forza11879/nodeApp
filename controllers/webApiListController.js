@@ -59,60 +59,61 @@ exports.getWebApiList = (req, res) => {
         previousClose: stockList.previousClose,
         change: stockList.change,
         changePercent: stockList.changePercent
-      
-    }
+
+      }
       const options = { upsert: true, new: true }
 
-    const stockResult = await List.findOneAndUpdate(query, update, options)
-    console.log('Saved the symbol web TO dbList', stockResult.symbol)
-  } catch (ex) {
-    console.log(`saveToDbWebApiList error: ${ex}`)
+      const stockResult = await List.findOneAndUpdate(query, update, options)
+      console.log('Saved the symbol web TO dbList', stockResult.symbol)
+    } catch (ex) {
+      console.log(`saveToDbWebApiList error: ${ex}`)
+    }
   }
-}
 
-async function fetchDataFromDb() {
-  try {
-    const query = {}
-    const projection = { _id: 0 }
-    const dataFromDB = await List.find(query, projection)
-  
-    // .select('symbol open high low price volume latestTrdDay previousClose change changePercent')
-    // .populate('open high low price volume latestTrdDay previousClose change changePercent')
+  async function fetchDataFromDb() {
+    try {
+      const query = {}
+      const projection = { _id: 0 }
+      return dataFromDB = await List.find(query, projection).then(item => {
+        return  item.map(item => {
+          return {
+            // new Date(item.latestTrdDay).toDateString()
+            symbol: item.symbol, //symbol
+            open: parseFloat(item.open), // the open
+            high: parseFloat(item.high), // high
+            low: parseFloat(item.low), // low
+            price: parseFloat(item.price), // price
+            volume: parseFloat(item.volume), // volume
+            latestTrdDay: new Date(parseFloat(item.latestTrdDay)).toDateString(),//latestTrdDay
+            previousClose: parseFloat(item.previousClose),//previousClose
+            change: parseFloat(item.change),
+            changePercent: parseFloat(item.changePercent)//previousClose
+          }
+        })
+      })
+     
+      // .select('symbol open high low price volume latestTrdDay previousClose change changePercent')
+      // .populate('open high low price volume latestTrdDay previousClose change changePercent')
 
-    // return dataFromDB
-    // const data = datafromDB.map(item => {
-    //   return {
-    //     symbol: item.symbol, //symbol
-    //     open: parseFloat(item.open), // the open
-    //     high: parseFloat(item.high), // high
-    //     low: parseFloat(item.low), // low
-    //     price: parseFloat(item.price), // price
-    //     volume: parseFloat(item.volume), // volume
-    //     latestTrdDay: parseFloat(item.latestTrdDay),//latestTrdDay
-    //     previousClose: parseFloat(item.previousClose),//previousClose
-    //     change: parseFloat(item.change),
-    //     changePercent: parseFloat(item.changePercent)//previousClose
-    //   }
-      
-    // })
+      // return dataFromDB
 
-    return dataFromDB
-  } catch (error) {
-    console.log(`fetchDataFromDb error: ${ex}`)
+
+    } catch (error) {
+      console.log(`fetchDataFromDb error: ${ex}`)
+    }
   }
-}
 
-(async function fetchDataList() {
-  try {
-    const webApiDataList = await fetchWebApiList(urlCompact)
-    // console.log(webApiDataList)
-    await saveToDb(webApiDataList)
-    const dataFromDB = await fetchDataFromDb()
-    return res.send(dataFromDB)
-  } catch (ex) {
-    console.log(`creatStockList error: ${ex}`)
-  }
-})()
+  (async function fetchDataList() {
+    try {
+      const webApiDataList = await fetchWebApiList(urlCompact)
+      // console.log(webApiDataList)
+      await saveToDb(webApiDataList)
+      const dataFromDB = await fetchDataFromDb()
+      return res.send(dataFromDB)
+    } catch (ex) {
+      console.log(`creatStockList error: ${ex}`)
+    }
+  })()
 }
 
 
