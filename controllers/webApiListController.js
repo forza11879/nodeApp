@@ -1,9 +1,6 @@
 const axios = require('axios')
 //NEED Stock model 
-const mongoose = require('mongoose')
 const { List } = require('../models/List')
-const ParentSchemaSymbolList = mongoose.model('List')
-
 
 exports.getWebApiList = (req, res) => {
 
@@ -37,8 +34,6 @@ exports.getWebApiList = (req, res) => {
   async function saveToDb(arg) {
     try {
       const stockList = new List({
-        // symbol: arg.symbol,
-        // data: arg
         symbol: arg.symbol,
         open: arg.open,
         high: arg.high,
@@ -75,40 +70,39 @@ exports.getWebApiList = (req, res) => {
     }
   }
 
-    // const projection = {
-      //   _id: 0,
-      //   // symbol: 1,
-      //   // open: 1,
-      //   // low: 1,
-      //   // price: 1,
-      //   // volume: 1,
-      //   // latestTrdDay: 1,
-      //   // previousClose: 1,
-      //   // change: 1,
-      //   // changePercent: 1
-      // }
+  // const projection = {
+  //   _id: 0,
+  //   // symbol: 1,
+  //   // open: 1,
+  //   // low: 1,
+  //   // price: 1,
+  //   // volume: 1,
+  //   // latestTrdDay: 1,
+  //   // previousClose: 1,
+  //   // change: 1,
+  //   // changePercent: 1
+  // }
 
   async function fetchDataFromDb() {
     try {
-      const query = null
+      const query = {}
       const projection = { _id: 0 }
-      const datafromDB = await List.find(query, projection)
-      return await datafromDB.map(item => {
-          return {
-            symbol: item.symbol, //symbol
-            open: parseFloat(item.open), // the open
-            high: parseFloat(item.high), // high
-            low: parseFloat(item.low), // low
-            price: parseFloat(item.price), // price
-            volume: parseFloat(item.volume), // volume
-            latestTrdDay: parseFloat(item.latestTrdDay),//latestTrdDay
-            previousClose: parseFloat(item.previousClose),//previousClose
-            change: parseFloat(item.change),
-            changePercent: parseFloat(item.changePercent)//previousClose
-          }
-        })
-     
-      
+      const dataFromDB = await List.find(query, projection)
+      return dataFromDB
+      // return datafromDB.map(item => {
+      //   return {
+      //     symbol: item.symbol, //symbol
+      //     open: parseFloat(item.open), // the open
+      //     high: parseFloat(item.high), // high
+      //     low: parseFloat(item.low), // low
+      //     price: parseFloat(item.price), // price
+      //     volume: parseFloat(item.volume), // volume
+      //     latestTrdDay: parseFloat(item.latestTrdDay),//latestTrdDay
+      //     previousClose: parseFloat(item.previousClose),//previousClose
+      //     change: parseFloat(item.change),
+      //     changePercent: parseFloat(item.changePercent)//previousClose
+      //   }
+      // })
     } catch (error) {
       console.log(`fetchDataFromDb error: ${ex}`)
     }

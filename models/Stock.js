@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+// mongoose.Promise = global.Promise
 const axios = require('axios')
 const Joi = require('joi')
 const slug = require('slug')
