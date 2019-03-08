@@ -9,8 +9,22 @@ class UI {
   showData(data) {
     // this.show.innerHTML = ""
     // let data = arg // Get the results
-    console.log(`data from UI: ${data.symbol} ${data.price}`)
+    // console.log(`data from UI: ${data.symbol} ${data.price}`)
+    // console.log(`data from UI: ${data.symbol}`)
+    console.log(data[0].symbol)
     console.log(data)
+    // this.show.innerHTML += `<tr>
+    //             <td>${data.open}</td>
+    //     <td>${data.high}</td>
+    //     <td>${data.low}</td>
+    //     <td>${data.price}</td>
+    //     <td>${data.volume}</td>
+    //     <td>${data.latestTrdDay}</td>
+    //     <td>${data.previousClose}</td>
+    //     <td>${data.change}</td>
+    //     <td>${data.changePercent}</td> 
+    //     <td><a href="/buysell/${data.symbol}">buy/sell</a></td>
+    //                                   </tr>`
     this.show.innerHTML += `<tr>
         <td ><strong><a href="/chart/${data.symbol}">${data.symbol}</a></strong></td>
         <td>${data.open}</td>
