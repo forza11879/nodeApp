@@ -9,17 +9,18 @@ class UI {
   showData(data) {
     console.log(data)
     this.show.innerHTML = data.map(item => {
+      // const date = new Date(item.latestTrdDay.$numberDecimal).toDateString()
       return `<tr>
               <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
-              <td>${item.open}</td>
-              <td>${item.high}</td>
-              <td>${item.low}</td>
-              <td>${item.price}</td>
-              <td>${item.volume}</td>
-              <td>${item.latestTrdDay}</td>
-              <td>${item.previousClose}</td>
-              <td>${item.change}</td>
-              <td>${item.changePercent}</td>
+              <td>${item.open.$numberDecimal}</td>
+              <td>${item.high.$numberDecimal}</td>
+              <td>${item.low.$numberDecimal}</td>
+              <td>${item.price.$numberDecimal}</td>
+              <td>${item.volume.$numberDecimal}</td>
+              <td>${item.latestTrdDay.$numberDecimal}</td>
+              <td>${item.previousClose.$numberDecimal}</td>
+              <td>${item.change.$numberDecimal}</td>
+              <td>${item.changePercent.$numberDecimal}</td>
               <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
               </tr>`
     }).join('')
@@ -57,6 +58,21 @@ async function fetchDataList(urlPlus) {
   const dataJson = await dataResponse.json()
   return dataJson
 }
+
+
+// `<tr>
+//               <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
+//               <td>${item.open.$numberDecimal}</td>
+//               <td>${item.high.$numberDecimal}</td>
+//               <td>${item.low.$numberDecimal}</td>
+//               <td>${item.price.$numberDecimal}</td>
+//               <td>${item.volume.$numberDecimal}</td>
+//               <td>${item.latestTrdDay.$numberDecimal}</td>
+//               <td>${item.previousClose.$numberDecimal}</td>
+//               <td>${item.change.$numberDecimal}</td>
+//               <td>${item.changePercent.$numberDecimal}</td>
+//               <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
+//               </tr>`
 
 
 
