@@ -1,6 +1,9 @@
 const axios = require('axios')
 //NEED Stock model 
-const { StockList } = require('../models/List')
+const mongoose = require('mongoose')
+const { List } = require('../models/List')
+const ParentSchemaSymbolList = mongoose.model('List')
+
 
 exports.getWebApiList = (req, res) => {
 
@@ -33,7 +36,7 @@ exports.getWebApiList = (req, res) => {
 
   async function saveToDb(arg) {
     try {
-      const stockList = new StockList({
+      const stockList = new List({
         // symbol: arg.symbol,
         // data: arg
         symbol: arg.symbol,
@@ -65,85 +68,47 @@ exports.getWebApiList = (req, res) => {
       }
       const options = { upsert: true, new: true }
 
-      const stockResult = await StockList.findOneAndUpdate(query, update, options)
+      const stockResult = await List.findOneAndUpdate(query, update, options)
       console.log('Saved the symbol web TO dbList', stockResult.symbol)
     } catch (ex) {
       console.log(`saveToDbWebApiList error: ${ex}`)
     }
   }
 
+    // const projection = {
+      //   _id: 0,
+      //   // symbol: 1,
+      //   // open: 1,
+      //   // low: 1,
+      //   // price: 1,
+      //   // volume: 1,
+      //   // latestTrdDay: 1,
+      //   // previousClose: 1,
+      //   // change: 1,
+      //   // changePercent: 1
+      // }
+
   async function fetchDataFromDb() {
     try {
-      // const query = { symbol: `${curValueDbFetch}` }
       const query = null
-      const projection = { 
-        _id: 0,
-        symbol: 1,
-        open: 1,
-        low: 1,
-        price: 1,
-        volume: 1,
-        latestTrdDay: 1,
-        previousClose: 1,
-        change: 1,
-        changePercent: 1
-      }
-
-      const datafromDB = await StockList.find(query, projection)
-      // .sort({ date: -1 })
-      console.log(datafromDB)
-
-      return datafromDB.map(item => {
-        return {
-          
-          symbol: item.symbol, //symbol
-          open: parseFloat(item.open), // the open
-          high: parseFloat(item.high), // high
-          low: parseFloat(item.low), // low
-          price: parseFloat(item.price), // price
-          volume: parseFloat(item.volume), // volume
-          latestTrdDay: parseFloat(item.latestTrdDay),//latestTrdDay
-          previousClose: parseFloat(item.previousClose),//previousClose
-          change: parseFloat(item.change),
-          changePercent: parseFloat(item.changePercent)//previousClose
-
-
-          // symbol: item.symbol, //symbol
-          // open: item.open[0], // the open
-          // high: item.high[0], // high
-          // low: item.low[0], // low
-          // price: item.price[0], // price
-          // volume: item.volume[0], // volume
-          // latestTrdDay: item.latestTrdDay[0],//latestTrdDay
-          // previousClose: item.previousClose[0],//previousClose
-          // change: item.change[0],
-          // changePercent: item.changePercent[0]//previousClose
-
-          // symbol: item.symbol, //symbol
-          // open: parseFloat(item[0].open), // the open
-          // high: parseFloat(item[0].high), // high
-          // low: parseFloat(item[0].low), // low
-          // price: parseFloat(item[0].price), // price
-          // volume: parseFloat(item[0].volume), // volume
-          // latestTrdDay: parseFloat(item[0].latestTrdDay),//latestTrdDay
-          // previousClose: parseFloat(item[0].previousClose),//previousClose
-          // change: parseFloat(item[0].change),
-          // changePercent: parseFloat(item[0].changePercent)//previousClose
-
-          // symbol: item.symbol, //symbol
-          // open: parseFloat(item.open[0]), // the open
-          // high: parseFloat(item.high[0]), // high
-          // low: parseFloat(item.low[0]), // low
-          // price: parseFloat(item.price[0]), // price
-          // volume: parseFloat(item.volume[0]), // volume
-          // latestTrdDay: parseFloat(item.latestTrdDay[0]),//latestTrdDay
-          // previousClose: parseFloat(item.previousClose[0]),//previousClose
-          // change: parseFloat(item.change[0]),
-          // changePercent: parseFloat(item.changePercent[0])//previousClose
-
-        }
-      })
-
+      const projection = { _id: 0 }
+      const datafromDB = await List.find(query, projection)
+      return await datafromDB.map(item => {
+          return {
+            symbol: item.symbol, //symbol
+            open: parseFloat(item.open), // the open
+            high: parseFloat(item.high), // high
+            low: parseFloat(item.low), // low
+            price: parseFloat(item.price), // price
+            volume: parseFloat(item.volume), // volume
+            latestTrdDay: parseFloat(item.latestTrdDay),//latestTrdDay
+            previousClose: parseFloat(item.previousClose),//previousClose
+            change: parseFloat(item.change),
+            changePercent: parseFloat(item.changePercent)//previousClose
+          }
+        })
+     
+      
     } catch (error) {
       console.log(`fetchDataFromDb error: ${ex}`)
     }
@@ -161,6 +126,92 @@ exports.getWebApiList = (req, res) => {
     }
   })()
 }
+
+
+      // const datafromDB = await ParentSchemaSymbolList.find().then(item =>{
+      //   return datafromDB.map(item => {
+      //     return {
+
+      //       symbol: item.symbol, //symbol
+      //       open: parseFloat(item.open[0]), // the open
+      //       high: parseFloat(item.high[0]), // high
+      //       low: parseFloat(item.low[0]), // low
+      //       price: parseFloat(item.price[0]), // price
+      //       volume: parseFloat(item.volume[0]), // volume
+      //       latestTrdDay: parseFloat(item.latestTrdDay[0]),//latestTrdDay
+      //       previousClose: parseFloat(item.previousClose[0]),//previousClose
+      //       change: parseFloat(item.change[0]),
+      //       changePercent: parseFloat(item.changePercent[0])//previousClose
+      //     }
+      // })
+      // // .sort({ date: -1 })
+      // console.log(datafromDB)
+
+      // return datafromDB.map(item => {
+      //   return {
+
+      //     // symbol: item.symbol, //symbol
+      //     // open: parseFloat(item.open[0]), // the open
+      //     // high: parseFloat(item.high[0]), // high
+      //     // low: parseFloat(item.low[0]), // low
+      //     // price: parseFloat(item.price[0]), // price
+      //     // volume: parseFloat(item.volume[0]), // volume
+      //     // latestTrdDay: parseFloat(item.latestTrdDay[0]),//latestTrdDay
+      //     // previousClose: parseFloat(item.previousClose[0]),//previousClose
+      //     // change: parseFloat(item.change[0]),
+      //     // changePercent: parseFloat(item.changePercent[0])//previousClose
+
+
+      //     // symbol: item.symbol, //symbol
+      //     // open: parseFloat(item.open), // the open
+      //     // high: parseFloat(item.high), // high
+      //     // low: parseFloat(item.low), // low
+      //     // price: parseFloat(item.price), // price
+      //     // volume: parseFloat(item.volume), // volume
+      //     // latestTrdDay: parseFloat(item.latestTrdDay),//latestTrdDay
+      //     // previousClose: parseFloat(item.previousClose),//previousClose
+      //     // change: parseFloat(item.change),
+      //     // changePercent: parseFloat(item.changePercent)//previousClose
+
+
+      //     // symbol: item.symbol, //symbol
+      //     // open: item.open[0], // the open
+      //     // high: item.high[0], // high
+      //     // low: item.low[0], // low
+      //     // price: item.price[0], // price
+      //     // volume: item.volume[0], // volume
+      //     // latestTrdDay: item.latestTrdDay[0],//latestTrdDay
+      //     // previousClose: item.previousClose[0],//previousClose
+      //     // change: item.change[0],
+      //     // changePercent: item.changePercent[0]//previousClose
+
+      //     // symbol: item.symbol, //symbol
+      //     // open: parseFloat(item[0].open), // the open
+      //     // high: parseFloat(item[0].high), // high
+      //     // low: parseFloat(item[0].low), // low
+      //     // price: parseFloat(item[0].price), // price
+      //     // volume: parseFloat(item[0].volume), // volume
+      //     // latestTrdDay: parseFloat(item[0].latestTrdDay),//latestTrdDay
+      //     // previousClose: parseFloat(item[0].previousClose),//previousClose
+      //     // change: parseFloat(item[0].change),
+      //     // changePercent: parseFloat(item[0].changePercent)//previousClose
+
+
+      // symbol: item.symbol, //symbol
+      // open: item.open, // the open
+      // high: item.high, // high
+      // low: item.low, // low
+      // price: item.price, // price
+      // volume: item.volume, // volume
+      // latestTrdDay: item.latestTrdDay,//latestTrdDay
+      // previousClose: item.previousClose,//previousClose
+      // change: item.change,
+      // changePercent: item.changePercent//previousClose
+
+
+
+      //   }
+      // })
 
 
 
