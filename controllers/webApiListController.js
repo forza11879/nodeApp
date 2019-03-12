@@ -8,9 +8,9 @@ exports.getWebApiList = (req, res) => {
   console.log(`${curValue} - seacrhBox value`)
   console.log(typeof curValue)
 
-  // const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
+  // const curValueSymbol = (curValue) ? curValue : 'RY'
 
-  const urlC = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=6BUYSS9QR8Y9HH15`
+  const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
 
   async function fetchWebApiList(url) {
     try {
@@ -68,7 +68,7 @@ exports.getWebApiList = (req, res) => {
       const stockResult = await List.findOneAndUpdate(query, update, options)
       console.log('Saved the symbol web TO dbList', stockResult.symbol)
     } catch (ex) {
-      console.log(`saveToDbWebApiList error: ${ex}`)
+      console.log(`saveToDb error: ${ex}`)
     }
   }
 
@@ -108,11 +108,11 @@ exports.getWebApiList = (req, res) => {
         return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
       })
     } catch (error) {
-      console.log(`fetchDataFromDb error: ${ex}`)
+      console.log(`generateUrlArray error: ${ex}`)
     }
   }
 
-  async function listLoop(newArray) {
+  async function loopSaveToDb(newArray) {
     for (const url of newArray) {
       const data = await fetchWebApiList(url)
       await saveToDb(data)
@@ -122,13 +122,17 @@ exports.getWebApiList = (req, res) => {
   (async function fetchDataList() {
     try {
       const urlArray = await generateUrlArray()
-      const newArray = await urlArray.concat(urlC);
-      await listLoop(newArray)
+      if (urlArray.includes(urlCompact)) {
+        await loopSaveToDb(urlArray)
+      } else {
+        const newArray = await urlArray.concat(urlCompact)
+        await loopSaveToDb(newArray)
+      }
       // const x = await Promise.all(arrayOfFunctions)
       const dataFromDB = await fetchDataFromDb()
       return res.send(dataFromDB)
     } catch (ex) {
-      console.log(`creatStockList error: ${ex}`)
+      console.log(`fetchDataList error: ${ex}`)
     }
   })()
 }
