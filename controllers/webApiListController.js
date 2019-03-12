@@ -93,7 +93,7 @@ exports.getWebApiList = (req, res) => {
 
       // .select('symbol open high low price volume latestTrdDay previousClose change changePercent')
       // .populate('open high low price volume latestTrdDay previousClose change changePercent')
-    } catch (error) {
+    } catch (ex) {
       console.log(`fetchDataFromDb error: ${ex}`)
     }
   }
@@ -106,7 +106,7 @@ exports.getWebApiList = (req, res) => {
         // return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=demo`
         return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
       })
-    } catch (error) {
+    } catch (ex) {
       console.log(`generateUrlArray error: ${ex}`)
     }
   }
@@ -119,8 +119,13 @@ exports.getWebApiList = (req, res) => {
   // }
 
   async function loopSaveToDb(url) {
-    const data = await fetchWebApiList(url)
+    try {
+      const data = await fetchWebApiList(url)
     await saveToDb(data)
+    } catch (ex) {
+      console.log(`loopSaveToDb error: ${ex}`)
+    }
+    
   }
 
   (async function fetchDataList() {
@@ -140,6 +145,7 @@ exports.getWebApiList = (req, res) => {
         }
         await Promise.all(promises)
       }
+
       const dataFromDB = await fetchDataFromDb()
       return res.send(dataFromDB)
     } catch (ex) {
