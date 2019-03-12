@@ -8,8 +8,6 @@ exports.getWebApiList = (req, res) => {
   console.log(`${curValue} - seacrhBox value`)
   console.log(typeof curValue)
 
-  // const curValueSymbol = (curValue) ? curValue : 'RY'
-
   const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
 
   async function fetchWebApiList(url) {
@@ -105,6 +103,7 @@ exports.getWebApiList = (req, res) => {
       const projection = { _id: 0 }
       const dataFromDB = await List.find(query, projection).select('symbol')
       return linkArray = dataFromDB.map(item => {
+        // return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=demo`
         return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
       })
     } catch (error) {
@@ -112,23 +111,35 @@ exports.getWebApiList = (req, res) => {
     }
   }
 
-  async function loopSaveToDb(newArray) {
-    for (const url of newArray) {
-      const data = await fetchWebApiList(url)
-      await saveToDb(data)
-    }
+  // async function loopSaveToDb(newArray) {
+  //   for (const url of newArray) {
+  //     const data = await fetchWebApiList(url)
+  //     await saveToDb(data)
+  //   }
+  // }
+
+  async function loopSaveToDb(url) {
+    const data = await fetchWebApiList(url)
+    await saveToDb(data)
   }
 
   (async function fetchDataList() {
     try {
       const urlArray = await generateUrlArray()
+      const promises = []
+
       if (urlArray.includes(urlCompact)) {
-        await loopSaveToDb(urlArray)
+        for (i = 0; i < urlArray.length; ++i) {
+          await promises.push(loopSaveToDb(urlArray[i]))
+        }
+        await Promise.all(promises)
       } else {
         const newArray = await urlArray.concat(urlCompact)
-        await loopSaveToDb(newArray)
+        for (i = 0; i < newArray.length; ++i) {
+          await promises.push(loopSaveToDb(newArray[i]))
+        }
+        await Promise.all(promises)
       }
-      // const x = await Promise.all(arrayOfFunctions)
       const dataFromDB = await fetchDataFromDb()
       return res.send(dataFromDB)
     } catch (ex) {
