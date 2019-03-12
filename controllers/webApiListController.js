@@ -72,7 +72,7 @@ exports.getWebApiList = (req, res) => {
 
   async function fetchDataFromDb() {
     try {
-      const query = {}
+      const query = null
       const projection = { _id: 0 }
       return dataFromDB = await List.find(query, projection).then(item => {
         return item.map(item => {
@@ -103,7 +103,6 @@ exports.getWebApiList = (req, res) => {
       const projection = { _id: 0 }
       const dataFromDB = await List.find(query, projection).select('symbol')
       return linkArray = dataFromDB.map(item => {
-        // return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=demo`
         return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
       })
     } catch (ex) {
@@ -118,14 +117,14 @@ exports.getWebApiList = (req, res) => {
   //   }
   // }
 
-  async function loopSaveToDb(url) {
+  async function webApiSaveToDb(url) {
     try {
       const data = await fetchWebApiList(url)
-    await saveToDb(data)
+      await saveToDb(data)
     } catch (ex) {
       console.log(`loopSaveToDb error: ${ex}`)
     }
-    
+
   }
 
   (async function fetchDataList() {
@@ -135,13 +134,13 @@ exports.getWebApiList = (req, res) => {
 
       if (urlArray.includes(urlCompact)) {
         for (i = 0; i < urlArray.length; ++i) {
-          await promises.push(loopSaveToDb(urlArray[i]))
+          await promises.push(webApiSaveToDb(urlArray[i]))
         }
         await Promise.all(promises)
       } else {
         const newArray = await urlArray.concat(urlCompact)
         for (i = 0; i < newArray.length; ++i) {
-          await promises.push(loopSaveToDb(newArray[i]))
+          await promises.push(webApiSaveToDb(newArray[i]))
         }
         await Promise.all(promises)
       }
