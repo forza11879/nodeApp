@@ -7,26 +7,22 @@ class UI {
     this.show = document.querySelector('#list')
   }
   showData(data) {
-    // console.log(typeof data[0].open)
     console.log(data)
-    this.show.innerHTML = data.map(item => {
-      // const date = new Date(item.latestTrdDay).toDateString()
-      // const open = parseFloat(item.open.$numberDecimal)
-      // console.log(typeof open)
-      return `<tr>
-              <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
-              <td>${item.open}</td>
-              <td>${item.high}</td>
-              <td>${item.low}</td>
-              <td>${item.price}</td>
-              <td>${item.volume}</td>
-              <td>${item.latestTrdDay}</td>
-              <td>${item.previousClose}</td>
-              <td>${item.change}</td>
-              <td>${item.changePercent}</td>
-              <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
-              </tr>`
-    }).join('')
+    // this.show.innerHTML = data.map(item => {
+    //   return `<tr>
+    //           <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
+    //           <td>${item.open}</td>
+    //           <td>${item.high}</td>
+    //           <td>${item.low}</td>
+    //           <td>${item.price}</td>
+    //           <td>${item.volume}</td>
+    //           <td>${item.latestTrdDay}</td>
+    //           <td>${item.previousClose}</td>
+    //           <td>${item.change}</td>
+    //           <td>${item.changePercent}</td>
+    //           <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
+    //           </tr>`
+    // }).join('')
   }
 }
 const ui = new UI
@@ -42,7 +38,6 @@ function requestSymbolSearchList() {
     .then(data => {
       // console.log(data)
       ui.showData(data)
-
     })
     .catch(error => console.error('Error:', error))
 }
@@ -62,20 +57,6 @@ async function fetchDataList(urlPlus) {
   return dataJson
 }
 
-
-// `<tr>
-//               <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
-//               <td>${item.open.$numberDecimal}</td>
-//               <td>${item.high.$numberDecimal}</td>
-//               <td>${item.low.$numberDecimal}</td>
-//               <td>${item.price.$numberDecimal}</td>
-//               <td>${item.volume.$numberDecimal}</td>
-//               <td>${item.latestTrdDay.$numberDecimal}</td>
-//               <td>${item.previousClose.$numberDecimal}</td>
-//               <td>${item.change.$numberDecimal}</td>
-//               <td>${item.changePercent.$numberDecimal}</td>
-//               <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
-//               </tr>`
 
 
 
