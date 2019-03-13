@@ -1,6 +1,6 @@
 const { List } = require('./models/List')
 
-const saveToDb = arg => {
+const saveToDb = async arg => {
   const stockList = new List({
     symbol: arg.symbol,
     open: arg.open,
@@ -30,13 +30,11 @@ const saveToDb = arg => {
   // upsert: bool - creates the object if it doesn't exist. defaults to false.
   const options = { upsert: true, new: true }
 
-  const stockResult = List.findOneAndUpdate(query, update, options)
+  const stockResult = await List.findOneAndUpdate(query, update, options)
   console.log('Saved the symbol web TO dbList', stockResult.symbol)
 }
 
 const generateUrlArray = async (query, projection) => {
-  // const query = {}
-  // const projection = { _id: 0 }
   const dataFromDB = await List.find(query, projection).select('symbol')
   return linkArray = dataFromDB.map(item => {
     return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
@@ -44,10 +42,8 @@ const generateUrlArray = async (query, projection) => {
   })
 }
 
-const fetchDataFromDb = (query, projection) => {
-  // const query = {}
-  // const projection = { _id: 0 }
-  return dataFromDB = List.find(query, projection).then(item => {
+const fetchDataFromDb = async (query, projection) => {
+  return dataFromDB = await List.find(query, projection).then(item => {
     return item.map(item => {
       return {
         symbol: item.symbol, //symbol
