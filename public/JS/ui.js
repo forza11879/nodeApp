@@ -8,21 +8,21 @@ class UI {
   }
   showData(data) {
     console.log(data)
-    // this.show.innerHTML = data.map(item => {
-    //   return `<tr>
-    //           <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
-    //           <td>${item.open}</td>
-    //           <td>${item.high}</td>
-    //           <td>${item.low}</td>
-    //           <td>${item.price}</td>
-    //           <td>${item.volume}</td>
-    //           <td>${item.latestTrdDay}</td>
-    //           <td>${item.previousClose}</td>
-    //           <td>${item.change}</td>
-    //           <td>${item.changePercent}</td>
-    //           <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
-    //           </tr>`
-    // }).join('')
+    this.show.innerHTML = data.map(item => {
+      return `<tr>
+              <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
+              <td>${item.open}</td>
+              <td>${item.high}</td>
+              <td>${item.low}</td>
+              <td>${item.price}</td>
+              <td>${item.volume}</td>
+              <td>${item.latestTrdDay}</td>
+              <td>${item.previousClose}</td>
+              <td>${item.change}</td>
+              <td>${item.changePercent}</td>
+              <td><a href="/buysell/${item.symbol}">buy/sell</a></td>
+              </tr>`
+    }).join('')
   }
 }
 const ui = new UI
