@@ -30,8 +30,8 @@ const ParentSchemaSymbolList = new mongoose.Schema({
   // change: Number,
   // changePercent: Number
 })
-const List = mongoose.model('List', ParentSchemaSymbolList)
-module.exports.List = List
+// const List = mongoose.model('List', ParentSchemaSymbolList)
+// module.exports.List = List
 module.exports.List = mongoose.model('List', ParentSchemaSymbolList)
 
 // const ChildSchemaData = new mongoose.Schema({
