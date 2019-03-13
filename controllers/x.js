@@ -1,23 +1,32 @@
-const getFruit = async name => {
-  const fruits = {
-    pineapple: 'pineapple',
-    peach: 'peach',
-    strawberry: 'strawberry'
-  };
+// const db = require('../db')
 
-  return fruits[name];
-};
+// exports.getWebApiList = (req, res) => {
+//   (async function fetchDataList() {
+//     try {
+//       const urlArray = await db.generateUrlArray({}, { _id: 0 })
+//       return res.send(urlArray)
+//     } catch (ex) {
+//       console.log(`fetchDataList error: ${ex}`)
+//     }
+//   })()
+// }
+// const { List } = require('./models/List')
 
-const fruits = ['peach', 'pineapple', 'strawberry'];
+// const generateUrlArray = (query, projection) => {
+//   const dataFromDB = List.find(query, projection).select('symbol')
+//   return linkArray = dataFromDB.map(item => {
+//     return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
+//   })
+// }
 
-const fruitLoop = async () => {
-  for (const f of fruits) {
-    const emoji = await getFruit(f);
-    console.log(emoji);
-  }
-};
+// module.exports = { generateUrlArray }
 
 
-fruitLoop()
+// const mongoose = require('mongoose')
+// mongoose.Promise = global.Promise
+// const ParentSchemaSymbolList = new mongoose.Schema({
+//   symbol: String
+// })
 
-// console.log(fruitLoopFunc)
+// module.exports.List = mongoose.model('List', ParentSchemaSymbolList)
+

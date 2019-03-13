@@ -52,7 +52,9 @@ const ParentSchemaSymbol = new mongoose.Schema({
 
 
 
-const Stock = mongoose.model('Stock', ParentSchemaSymbol)
+// const Stock = mongoose.model('Stock', ParentSchemaSymbol)
+// module.exports.Stock = Stock
+module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol)
 
 // function validateStock(stock) {
 //   const schema = {
@@ -62,7 +64,7 @@ const Stock = mongoose.model('Stock', ParentSchemaSymbol)
 // }
 
 
-module.exports.Stock = Stock
+
 
 // module.exports.validateJoi = validateStock
 
