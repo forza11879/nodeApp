@@ -1,7 +1,7 @@
 const axios = require('axios')
 // const { fetchWebApi } = require('./fetchWebApiController')
 //NEED Stock model 
-const { Stock } = require('../models/Stock')
+const { Stock } = require('../db/models/Stock')
 
 
 exports.getWebApi = (req, res) => {

@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
-// mongoose.Promise = global.Promise
+mongoose.Promise = global.Promise
 const axios = require('axios')
 const Joi = require('joi')
 const slug = require('slug')
-
 
 const ChildSchemaData = new mongoose.Schema({
   "_id": false,
@@ -31,6 +30,10 @@ const ParentSchemaSymbol = new mongoose.Schema({
 
 })
 
+// const Stock = mongoose.model('Stock', ParentSchemaSymbol)
+// module.exports.Stock = Stock
+module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol)
+
 
 // ParentSchemaSymbol.methods.fetchWebApi = async function (url) {
 //   try {
@@ -50,21 +53,12 @@ const ParentSchemaSymbol = new mongoose.Schema({
 //   }
 // }
 
-
-
-// const Stock = mongoose.model('Stock', ParentSchemaSymbol)
-// module.exports.Stock = Stock
-module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol)
-
 // function validateStock(stock) {
 //   const schema = {
 //     symbol: Joi.string().min(2).max(50).required()
 //   }
 //   return Joi.validate(stock, schema)
 // }
-
-
-
 
 // module.exports.validateJoi = validateStock
 
