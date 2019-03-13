@@ -34,9 +34,9 @@ const { List } = require('./models/List')
 //   console.log('Saved the symbol web TO dbList', stockResult.symbol)
 // }
 
-const generateUrlArray = () => {
-  const query = {}
-  const projection = { _id: 0 }
+const generateUrlArray = (query, projection) => {
+  // const query = {}
+  // const projection = { _id: 0 }
   const dataFromDB = List.find(query, projection).select('symbol')
   linkArray = dataFromDB.map(item => {
     // return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
