@@ -38,7 +38,7 @@ const generateUrlArray = (query, projection) => {
   // const query = {}
   // const projection = { _id: 0 }
   const dataFromDB = List.find(query, projection).select('symbol')
-  linkArray = dataFromDB.map(item => {
+  const linkArray = dataFromDB.map(item => {
     // return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
     return item
   })
