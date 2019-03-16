@@ -2,12 +2,6 @@ const db = require('../db/indexList')
 
 exports.getWebApiList = (req, res) => {
 
-  let curValue = req.params.symbol
-  // console.log(`${curValue} - seacrhBox value`)
-  // console.log(typeof curValue)
-
-  const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
-
   async function webApiSaveToDbList(url) {
     try {
       const data = await db.fetchWebApiList(url)
@@ -19,6 +13,9 @@ exports.getWebApiList = (req, res) => {
 
   (async function fetchDataList() {
     try {
+      let curValue = req.params.symbol
+      const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
+
       const urlArray = await db.generateUrlArrayList({}, { _id: 0 })
       const promises = []
 

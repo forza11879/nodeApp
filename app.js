@@ -5,7 +5,6 @@ const bodyParser = require('body-parser')
 // const hbs = require('hbs');
 const exphbs  = require('express-handlebars')
 const routesWebApi = require('./routes/webApiRoutes')
-const routesDB = require('./routes/dbRoutes')
 const routes = require('./routes/routes')
 const routesError = require('./routes/error')
 // const helpers = require('./helpers')
@@ -49,7 +48,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // console.log(stamp)
 app.use('/', routesWebApi)
-app.use('/', routesDB)
 app.use('/', routes)
 app.use('/', routesError)
 
