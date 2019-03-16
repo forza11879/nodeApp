@@ -1,6 +1,23 @@
 const axios = require('axios')
 const { Stock } = require('./models/Stock')
 
+const searchWebApi = async url => {
+  try {
+    const response = await axios.get(url)
+    const highLow = await response.data.bestMatches.map(item => {
+      // let resultSymbol = item['1. symbol']+ ' - ' + item['2. name']
+      // return resultSymbol
+      return {
+        symbol: item['1. symbol']
+      }
+    })
+    console.log(highLow)
+    return highLow
+  } catch (ex) {
+    console.log(`searchWebApi error: ${ex}`)
+  }
+}
+
 const fetchWebApi = async url => {
   try {
     const response = await axios.get(url)
@@ -28,6 +45,7 @@ const creatStock = async (curValue, webApiData) => {
     const query = { symbol: `${curValue}` }
     const update = { $addToSet: { data: stock.data } }
     const options = { upsert: true, new: true }
+
     const stockResult = await Stock.findOneAndUpdate(query, update, options)
     console.log('Saved the symbol web TO db', stockResult.symbol)
   } catch (ex) {
@@ -72,5 +90,6 @@ module.exports = {
   fetchWebApi,
   creatStock,
   fetchDb,
-  dbSearchApi
+  dbSearchApi,
+  searchWebApi
 }
