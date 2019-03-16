@@ -1,7 +1,7 @@
 const axios = require('axios')
 const { List } = require('./models/List')
 
-const saveToDb = async arg => {
+const saveToDbList = async arg => {
   try {
     const stockList = new List({
       symbol: arg.symbol,
@@ -39,7 +39,7 @@ const saveToDb = async arg => {
   }
 }
 
-const generateUrlArray = async (query, projection) => {
+const generateUrlArrayList = async (query, projection) => {
   try {
     const dataFromDB = await List.find(query, projection).select('symbol')
     return linkArray = dataFromDB.map(item => {
@@ -51,7 +51,7 @@ const generateUrlArray = async (query, projection) => {
 
 }
 
-const fetchDataFromDb = async (query, projection) => {
+const fetchDataFromDbList = async (query, projection) => {
   try {
     return dataFromDB = await List.find(query, projection).then(item => {
       return item.map(item => {
@@ -96,8 +96,8 @@ const fetchWebApiList = async (url) => {
 }
 
 module.exports = {
-  saveToDb,
-  fetchDataFromDb,
-  generateUrlArray,
+  saveToDbList,
+  fetchDataFromDbList,
+  generateUrlArrayList,
   fetchWebApiList
 }

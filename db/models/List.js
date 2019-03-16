@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+// mongoose.Promise = global.Promise
 const ParentSchemaSymbolList = new mongoose.Schema({
   // "_id": false,
   // symbol: {

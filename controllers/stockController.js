@@ -1,57 +1,23 @@
 const axios = require('axios')
-// const { fetchWebApi } = require('./fetchWebApiController')
-//NEED Stock model 
-const { Stock } = require('../db/models/Stock')
+// const { Stock } = require('../db/models/Stock')
+const db = require('../db/indexStock')
 
 
-exports.getWebApi = (req, res) => {
+exports.getWebApi = async (req, res) => {
   let curValue = req.params.symbol
   console.log(`${curValue} - seacrhBox value`)
   console.log(typeof curValue)
 
   const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=6BUYSS9QR8Y9HH15`
 
-  const urlFull = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=full&apikey=6BUYSS9QR8Y9HH15`
-
-  async function fetchWebApi(url) {
-    try {
-      const response = await axios.get(url)
-      return parsedData = await Object.keys(response.data['Time Series (Daily)']).map(date => {
-        return {
-          date: Date.parse(date),
-          open: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['1. open']) * 100) / 100,
-          high: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['2. high']) * 100) / 100,
-          low: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['3. low']) * 100) / 100,
-          close: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['4. close']) * 100) / 100,
-          volume: parseInt(response.data['Time Series (Daily)'][date]['5. volume'])
-        }
-      })
-    } catch (ex) {
-      console.log(`fetchWebApi error: ${ex}`)
-    }
+  try {
+    const webApiData = await db.fetchWebApi(urlCompact)
+    await db.creatStock(curValue, webApiData)
+    return res.send(webApiData)
+  } catch (ex) {
+    console.log(`creatStock error: ${ex}`)
   }
-  
 
-  (async function creatStock() {
-    try {
-      const webApiData = await fetchWebApi(urlCompact)
-      const stock = new Stock({
-        symbol: curValue,
-        data: webApiData
-      })
-
-      const query = { symbol: `${curValue}` }
-      const update = { $addToSet: { data: stock.data } }
-      const options = { upsert: true, new: true }
-
-      const stockResult = await Stock.findOneAndUpdate(query, update, options)
-      console.log('Saved the symbol web TO db', stockResult.symbol)
-      return res.send(webApiData)
-
-    } catch (ex) {
-      console.log(`creatStock error: ${ex}`)
-    }
-  })()
 }
 
 
@@ -174,4 +140,3 @@ exports.getSearchWebApi = (req, res) => {
   //   })
 
 
-   

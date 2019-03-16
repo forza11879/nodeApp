@@ -1,5 +1,4 @@
-const axios = require('axios')
-const db = require('../db')
+const db = require('../db/indexList')
 
 exports.getWebApiList = (req, res) => {
 
@@ -9,10 +8,10 @@ exports.getWebApiList = (req, res) => {
 
   const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
 
-  async function webApiSaveToDb(url) {
+  async function webApiSaveToDbList(url) {
     try {
       const data = await db.fetchWebApiList(url)
-      await db.saveToDb(data)
+      await db.saveToDbList(data)
     } catch (ex) {
       console.log(`webApiSaveToDb error: ${ex}`)
     }
@@ -20,23 +19,23 @@ exports.getWebApiList = (req, res) => {
 
   (async function fetchDataList() {
     try {
-      const urlArray = await db.generateUrlArray({}, { _id: 0 })
+      const urlArray = await db.generateUrlArrayList({}, { _id: 0 })
       const promises = []
 
       if (urlArray.includes(urlCompact)) {
         for (i = 0; i < urlArray.length; ++i) {
-          await promises.push(webApiSaveToDb(urlArray[i]))
+          await promises.push(webApiSaveToDbList(urlArray[i]))
         }
         await Promise.all(promises)
       } else {
         const newArray = await urlArray.concat(urlCompact)
         for (i = 0; i < newArray.length; ++i) {
-          await promises.push(webApiSaveToDb(newArray[i]))
+          await promises.push(webApiSaveToDbList(newArray[i]))
         }
         await Promise.all(promises)
       }
 
-      const dataFromDB = await db.fetchDataFromDb({}, { _id: 0 })
+      const dataFromDB = await db.fetchDataFromDbList({}, { _id: 0 })
       return res.send(dataFromDB)
 
     } catch (ex) {
