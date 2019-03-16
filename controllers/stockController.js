@@ -1,5 +1,4 @@
 const axios = require('axios')
-// const { Stock } = require('../db/models/Stock')
 const db = require('../db/indexStock')
 
 
@@ -9,7 +8,7 @@ exports.getWebApi = async (req, res) => {
   console.log(typeof curValue)
 
   const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=6BUYSS9QR8Y9HH15`
-
+  
   try {
     const webApiData = await db.fetchWebApi(urlCompact)
     await db.creatStock(curValue, webApiData)
@@ -17,7 +16,6 @@ exports.getWebApi = async (req, res) => {
   } catch (ex) {
     console.log(`creatStock error: ${ex}`)
   }
-
 }
 
 

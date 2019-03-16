@@ -36,8 +36,46 @@ const creatStock = async (curValue, webApiData) => {
   }
 }
 
+const fetchDb = async (query, projection) => {
+  try {
+    const chartData = await Stock.findOne(query, projection).sort({ date: -1 })
+    return await chartData.data.map(item => {
+      return {
+        date: parseFloat(item.date), // the date
+        open: parseFloat(item.open), // open
+        high: parseFloat(item.high), // high
+        low: parseFloat(item.low), // low
+        close: parseFloat(item.close), // close
+        volume: parseFloat(item.volume)//volume
+      }
+    })
+  } catch (ex) {
+    console.log(`fetchDb error: ${ex}`)
+  }
+
+
+
+  // .then(doc => {
+  //   return chartData = doc.data.map(item => {
+  //     return {
+  //       date: parseFloat(item.date), // the date
+  //       open: parseFloat(item.open), // open
+  //       high: parseFloat(item.high), // high
+  //       low: parseFloat(item.low), // low
+  //       close: parseFloat(item.close), // close
+  //       volume: parseFloat(item.volume)//volume
+  //     }
+  //   })
+  //     })
+  //   .catch(e => {
+  //     console.log(e)
+  //   })
+}
+
+
 
 module.exports = {
   fetchWebApi,
-  creatStock
+  creatStock,
+  fetchDb
 }
