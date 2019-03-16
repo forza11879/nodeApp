@@ -1,7 +1,6 @@
 const axios = require('axios')
 const { Stock } = require('./models/Stock')
 
-
 const fetchWebApi = async url => {
   try {
     const response = await axios.get(url)
@@ -52,30 +51,26 @@ const fetchDb = async (query, projection) => {
   } catch (ex) {
     console.log(`fetchDb error: ${ex}`)
   }
-
-
-
-  // .then(doc => {
-  //   return chartData = doc.data.map(item => {
-  //     return {
-  //       date: parseFloat(item.date), // the date
-  //       open: parseFloat(item.open), // open
-  //       high: parseFloat(item.high), // high
-  //       low: parseFloat(item.low), // low
-  //       close: parseFloat(item.close), // close
-  //       volume: parseFloat(item.volume)//volume
-  //     }
-  //   })
-  //     })
-  //   .catch(e => {
-  //     console.log(e)
-  //   })
 }
 
-
+const dbSearchApi = async (curValueDbSearch) => {
+  try {
+    let queryRegex = `^${curValueDbSearch}`
+    const searchBoxData = await Stock.find({ symbol: { '$regex': queryRegex, '$options': 'i' } })
+      .limit(10)
+    return await searchBoxData.map(item => {
+      return {
+        symbol: item.symbol//symbol
+      }
+    })
+  } catch (ex) {
+    console.log(`dbSearchApi error: ${ex}`)
+  }
+}
 
 module.exports = {
   fetchWebApi,
   creatStock,
-  fetchDb
+  fetchDb,
+  dbSearchApi
 }
