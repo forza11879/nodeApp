@@ -4,7 +4,8 @@ const path = require('path')
 const bodyParser = require('body-parser')
 // const hbs = require('hbs');
 const exphbs  = require('express-handlebars')
-const routesWebApi = require('./routes/webApiRoutes')
+const stockRoute = require('./routes/stock')
+const listRoute = require('./routes/list')
 const routes = require('./routes/routes')
 const routesError = require('./routes/error')
 // const helpers = require('./helpers')
@@ -47,7 +48,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // const stamp = moment().endOf('day').fromNow()
 
 // console.log(stamp)
-app.use('/', routesWebApi)
+app.use('/stock', stockRoute)
+app.use('/list', listRoute)
 app.use('/', routes)
 app.use('/', routesError)
 

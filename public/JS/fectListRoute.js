@@ -45,7 +45,7 @@ function getDataList() {
   let symbolTagsValue = symbolTagsList.value
   let curValueSymbol = (symbolTagsValue) ? symbolTagsValue : 'RY'
 
-  let urlPlus = `/list/${curValueSymbol}`
+  let urlPlus = `/list/add/${curValueSymbol}`
   console.log(urlPlus)
   return fetchDataList(urlPlus)
 }
