@@ -11,29 +11,41 @@ symbolTags.addEventListener('input', _.debounce(() => {
   let symbolTagsOptionsValue = symbolTagsOptions.value
   let arg = urlsObject[symbolTagsOptionsValue]
   requestSymbolSearch(arg)
+  // let arrowDown = event.keyCode
+  // arrowDown = 40
+
 }, 2000))
 
-function requestSymbolSearch(arg) {
-  getDataList(arg)
-    .then(data => {
-      console.log(data)
-      $('#symbolTags').autocomplete({
-        source: data.map(item => item.symbol),
-        autoFocus: true
-      })
+async function requestSymbolSearch(arg) {
+  try {
+    const dataList = await getDataList(arg)
+    console.log(dataList)
+    $('#symbolTags').autocomplete({
+      source: dataList.map(item => item.symbol),
+      autoFocus: true
     })
-    .catch(error => console.error('Error:', error))
+  } catch (ex) {
+    console.log(`requestSymbolSearch error: ${ex}`)
+  }
 }
 
 function getDataList(url) {
-  let curValueSymbol = symbolTags.value
-  let urlPlus = `${url}${curValueSymbol}`
-  console.log(urlPlus)
-  return fetchData(urlPlus)
+  try {
+    let curValueSymbol = symbolTags.value
+    let urlPlus = `${url}${curValueSymbol}`
+    console.log(urlPlus)
+    return fetchData(urlPlus)
+  } catch (ex) {
+    console.log(`getDataList error: ${ex}`)
+  }
 }
 
 async function fetchData(urlPlus) {
-  const dataResponse = await fetch(urlPlus)
-  const dataJson = await dataResponse.json()
-  return dataJson
+  try {
+    const dataResponse = await fetch(urlPlus)
+    const dataJson = await dataResponse.json()
+    return dataJson
+  } catch (ex) {
+    console.log(`fetchData error: ${ex}`)
+  }
 }

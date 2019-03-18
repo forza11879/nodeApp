@@ -30,7 +30,6 @@ symbolTagsList.addEventListener('input', _.debounce(() => {
   if (symbolTagsOptionsList.checked) {
     requestSymbolSearchList()
   }
-
 }, 2000))
 
 function requestSymbolSearchList() {
@@ -52,9 +51,13 @@ function getDataList() {
 }
 
 async function fetchDataList(urlPlus) {
-  const dataResponse = await fetch(urlPlus)
-  const dataJson = await dataResponse.json()
-  return dataJson
+  try {
+    const dataResponse = await fetch(urlPlus)
+    const dataJson = await dataResponse.json()
+    return dataJson
+  } catch (ex) {
+    console.log(`fetchDataList error: ${ex}`)
+  }
 }
 
 

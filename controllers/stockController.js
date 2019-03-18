@@ -11,7 +11,7 @@ exports.getWebApi = async (req, res) => {
     const webApiData = await db.fetchWebApi(urlCompact)
     await db.creatStock(curValue, webApiData)
 
-    return res.send(webApiData)
+    res.send(webApiData)
   } catch (ex) {
     console.log(`getWebApi error: ${ex}`)
   }
