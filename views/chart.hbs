@@ -1,18 +1,22 @@
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 <div>
-  <label for="symbolTags">Symbol: </label>
-  <input type="text" id="symbolTags" name="symbol">
+  <label for="symbolTagsChart">Symbol: </label>
+  <input type="text" id="symbolTagsChart" name="symbol">
   <input type="hidden" id="symbolValueCurValue" name="symbolValueCurValue" value="{{curValue}}">
 
-  <label for="api">Select Search Api: </label>
-  <select id="api" name="routes_api">
+  <label for="apiChart">Select Search Api: </label>
+  <select id="apiChart" name="routes_api">
     <option value="websearch">Web Search Api</option>
     <option value="dbsearch">DB Search Api</option>
   </select>
 
 
-  <button type="submit" id="requestSymbol">Get Quote</button>
+  <button type="submit" id="requestSymbolChart">Get Quote</button>
 </div>
 <div id="container" style="height: 600px; min-width: 310px"></div>
 
 
 <script src="/JS/chart.js"></script>
+<script src="/JS/chartWebSearch.js"></script>

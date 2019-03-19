@@ -1,11 +1,24 @@
 document.addEventListener('DOMContentLoaded', getSymbolWebApi)
 const symbolValueCurValue = document.querySelector('#symbolValueCurValue')
+const symbolTagsChart = document.querySelector('#symbolTagsChart')
+const requestSymbolChart = document.querySelector('#requestSymbolChart')
 
-console.log(symbolValueCurValue)
+requestSymbolChart.addEventListener('click', getSymbolWebApi)
+symbolTagsChart.addEventListener("keyup", executeEnterKey)
+
+function executeEnterKey(event) {
+  event.preventDefault()
+  if (event.keyCode === 13) {
+    requestSymbolChart.click()
+  }
+}
 
 function getSymbolWebApi() {
-  let symbolTagsValue = symbolValueCurValue.value
-  let curValueAjax = symbolTagsValue
+  let symbolValueCurValueValue = symbolValueCurValue.value
+  let symbolTagsChartValue = symbolTagsChart.value
+ 
+  let curValueAjax = (symbolTagsChartValue) ? symbolTagsChartValue : symbolValueCurValueValue
+ 
   console.log(curValueAjax)
 
   fetch(`/stock/app/${curValueAjax}`)
