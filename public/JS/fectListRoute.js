@@ -10,7 +10,7 @@ class UI {
     console.log(data)
     this.show.innerHTML = data.map(item => {
       return `<tr>
-              <td><strong><a href="/chart/${item.symbol}">${item.symbol}</a></strong></td>
+              <td><strong><a href="/stock/chart/${item.symbol}">${item.symbol}</a></strong></td>
               <td>${item.open}</td>
               <td>${item.high}</td>
               <td>${item.low}</td>

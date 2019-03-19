@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { getWebApiList } = require('../controllers/listController')
+const { getWebApiList } = require('../controllers/list')
 
 router.get('/add/:symbol', getWebApiList)
 

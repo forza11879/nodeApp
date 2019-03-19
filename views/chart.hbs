@@ -1,6 +1,7 @@
 <div>
   <label for="symbolTags">Symbol: </label>
   <input type="text" id="symbolTags" name="symbol">
+  <input type="hidden" id="symbolValueCurValue" name="symbolValueCurValue" value="{{curValue}}">
 
   <label for="api">Select Search Api: </label>
   <select id="api" name="routes_api">
@@ -12,3 +13,6 @@
   <button type="submit" id="requestSymbol">Get Quote</button>
 </div>
 <div id="container" style="height: 600px; min-width: 310px"></div>
+
+
+<script src="/JS/chart.js"></script>

@@ -1,5 +1,12 @@
 const db = require('../db/indexStock')
 
+exports.getChart = (req, res) => {
+  let curValue = req.params.symbol
+  res.render('chart', {
+    curValue: curValue
+  })
+}
+
 exports.getWebApi = async (req, res) => {
   try {
     let curValue = req.params.symbol
@@ -16,7 +23,7 @@ exports.getWebApi = async (req, res) => {
     console.log(`getWebApi error: ${ex}`)
   }
 }
-////////////////////
+
 exports.getDbFetch = async (req, res) => {
   try {
     let curValueDbFetch = req.params.symbol
@@ -31,7 +38,7 @@ exports.getDbFetch = async (req, res) => {
     console.log(`getDbFetch error: ${ex}`)
   }
 }
-//////////////////////////
+
 exports.getDbSearchApi = async (req, res) => {
   try {
     let curValueDbSearch = req.params.symbol
@@ -44,12 +51,12 @@ exports.getDbSearchApi = async (req, res) => {
 
 
 // Stock.find(
-  //   { $text: { $search: `"${curValueDbSearch}"` } },
-  //   { score: { $meta: 'textScore' } }
-  // )
-  //   .sort({
-  //     score: { $meta: 'textScore' }
-  //   })
+//   { $text: { $search: `"${curValueDbSearch}"` } },
+//   { score: { $meta: 'textScore' } }
+// )
+//   .sort({
+//     score: { $meta: 'textScore' }
+//   })
 
 exports.getSearchWebApi = async (req, res) => {
   try {
