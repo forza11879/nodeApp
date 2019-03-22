@@ -6,9 +6,9 @@ module.exports = function () {
 
   // mongoose.connect('mongodb://localhost:27017/myapp', { useNewUrlParser: true })
 
-  mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-ckbfd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true`, { useNewUrlParser: true })
+  // mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-ckbfd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true`, { useNewUrlParser: true })
 
-  // mongoose.connect(`mongodb+srv://forza11879:5wri7OAPlFLWbjSz@cluster0-nec26.mongodb.net/test?retryWrites=true`, { useNewUrlParser: true })
+  mongoose.connect(`mongodb+srv://forza11879:5wri7OAPlFLWbjSz@cluster0-nec26.mongodb.net/test?retryWrites=true`, { useNewUrlParser: true })
 
   //(node:571) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
   mongoose.set('useCreateIndex', true)
