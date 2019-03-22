@@ -1,5 +1,6 @@
 node_modules/
 variables.env
+package-lock.json
 server.cert
 server.key
 access.log
