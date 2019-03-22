@@ -5,3 +5,5 @@ server.cert
 server.key
 access.log
 x
+Procfile
+nodemon.json
