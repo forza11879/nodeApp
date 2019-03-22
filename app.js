@@ -24,7 +24,7 @@ const port = 3000
 // const privateKey = fs.readFileSync('server.key')
 // const certificate = fs.readFileSync('server.cert')
 
-console.log(process.env.NODE_ENV)
+// console.log(process.env.NODE_ENV)
 
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(bodyParser.urlencoded({ extended: false }))
