@@ -1,0 +1,1 @@
+web:NODE_ENV=production MONGO_USER=forza11879 MONGO_PASSWORD=DtlgNm7jJUKxlg1N MONGO_DEFAULT_DATABASE=tradingApp node app.js
