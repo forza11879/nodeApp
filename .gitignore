@@ -1,3 +1,9 @@
 node_modules/
 variables.env
 package-lock.json
+server.cert
+server.key
+nodemon.json
+Procfile
+access.log
+x

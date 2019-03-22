@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+// mongoose.Promise = global.Promise
 const axios = require('axios')
 const Joi = require('joi')
 const slug = require('slug')
@@ -22,7 +22,7 @@ const ParentSchemaSymbol = new mongoose.Schema({
     minlength: 1,
     maxlength: 50,
     uppercase: true,
-    required: 'Please enter a valid symbol, min 2 character'
+    required: 'Please enter a valid symbol, min 1 character'
   },
   // Array of subdocuments
   data: [ChildSchemaData],

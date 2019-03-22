@@ -1,9 +1,16 @@
+const path = require('path')
+const fs = require('fs')
+// const https = require('https')
 const express = require('express')
 const app = express()
-const path = require('path')
+
+const helmet = require('helmet')
+const compression = require('compression')
+var morgan = require('morgan')
+
 const bodyParser = require('body-parser')
 // const hbs = require('hbs');
-const exphbs  = require('express-handlebars')
+const exphbs = require('express-handlebars')
 const stockRoute = require('./routes/stock')
 const listRoute = require('./routes/list')
 const routes = require('./routes/routes')
@@ -12,6 +19,12 @@ const routesError = require('./routes/error')
 // const moment = require('moment')
 require('./startup/db')()
 const port = 3000
+
+// NEED  to implement HTTPS mode
+// const privateKey = fs.readFileSync('server.key')
+// const certificate = fs.readFileSync('server.cert')
+
+// console.log(process.env.NODE_ENV)
 
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -25,7 +38,7 @@ app.use(bodyParser.json())
 // Handlebars Middleware
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
-  extname: 'hbs' 
+  extname: 'hbs'
 }))
 app.set('view engine', 'hbs')
 
@@ -63,10 +76,27 @@ app.use('/', routesError)
 
 //need
 // require('./models/Stock')
+// HTTP request logger MORGAN middleware for node.js
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+)
 
-app.listen(port, () => {
+
+// Helmet helps you secure your Express apps by setting various HTTP headers. It’s not a silver bullet, but it can help!
+app.use(helmet())
+// The middleware will attempt to compress response bodies for all request that traverse through the middleware, based on the given options.
+app.use(compression())
+// HTTP request logger middleware for node.js
+app.use(morgan('combined', {stream: accessLogStream}))
+
+app.listen(process.env.PORT || port, () => {
   console.log(`Server is up on port ${port}`)
 })
+// if you need to implement HTTPS mode
+// https.createServer({key: privateKey, cert: certificate}, app).listen(process.env.PORT || port, () => {
+//   console.log(`Server is up on port ${port}`)
+// })
 
 
 
