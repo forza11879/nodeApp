@@ -7,7 +7,7 @@ requestSymbolChart.addEventListener('click', getSymbolWebApi)
 symbolTagsChart.addEventListener("keyup", executeEnterKey)
 
 function executeEnterKey(event) {
-  event.preventDefault()
+  // event.preventDefault()
   if (event.keyCode === 13) {
     requestSymbolChart.click()
   }

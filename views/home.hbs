@@ -1,21 +1,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 
 <div>
-  <label for="symbolTags">Symbol: </label>
-  <input type="text" id="symbolTags" name="symbol">
+  <label for="symbolTagsList">Symbol: </label>
+  <input type="text" id="symbolTagsList" name="symbol">
 
-  <label for="api">Select Search Api: </label>
-  <select id="api" name="routes_api">
-    <option value="websearch">Web Search Api</option>
-    <option value="dbsearch">DB Search Api</option>
-  </select>
-
-
-  <button type="submit" id="requestSymbol">Get Quote</button>
+  <button type="submit" id="requestSymbolList">Get Quote</button>
 </div>
 <div>
-  <input type="checkbox" id="listBox" name="listBox" checked>
-  <label for="listBox">Quote List</label>
+  <input type="checkbox" id="ckeckBoxList" name="ckeckBoxList" checked>
+  <label for="ckeckBoxList">Quote List</label>
 </div>
 <table>
   <thead>
@@ -40,5 +33,5 @@
 
 
 
-<script src="/JS/fetchWebSearchDbSearchRoutes.js"></script>
+{{!-- <script src="/JS/fetchWebSearchDbSearchRoutes.js"></script> --}}
 <script src="/JS/fetchListRoute.js"></script>
