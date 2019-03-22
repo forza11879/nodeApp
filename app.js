@@ -1,12 +1,12 @@
 const path = require('path')
-const fs = require('fs')
+// const fs = require('fs')
 // const https = require('https')
 const express = require('express')
 const app = express()
 
-const helmet = require('helmet')
-const compression = require('compression')
-var morgan = require('morgan')
+// const helmet = require('helmet')
+// const compression = require('compression')
+// var morgan = require('morgan')
 
 const bodyParser = require('body-parser')
 // const hbs = require('hbs');
@@ -77,18 +77,18 @@ app.use('/', routesError)
 //need
 // require('./models/Stock')
 // HTTP request logger MORGAN middleware for node.js
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, 'access.log'),
-  { flags: 'a' }
-)
+// const accessLogStream = fs.createWriteStream(
+//   path.join(__dirname, 'access.log'),
+//   { flags: 'a' }
+// )
 
 
 // Helmet helps you secure your Express apps by setting various HTTP headers. It’s not a silver bullet, but it can help!
-app.use(helmet())
+// app.use(helmet())
 // The middleware will attempt to compress response bodies for all request that traverse through the middleware, based on the given options.
-app.use(compression())
+// app.use(compression())
 // HTTP request logger middleware for node.js
-app.use(morgan('combined', {stream: accessLogStream}))
+// app.use(morgan('combined', {stream: accessLogStream}))
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is up on port ${port}`)
