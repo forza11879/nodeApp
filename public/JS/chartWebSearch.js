@@ -11,7 +11,7 @@ symbolTagsChart.addEventListener('input', _.debounce(() => {
   let symbolTagsOptionsChartValue = symbolTagsOptionsChart.value
   let arg = urlsObjectChart[symbolTagsOptionsChartValue]
   requestSymbolSearchChart(arg)
-}, 2000))
+}, 1000))
 
 async function requestSymbolSearchChart(arg) {
   try {

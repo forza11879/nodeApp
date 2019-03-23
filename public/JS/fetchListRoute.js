@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', requestSymbolSearchList)
 
-const checkBoxList = document.querySelector('#ckeckBoxList')
-
 const requestSymbolList = document.querySelector('#requestSymbolList')
 const symbolTagsList = document.querySelector('#symbolTagsList')
-
 
 requestSymbolList.addEventListener('click', requestSymbolSearchList)
 symbolTagsList.addEventListener("keyup", executeEnterKey)
@@ -15,7 +12,6 @@ function executeEnterKey(event) {
     requestSymbolList.click()
   }
 }
-
 
 class UI {
   constructor() {
@@ -41,7 +37,7 @@ class UI {
   }
 }
 const ui = new UI
-
+//List
 function requestSymbolSearchList() {
   getDataList()
     .then(data => {
@@ -54,31 +50,19 @@ function requestSymbolSearchList() {
 function getDataList() {
   let symbolTagsValue = symbolTagsList.value
   let curValueSymbol = (symbolTagsValue) ? symbolTagsValue : 'RY'
-
-  let urlPlus = `/list/add/${curValueSymbol}`
-  console.log(urlPlus)
-  return fetchDataList(urlPlus)
+  let url = `/list/add/${curValueSymbol}`
+  console.log(url)
+  return fetchData(url)
 }
-
-async function fetchDataList(urlPlus) {
-  try {
-    const dataResponse = await fetch(urlPlus)
-    const dataJson = await dataResponse.json()
-    return dataJson
-  } catch (ex) {
-    console.log(`fetchDataList error: ${ex}`)
-  }
-}
-
-
-
+//search box
 symbolTagsList.addEventListener('input', _.debounce(() => {
-   requestSymbolSearch()
-}, 2000))
+  requestSymbolSearch()
+}, 1000))
 
 async function requestSymbolSearch() {
   try {
-    const dataList = await getData()
+    const dataList = await getDataSearchBox()
+    console.log(dataList)
     $('#symbolTagsList').autocomplete({
       source: dataList.map(item => item.symbol),
       autoFocus: true
@@ -88,14 +72,14 @@ async function requestSymbolSearch() {
   }
 }
 
-function getData() {
+function getDataSearchBox() {
   try {
     let curValueSymbol = symbolTagsList.value
     let url = `/stock/websearch/${curValueSymbol}`
     console.log(url)
     return fetchData(url)
   } catch (ex) {
-    console.log(`getDataList error: ${ex}`)
+    console.log(`getDataSearchBox error: ${ex}`)
   }
 }
 
