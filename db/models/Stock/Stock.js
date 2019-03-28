@@ -30,9 +30,11 @@ const ParentSchemaSymbol = new mongoose.Schema({
 
 })
 
-// const Stock = mongoose.model('Stock', ParentSchemaSymbol)
-// module.exports.Stock = Stock
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol)
+
+// Mongoose assigns each of your schemas an _id field by default if one is not passed into the Schema constructor. The type assigned is an ObjectId to coincide with MongoDB's default behavior. If you don't want an _id added to your schema at all, you may disable it using this option.
+
+// You can only use this option on subdocuments. Mongoose can't save a document without knowing its id, so you will get an error if you try to save a document without an _id.
 
 
 // ParentSchemaSymbol.methods.fetchWebApi = async function (url) {
