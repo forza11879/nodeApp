@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-// mongoose.Promise = global.Promise
 const ParentSchemaSymbolList = new mongoose.Schema({
   // "_id": false,
   // symbol: {
@@ -30,8 +29,6 @@ const ParentSchemaSymbolList = new mongoose.Schema({
   // change: Number,
   // changePercent: Number
 })
-// const List = mongoose.model('List', ParentSchemaSymbolList)
-// module.exports.List = List
 module.exports.List = mongoose.model('List', ParentSchemaSymbolList)
 
 // const ChildSchemaData = new mongoose.Schema({

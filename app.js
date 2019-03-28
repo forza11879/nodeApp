@@ -13,7 +13,7 @@ const bodyParser = require('body-parser')
 const exphbs = require('express-handlebars')
 const stockRoute = require('./routes/stock')
 const listRoute = require('./routes/list')
-const routes = require('./routes/routes')
+const main = require('./routes/main')
 const routesError = require('./routes/error')
 // const helpers = require('./helpers')
 // const moment = require('moment')
@@ -63,7 +63,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // console.log(stamp)
 app.use('/stock', stockRoute)
 app.use('/list', listRoute)
-app.use('/', routes)
+app.use('/', main)
 app.use('/', routesError)
 
 // hbs.registerHelper('getCurrentYear', () => {
