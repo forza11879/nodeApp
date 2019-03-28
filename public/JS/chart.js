@@ -27,6 +27,7 @@ function getSymbolWebApi() {
     })
     .then(function (data) {
       // drawChart(data)
+      console.log(data)
       // split the data set into ohlc and volume
       var ohlc = [],
         volume = [],
