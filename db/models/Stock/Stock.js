@@ -37,24 +37,6 @@ module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol)
 // You can only use this option on subdocuments. Mongoose can't save a document without knowing its id, so you will get an error if you try to save a document without an _id.
 
 
-// ParentSchemaSymbol.methods.fetchWebApi = async function (url) {
-//   try {
-//     const response = await axios.get(url)
-//     return parsedData = await Object.keys(response.data['Time Series (Daily)']).map(date => {
-//       return {
-//         date: Date.parse(date),
-//         open: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['1. open']) * 100) / 100,
-//         high: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['2. high']) * 100) / 100,
-//         low: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['3. low']) * 100) / 100,
-//         close: Math.round(parseFloat(response.data['Time Series (Daily)'][date]['4. close']) * 100) / 100,
-//         volume: parseInt(response.data['Time Series (Daily)'][date]['5. volume'])
-//       }
-//     })
-//   } catch (ex) {
-//     console.log(`fetchWebApi error: ${ex}`)
-//   }
-// }
-
 // function validateStock(stock) {
 //   const schema = {
 //     symbol: Joi.string().min(2).max(50).required()

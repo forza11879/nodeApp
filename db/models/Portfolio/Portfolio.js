@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-// mongoose.Promise = global.Promise
 const ParentSchemaSymbolList = new mongoose.Schema({
   symbol: {
     type: String,
