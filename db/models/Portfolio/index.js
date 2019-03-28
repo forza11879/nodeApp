@@ -1,5 +1,5 @@
 const axios = require('axios')
-const { Portfolio } = require('./models/Portfolio')
+const { Portfolio } = require('./Portfolio')
 
 // const saveToDbPortfolio = async arg => {
 //   try {

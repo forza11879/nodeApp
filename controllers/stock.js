@@ -1,4 +1,4 @@
-const db = require('../db/indexStock')
+const db = require('../db/models/Stock')
 
 exports.getChart = (req, res) => {
   let curValue = req.params.symbol

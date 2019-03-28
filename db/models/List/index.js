@@ -1,5 +1,5 @@
 const axios = require('axios')
-const { List } = require('./models/List')
+const { List } = require('./List')
 
 const saveToDbList = async arg => {
   try {

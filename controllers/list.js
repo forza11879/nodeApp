@@ -1,4 +1,4 @@
-const db = require('../db/indexList')
+const db = require('../db/models/List')
 
 exports.getWebApiList = (req, res) => {
 
