@@ -35,7 +35,7 @@ const saveToDbList = async arg => {
     const stockResult = await List.findOneAndUpdate(query, update, options)
     console.log('Saved the symbol web TO dbList', stockResult.symbol)
   } catch (ex) {
-    console.log(`saveToDb error: ${ex}`)
+    console.log(`saveToDbList error: ${ex}`)
   }
 }
 
@@ -46,7 +46,7 @@ const generateUrlArrayList = async (query, projection) => {
       return link = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${item.symbol}&apikey=6BUYSS9QR8Y9HH15`
     })
   } catch (ex) {
-    console.log(`generateUrlArray error: ${ex}`)
+    console.log(`generateUrlArrayList error: ${ex}`)
   }
 
 }
@@ -70,7 +70,7 @@ const fetchDataFromDbList = async (query, projection) => {
       })
     })
   } catch (ex) {
-    console.log(`fetchDataFromDb error: ${ex}`)
+    console.log(`fetchDataFromDbList error: ${ex}`)
   }
 }
 
