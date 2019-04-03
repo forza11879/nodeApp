@@ -13,7 +13,9 @@ exports.getWebApi = async (req, res) => {
     console.log(`${curValue} - seacrhBox value`);
     console.log(typeof curValue);
 
-    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=6BUYSS9QR8Y9HH15`;
+    // const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=6BUYSS9QR8Y9HH15`
+
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=${process.env.API_KEY}`
 
     const webApiData = await db.fetchWebApi(urlCompact);
     await db.creatStock(curValue, webApiData);
@@ -59,11 +61,13 @@ exports.getDbSearchApi = async (req, res) => {
 
 exports.getSearchWebApi = async (req, res) => {
   try {
-    const curValue = req.params.symbol;
-    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=TUVR`;
+    const curValue = req.params.symbol
+    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=TUVR`
 
-    console.log(`reqBody:${req.body}`);
-    console.log(`reqParamsSymbol:${req.params.symbol}`);
+    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=${process.env.API_KEY_GET_SEARCH_WEB_API}`
+
+    console.log(`reqBody:${req.body}`)
+    console.log(`reqParamsSymbol:${req.params.symbol}`)
 
     const webApiData = await db.searchWebApi(url);
 
