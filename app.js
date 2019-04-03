@@ -18,7 +18,7 @@ const routesError = require('./routes/error')
 // const helpers = require('./helpers')
 // const moment = require('moment')
 require('./startup/db')()
-const port = 3000
+const port = process.env.PORT || 3000
 
 // NEED  to implement HTTPS mode
 // const privateKey = fs.readFileSync('server.key')
@@ -90,7 +90,7 @@ app.use('/', routesError)
 // HTTP request logger middleware for node.js
 // app.use(morgan('combined', {stream: accessLogStream}))
 
-app.listen(process.env.PORT || port, () => {
+app.listen(port, () => {
   console.log(`Server is up on port ${port}`)
 })
 // if you need to implement HTTPS mode
