@@ -18,7 +18,7 @@ const routesError = require('./routes/error')
 // const helpers = require('./helpers')
 // const moment = require('moment')
 require('./startup/db')()
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 
 // NEED  to implement HTTPS mode
 // const privateKey = fs.readFileSync('server.key')
