@@ -62,7 +62,7 @@ exports.getDbSearchApi = async (req, res) => {
 exports.getSearchWebApi = async (req, res) => {
   try {
     const curValue = req.params.symbol
-    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=TUVR`
+    // const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=TUVR`
 
     const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=${process.env.API_KEY_GET_SEARCH_WEB_API}`
 
