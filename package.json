@@ -7,8 +7,7 @@
     "node": "11.2.0"
   },
   "scripts": {
-    "start": "NODE_ENV=production MONGO_USER=forza11879 MONGO_PASSWORD=DtlgNm7jJUKxlg1N MONGO_DEFAULT_DATABASE=tradingApp node app.js",
-    "start-server": "node app.js",
+    "start": "node app.js",
     "dev": "env-cmd ./config/dev.env nodemon app.js -e js, hbs"
   },
   "author": "",

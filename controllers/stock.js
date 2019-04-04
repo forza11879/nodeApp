@@ -9,13 +9,16 @@ exports.getChart = (req, res) => {
 
 exports.getWebApi = async (req, res) => {
   try {
-    const curValue = req.params.symbol;
-    console.log(`${curValue} - seacrhBox value`);
-    console.log(typeof curValue);
+    const curValue = req.params.symbol
+    console.log(`${curValue} - seacrhBox value`)
+    console.log(typeof curValue)
 
     // const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=6BUYSS9QR8Y9HH15`
 
-    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=${process.env.API_KEY}`
+    const apiKey = process.env.API_KEY
+    
+
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=${apiKey}`
 
     const webApiData = await db.fetchWebApi(urlCompact);
     await db.creatStock(curValue, webApiData);
@@ -64,7 +67,9 @@ exports.getSearchWebApi = async (req, res) => {
     const curValue = req.params.symbol
     // const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=TUVR`
 
-    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=${process.env.API_KEY_GET_SEARCH_WEB_API}`
+    const apiKeyGetSearchWebApi = process.env.API_KEY_GET_SEARCH_WEB_API
+
+    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=${apiKeyGetSearchWebApi}`
 
     console.log(`reqBody:${req.body}`)
     console.log(`reqParamsSymbol:${req.params.symbol}`)
