@@ -3,10 +3,7 @@ const db = require("../db/models/List");
 exports.getWebApiList = async (req, res) => {
   try {
     const curValue = req.params.symbol
-    // const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=6BUYSS9QR8Y9HH15`
-
     const apiKey = process.env.API_KEY
-
     const urlCompact = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${curValue}&apikey=${apiKey}`
 
     let urlArray = await db.generateUrlArrayList({}, { _id: 0 });
