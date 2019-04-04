@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 const ParentSchemaSymbolList = new mongoose.Schema({
   symbol: String,
   open: { type: mongoose.Types.Decimal128 },
@@ -10,6 +10,5 @@ const ParentSchemaSymbolList = new mongoose.Schema({
   previousClose: { type: mongoose.Types.Decimal128 },
   change: { type: mongoose.Types.Decimal128 },
   changePercent: { type: mongoose.Types.Decimal128 }
-  // open: Number
-});
-module.exports.List = mongoose.model("List", ParentSchemaSymbolList);
+})
+module.exports.List = mongoose.model('List', ParentSchemaSymbolList)

@@ -1,5 +1,5 @@
-const axios = require("axios");
-const { List } = require("./List");
+const axios = require('axios')
+const { List } = require('./List')
 
 const saveToDbList = async arg => {
   try {
@@ -14,9 +14,9 @@ const saveToDbList = async arg => {
       previousClose: arg.previousClose,
       change: arg.change,
       changePercent: arg.changePercent
-    });
+    })
 
-    const query = { symbol: stockList.symbol };
+    const query = { symbol: stockList.symbol }
     const update = {
       open: stockList.open,
       high: stockList.high,
@@ -27,36 +27,37 @@ const saveToDbList = async arg => {
       previousClose: stockList.previousClose,
       change: stockList.change,
       changePercent: stockList.changePercent
-    };
+    }
     // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
-    const options = { upsert: true, new: true };
+    const options = { upsert: true, new: true }
 
-    const stockResult = await List.findOneAndUpdate(query, update, options);
-    console.log("Saved the symbol web TO dbList", stockResult.symbol);
+    const stockResult = await List.findOneAndUpdate(query, update, options)
+    console.log("Saved the symbol web TO dbList", stockResult.symbol)
   } catch (ex) {
-    console.log(`saveToDbList error: ${ex}`);
+    console.log(`saveToDbList error: ${ex}`)
   }
-};
+}
 
 const generateUrlArrayList = async (query, projection) => {
   try {
-    const dataFromDB = await List.find(query, projection).select("symbol");
+    const apiKey = process.env.API_KEY
+    const dataFromDB = await List.find(query, projection).select("symbol")
 
     return dataFromDB.map(
       item =>
         `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${
-          item.symbol
-        }&apikey=6BUYSS9QR8Y9HH15`
-    );
+        item.symbol
+        }&apikey=${apiKey}`
+    )
   } catch (ex) {
-    console.log(`generateUrlArrayList error: ${ex}`);
+    console.log(`generateUrlArrayList error: ${ex}`)
   }
-};
+}
 
 const fetchDataFromDbList = async (query, projection) => {
   try {
-    const item = await List.find(query, projection);
+    const item = await List.find(query, projection)
 
     return item.map(item => ({
       symbol: item.symbol, //symbol
@@ -69,17 +70,17 @@ const fetchDataFromDbList = async (query, projection) => {
       previousClose: parseFloat(item.previousClose), //previousClose
       change: parseFloat(item.change),
       changePercent: parseFloat(item.changePercent) //previousClose
-    }));
+    }))
   } catch (ex) {
-    console.log(`fetchDataFromDbList error: ${ex}`);
+    console.log(`fetchDataFromDbList error: ${ex}`)
   }
-};
+}
 
 const fetchWebApiList = async url => {
   try {
-    const myJson = await axios.get(url);
+    const myJson = await axios.get(url)
 
-    const globalQuote = myJson.data["Global Quote"];
+    const globalQuote = myJson.data["Global Quote"]
 
     return {
       symbol: globalQuote["01. symbol"],
@@ -93,15 +94,15 @@ const fetchWebApiList = async url => {
       previousClose: globalQuote["08. previous close"],
       change: globalQuote["09. change"],
       changePercent: globalQuote["10. change percent"].slice(0, -1)
-    };
+    }
   } catch (ex) {
-    console.log(`fetchWebApiList error: ${ex}`);
+    console.log(`fetchWebApiList error: ${ex}`)
   }
-};
+}
 
 module.exports = {
   saveToDbList,
   fetchDataFromDbList,
   generateUrlArrayList,
   fetchWebApiList
-};
+}

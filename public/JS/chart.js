@@ -1,34 +1,34 @@
-document.addEventListener("DOMContentLoaded", getSymbolWebApi);
-const symbolValueCurValue = document.querySelector("#symbolValueCurValue");
-const symbolTagsChart = document.querySelector("#symbolTagsChart");
-const requestSymbolChart = document.querySelector("#requestSymbolChart");
+document.addEventListener("DOMContentLoaded", getSymbolWebApi)
+const symbolValueCurValue = document.querySelector("#symbolValueCurValue")
+const symbolTagsChart = document.querySelector("#symbolTagsChart")
+const requestSymbolChart = document.querySelector("#requestSymbolChart")
 
-requestSymbolChart.addEventListener("click", getSymbolWebApi);
-symbolTagsChart.addEventListener("keyup", executeEnterKey);
+requestSymbolChart.addEventListener("click", getSymbolWebApi)
+symbolTagsChart.addEventListener("keyup", executeEnterKey)
 
 function executeEnterKey(event) {
   // event.preventDefault()
   if (event.keyCode === 13) {
-    requestSymbolChart.click();
+    requestSymbolChart.click()
   }
 }
 
 async function getSymbolWebApi() {
-  const symbolValueCurValueValue = symbolValueCurValue.value;
-  const symbolTagsChartValue = symbolTagsChart.value;
+  const symbolValueCurValueValue = symbolValueCurValue.value
+  const symbolTagsChartValue = symbolTagsChart.value
 
   let curValueAjax = symbolTagsChartValue
     ? symbolTagsChartValue
-    : symbolValueCurValueValue;
+    : symbolValueCurValueValue
 
-  console.log(curValueAjax);
+  console.log(curValueAjax)
 
   try {
-    const response = await fetch(`/stock/app/${curValueAjax}`);
-    const data = await response.json();
+    const response = await fetch(`/stock/app/${curValueAjax}`)
+    const data = await response.json()
 
     // drawChart(data)
-    console.log(data);
+    console.log(data)
     // split the data set into ohlc and volume
     var ohlc = [],
       volume = [],
@@ -41,7 +41,7 @@ async function getSymbolWebApi() {
         ],
         ["month", [1, 2, 3, 4, 6]]
       ],
-      i = 0;
+      i = 0
 
     data.map(item => {
       ohlc.push([
@@ -51,12 +51,12 @@ async function getSymbolWebApi() {
         item.low,
         item.close,
         item.volume
-      ]);
+      ])
       volume.push([
         item.date, // the date
         item.volume // the volume
-      ]);
-    });
+      ])
+    })
 
     // create the chart
     Highcharts.stockChart("container", {
@@ -121,8 +121,8 @@ async function getSymbolWebApi() {
           }
         }
       ]
-    });
+    })
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error", error)
   }
 }

@@ -16,7 +16,7 @@ function getSymbolWebApi() {
 
   fetch(`/stock/app/${curValueAjax}`)
     .then(function (response) {
-      return response.json();
+      return response.json()
     })
     .then(function (data) {
       // drawChart(data)
@@ -33,7 +33,7 @@ function getSymbolWebApi() {
           [1, 2, 3, 4, 6]
         ]],
 
-        i = 0;
+        i = 0
 
       data.map(item => {
         ohlc.push([
