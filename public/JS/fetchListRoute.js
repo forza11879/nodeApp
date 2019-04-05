@@ -35,7 +35,7 @@ class UI {
               <td>${item.previousClose}</td>
               <td>${item.change}</td>
               <td>${item.changePercent}</td>
-              <td><a href="/portfolio/buysell/${item.symbol}">buy/sell</a></td>
+              <td><strong><a href="/portfolio/buysell/${item.symbol}">buy/sell</a></strong></td>
               </tr>`
       )
       .join("")
