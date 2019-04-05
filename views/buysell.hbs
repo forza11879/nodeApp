@@ -33,8 +33,10 @@
     <div class="col-sm-6 col-md-4">
       <div class="card">
         <div class="card-body">
-          {{!-- <p class="card-text"><strong>BID:</strong></p> --}}
-          <h5>Symbol: <strong>{{curValue}}</strong></h5>
+          <p class="card-text"><strong>Latest Update: {{data.latestUpdate}} </strong></p>
+          <h5><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
+          <h5>Latest Price: {{data.latestPrice}} </h5>
+          <h5>Price Change: {{data.change}} </h5>
           <h5>High: {{data.high}} </h5>
           <h5>Low: {{data.low}}</h5>
           <h5>High52wk: {{data.week52High}}</h5>
