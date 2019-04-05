@@ -76,7 +76,7 @@ const fetchDataFromDbList = async (query, projection) => {
   }
 }
 
-const fetchWebApiList = async url => {
+const fetchWebApiList = async (url) => {
   try {
     const myJson = await axios.get(url)
 

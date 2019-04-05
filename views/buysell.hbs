@@ -6,7 +6,8 @@
       <div class="card">
         <div class="card-body">
           <br>
-          <h5 class="card-title"><strong>ASK: </strong>{{curValue}}</h5>
+          {{!-- <h5 class="card-title"><strong>ASK: </strong>{{data}}</h5> --}}
+          <h5 class="card-title"><strong>ASK: </strong>{{data.latestPrice}}</h5>
           <br>
           {{!-- <p class="card-text"><strong>ASK:</strong></p> --}}
           <label for="qtyAsk">Qty: </label>
@@ -19,7 +20,7 @@
       <div class="card">
         <div class="card-body">
           <br>
-          <h5 class="card-title"><strong>BID: </strong>{{curValue}}</h5>
+          <h5 class="card-title"><strong>BID: </strong>{{data.latestPrice}}</h5>
           <br>
           {{!-- <p class="card-text"><strong>BID:</strong></p> --}}
           <label for="qtyBid">Qty: </label>
@@ -34,12 +35,12 @@
         <div class="card-body">
           {{!-- <p class="card-text"><strong>BID:</strong></p> --}}
           <h5>Symbol: <strong>{{curValue}}</strong></h5>
-          <h5>High: {{t.high}} </h5>
-          <h5>Low: {{t.low}}</h5>
-          <h5>High52wk: {{t.high52}}</h5>
-          <h5>Low52wk: {{t.low52}}</h5>
-          <h5>Open: {{t.open}}</h5>
-          <h5>Close: {{t.previousClose}}</h5>
+          <h5>High: {{data.high}} </h5>
+          <h5>Low: {{data.low}}</h5>
+          <h5>High52wk: {{data.week52High}}</h5>
+          <h5>Low52wk: {{data.week52Low}}</h5>
+          <h5>Open: {{data.open}}</h5>
+          <h5>Close: {{data.previousClose}}</h5>
         </div>
       </div>
     </div>
