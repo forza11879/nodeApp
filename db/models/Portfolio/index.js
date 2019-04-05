@@ -13,7 +13,7 @@ const fetchWebApiQuote = async url => {
       companyName: myJsonData['companyName'],
       latestPrice: myJsonData['latestPrice'],
       change: myJsonData['change'],
-      latestUpdate: moment(myJsonData['latestUpdate']).utcOffset(-660).format('LLLL'),
+      latestUpdate: moment(myJsonData['latestUpdate']).utcOffset(-240).format('LLLL'),
       high: myJsonData['high'],
       low: myJsonData['low'],
       week52High: myJsonData['week52High'],
