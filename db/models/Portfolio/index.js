@@ -5,7 +5,6 @@ const { Portfolio } = require('./Portfolio')
 
 const fetchWebApiQuote = async url => {
   try {
-    // const utcOffsetNumber = process.env.UTC_OFFSET
     const myJson = await axios.get(url)
     const myJsonData = myJson.data
     return {

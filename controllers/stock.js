@@ -66,20 +66,3 @@ exports.getSearchWebApi = async (req, res) => {
   }
 }
 
-//     // console.log(chartData)
-//     // res.send(chartData)
-//     // res.render('home', {
-//     //   nameUpperCase: curValue,
-//     //   chartValue: chartData
-//     // })
-//   })
-//
-
-//       // res.render('home', {
-//       //   nameUpperCase: curValue,
-//       //   chartData: chartData
-//       // })
-//       // res.render({
-//       //   symbol: chartData
-//       // })
-//       return res.send(chartData)

@@ -5,7 +5,6 @@ exports.getBuySellTicket = async (req, res) => {
   const apiTokenQuote = process.env.API_TOKEN_QUOTE
   const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`
   const data = await db.fetchWebApiQuote(url)
-  // console.log(data)
   res.render('buysell', {
     curValue: curValue,
     data: data

@@ -17,15 +17,8 @@ const listRoute = require('./routes/list')
 const main = require('./routes/main')
 const routesError = require('./routes/error')
 // const helpers = require('./helpers')
-// const moment = require('moment')
 require('./startup/db')()
 const port = process.env.PORT
-
-// NEED  to implement HTTPS mode
-// const privateKey = fs.readFileSync('server.key')
-// const certificate = fs.readFileSync('server.cert')
-
-// console.log(process.env.NODE_ENV)
 
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -36,7 +29,7 @@ app.use(bodyParser.json())
 // //this is the folder(by default views folder) where we keep our hbs files
 // app.set('view engine', 'hbs');
 
-// Handlebars Middleware
+// Handlebars Middleware - express-handlebars
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
   extname: 'hbs'
@@ -59,9 +52,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   next();
 // });
 
-// const stamp = moment().endOf('day').fromNow()
-
-// console.log(stamp)
 app.use('/portfolio', portfolioRoute)
 app.use('/stock', stockRoute)
 app.use('/list', listRoute)
