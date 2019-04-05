@@ -1,4 +1,5 @@
 const axios = require('axios')
+const moment = require('moment')
 const { List } = require('./List')
 
 const saveToDbList = async arg => {
@@ -66,7 +67,9 @@ const fetchDataFromDbList = async (query, projection) => {
       low: parseFloat(item.low), // low
       price: parseFloat(item.price), // price
       volume: parseFloat(item.volume), // volume
-      latestTrdDay: new Date(parseFloat(item.latestTrdDay)).toDateString(), //latestTrdDay
+      // latestTrdDay: new Date(parseFloat(item.latestTrdDay)).toDateString(), //latestTrdDay
+      latestTrdDay: moment(parseFloat(item.latestTrdDay)).utcOffset(-240).format('lll'),
+      // latestTrdDay: moment(parseFloat(item.latestTrdDay)).format('lll'),
       previousClose: parseFloat(item.previousClose), //previousClose
       change: parseFloat(item.change),
       changePercent: parseFloat(item.changePercent) //previousClose
