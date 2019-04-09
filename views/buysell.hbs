@@ -6,14 +6,16 @@
       <div class="card">
         <div class="card-body">
           <br>
-          {{!-- <h5 class="card-title"><strong>ASK: </strong>{{data}}</h5> --}}
-          <h5 class="card-title"><strong>ASK: </strong>{{data.latestPrice}}</h5>
+          <h5 id="askPrice" class="card-title"><strong>ASK: </strong>{{data.latestPrice}}</h5>
           <br>
-          {{!-- <p class="card-text"><strong>ASK:</strong></p> --}}
           <label for="qtyAsk">Qty: </label>
           <input type="number" id="qtyAsk" name="qtyAsk" placeholder="0">
           <br><br>
-          <a href="#" class="btn btn-primary">Buy</a>
+          <!-- Button trigger modal -->
+          <button type="button" id="buyTicket" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+            Buy
+          </button>
+          {{!-- <a href="#" class="btn btn-primary">Buy</a> --}}
         </div>
       </div>
       <br>
@@ -22,11 +24,14 @@
           <br>
           <h5 class="card-title"><strong>BID: </strong>{{data.latestPrice}}</h5>
           <br>
-          {{!-- <p class="card-text"><strong>BID:</strong></p> --}}
           <label for="qtyBid">Qty: </label>
           <input type="number" id="qtyBid" name="qtyBid" placeholder="0">
           <br><br>
-          <a href="#" class="btn btn-primary">Sell</a>
+            <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+            Sell
+          </button>
+          {{!-- <a href="#" class="btn btn-primary">Sell</a> --}}
         </div>
       </div>
     </div>
@@ -34,7 +39,7 @@
       <div class="card">
         <div class="card-body">
           <p class="card-text"><strong>Latest Update: {{data.latestUpdate}} </strong></p>
-          <h5><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
+          <h5 id="nameSymbol"><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
           <h5>Latest Price: {{data.latestPrice}} </h5>
           <h5>Price Change: {{data.change}} </h5>
           <h5>High: {{data.high}} </h5>
@@ -49,7 +54,6 @@
     <div class="col-sm-6 col-md-4">
       <div class="card">
         <div class="card-body">
-          {{!-- <p class="card-text"><strong>BID:</strong></p> --}}
           <h5>Account Holder: <strong>{{u.name}}</strong></h5>
           <br>
           <h5>Cash: ${{u.cash}}</h5>
@@ -65,3 +69,18 @@
   </div>
 
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div id="modalContent" class="modal-content">
+      
+    </div>
+  </div>
+</div>
+
+
+<script src="/JS/modal.js"></script>
