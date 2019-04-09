@@ -1,4 +1,8 @@
-// const qtyAskValue = document.querySelector("#qtyAsk").value.trim()
+// const show = document.getElementById("modalContent")
+// const qtyAskValueById = document.getElementById("qtyAsk").value.trim()
+// // const qtyAskValue = parseInt(document.getElementById("qtyAsk").value.trim())
+// const qtyAskValue = document.getElementById("qtyAsk").value.trim()
+
 const buyTicket = document.querySelector("#buyTicket")
 // const askPriceValue = document.querySelector("#askPrice").value
 // const nameSymbolValue = document.querySelector("#nameSymbol").value
@@ -9,11 +13,11 @@ buyTicket.addEventListener("click", getModalInfo)
 class UI {
   constructor() {
     this.show = document.querySelector("#modalContent")
-    this.qtyAskValue = document.querySelector("#qtyAsk").value.trim()
-    
   }
   showData() {
-    // console.log(data)
+    // const show = document.querySelector("#modalContent")
+    const qtyAskValue = document.querySelector("#qtyAsk").value.trim()
+
     this.show.innerHTML = `<div class="modal-header">
       <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -21,7 +25,7 @@ class UI {
       </button>
       </div>
       <div class="modal-body">
-      <p>You are placing an order for ${this.qtyAskValue} shares of  at</p>
+      <p>You are placing an order for ${qtyAskValue} shares of  at</p>
       </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
