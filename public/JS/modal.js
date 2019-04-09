@@ -17,6 +17,8 @@ class UI {
   showData() {
     // const show = document.querySelector("#modalContent")
     const qtyAskValue = document.querySelector("#qtyAsk").value.trim()
+    const askPriceValue = document.querySelector("#askPrice").value
+    const nameSymbolValue = document.querySelector("#nameSymbol").value
 
     this.show.innerHTML = `<div class="modal-header">
       <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
@@ -25,11 +27,11 @@ class UI {
       </button>
       </div>
       <div class="modal-body">
-      <p>You are placing an order for ${qtyAskValue} shares of  at</p>
+      <p>You are placing an order for ${nameSymbolValue} - ${qtyAskValue} shares at $${askPriceValue}. Please Confirm to send the order.</p>
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary">Save changes</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-primary">Confirm</button>
       </div>`
   }
 }

@@ -6,7 +6,8 @@
       <div class="card">
         <div class="card-body">
           <br>
-          <h5 id="askPrice" class="card-title"><strong>ASK: </strong>{{data.latestPrice}}</h5>
+          <h5 class="card-title"><strong>ASK: </strong>{{data.latestPrice}}</h5>
+          <input type="hidden" id="askPrice" name="askPrice" value="{{data.latestPrice}}">
           <br>
           <label for="qtyAsk">Qty: </label>
           <input type="number" id="qtyAsk" name="qtyAsk" placeholder="0">
@@ -40,7 +41,8 @@
       <div class="card">
         <div class="card-body">
           <p class="card-text"><strong>Latest Update: {{data.latestUpdate}} </strong></p>
-          <h5 id="nameSymbol"><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
+          <h5><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
+           <input type="hidden" id="nameSymbol" name="nameSymbol" value="{{data.companyName}} symbol {{data.symbol}}">
           <h5>Latest Price: {{data.latestPrice}} </h5>
           <h5>Price Change: {{data.change}} </h5>
           <h5>High: {{data.high}} </h5>
