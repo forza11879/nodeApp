@@ -1,6 +1,6 @@
 <div class="card-body">
 
-  <div class="row">
+  <div class="row jsBestBtnList" >
     <div class="col-sm-6 col-md-4">
 
       <div class="card">
@@ -14,7 +14,7 @@
           <br><br>
           <!-- Button trigger modal -->
           <button type="button" id="buyTicket" class="btn btn-primary" data-toggle="modal"
-            data-target="#exampleModalCenter">
+            data-target="#exampleModalCenter" data-fetcher="buy">
             Buy
           </button>
           {{!-- <a href="#" class="btn btn-primary">Buy</a> --}}
@@ -30,7 +30,7 @@
           <input type="number" id="qtyBid" name="qtyBid" placeholder="0">
           <br><br>
           <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+          <button type="button" id="sellTicket" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-fetcher="sell">
             Sell
           </button>
           {{!-- <a href="#" class="btn btn-primary">Sell</a> --}}
