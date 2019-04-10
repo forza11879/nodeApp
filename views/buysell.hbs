@@ -1,6 +1,6 @@
 <div class="card-body">
 
-  <div class="row jsBestBtnList" >
+  <div class="row jsBtnList" >
     <div class="col-sm-6 col-md-4">
 
       <div class="card">
@@ -10,7 +10,7 @@
           <input type="hidden" id="askPrice" name="askPrice" value="{{data.latestPrice}}">
           <br>
           <label for="qtyAsk">Qty: </label>
-          <input type="number" id="qtyAsk" name="qtyAsk" placeholder="0">
+          <input type="number" id="qtyAsk" name="qtyAsk" placeholder="0" value="0">
           <br><br>
           <!-- Button trigger modal -->
           <button type="button" id="buyTicket" class="btn btn-primary" data-toggle="modal"
@@ -25,9 +25,10 @@
         <div class="card-body">
           <br>
           <h5 class="card-title"><strong>BID: </strong>{{data.latestPrice}}</h5>
+           <input type="hidden" id="bidPrice" name="bidPrice" value="{{data.latestPrice}}">
           <br>
           <label for="qtyBid">Qty: </label>
-          <input type="number" id="qtyBid" name="qtyBid" placeholder="0">
+          <input type="number" id="qtyBid" name="qtyBid" placeholder="0" value="0">
           <br><br>
           <!-- Button trigger modal -->
           <button type="button" id="sellTicket" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-fetcher="sell">
@@ -42,7 +43,7 @@
         <div class="card-body">
           <p class="card-text"><strong>Latest Update: {{data.latestUpdate}} </strong></p>
           <h5><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
-           <input type="hidden" id="nameSymbol" name="nameSymbol" value="{{data.companyName}} symbol {{data.symbol}}">
+           <input type="hidden" id="nameSymbol" name="nameSymbol" value="{{data.companyName}} - symbol {{data.symbol}}">
           <h5>Latest Price: {{data.latestPrice}} </h5>
           <h5>Price Change: {{data.change}} </h5>
           <h5>High: {{data.high}} </h5>

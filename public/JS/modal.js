@@ -1,4 +1,4 @@
-const buySellTicket = document.querySelector(".jsBestBtnList")
+const buySellTicket = document.querySelector(".jsBtnList")
 buySellTicket.addEventListener("click", getModalInfo)
 
 class UI {
@@ -6,6 +6,12 @@ class UI {
     this.show = document.querySelector("#modalContent")
   }
   showData(e) {
+    let qtyAskValue = document.querySelector("#qtyAsk").value.trim()
+    let qtyBidValue = document.querySelector("#qtyBid").value.trim()
+    let askPriceValue = document.querySelector("#askPrice").value
+    let bidPriceValue = document.querySelector("#bidPrice").value
+    const nameSymbolValue = document.querySelector("#nameSymbol").value
+
     const btnObject = {
       buy: 'Buy',
       sell: 'Sell'
@@ -13,9 +19,7 @@ class UI {
     const target = e.target
     const arg = btnObject[target.dataset.fetcher]
 
-    const qtyAskValue = document.querySelector("#qtyAsk").value.trim()
-    const askPriceValue = document.querySelector("#askPrice").value
-    const nameSymbolValue = document.querySelector("#nameSymbol").value
+    if (arg !== 'Buy') (qtyAskValue = qtyBidValue) && (askPriceValue = bidPriceValue)
 
     this.show.innerHTML = `<div class="modal-header">
       <h5 class="modal-title" id="exampleModalCenterTitle">${arg} order</h5>
