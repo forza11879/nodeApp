@@ -8,12 +8,13 @@ const ParentSchemaSymbolList = new mongoose.Schema({
     uppercase: true,
     required: 'Please enter a valid symbol, min 1 character'
   },
+  price: { type: mongoose.Types.Decimal128 },
   qty: Number,
-  avgPrice: { type: mongoose.Types.Decimal128 },
+  type: String,
   date: {
     type: Date,
     default: Date.now
   }
 })
 
-module.exports.Portfolio = mongoose.model('Portfolio', ParentSchemaSymbolList)
+module.exports.Transaction = mongoose.model('Transaction', ParentSchemaSymbolList)

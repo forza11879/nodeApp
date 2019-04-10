@@ -28,7 +28,7 @@ class UI {
       </button>
       </div>
       <div class="modal-body">
-      <p>You are placing a ${arg} order for ${qtyAskValue} shares of ${nameSymbolValue} at $${askPriceValue}. Please Confirm to send the order.</p>
+      <p>You are placing a ${arg} order for ${qtyAskValue} shares of ${nameSymbolValue} at $${askPriceValue} per share. Please Confirm to send the order.</p>
       </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
