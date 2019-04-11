@@ -8,32 +8,25 @@ function isEmpty(obj) {
 
 const fetchQtyPortfolio = async (arg) => {
   try {
+    const orderType = arg.orderType
+    let qty = arg.qty
+
     const query = { symbol: arg.symbol }
     const projection = { _id: 0 }
 
-    const orderType = arg.orderType
-    console.log('order type:' + orderType)// Sell
-
-    let qty = arg.qty
-    console.log('new qty:' + qty)// 300
-
-    let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")
-    console.log('old qty:' + typeof oldQty)// object
-    console.log('old qty:' + oldQty.toString()) // {qtyPorfolio: 500}
+    const oldQty = await Portfolio.findOne(query, projection).select("qtyPorfolio")
+    //findOne returns teh Object{} without the Array
+    console.log('old qty:' + typeof oldQty)
     console.log('old qty:' + JSON.stringify(oldQty))
 
-    if (isEmpty(oldQty)) {// false
+    if (isEmpty(oldQty)) {
       // Object is empty (Would return true in this example)
-      console.log('new qty:' + qty)
       return qty
     } else {
       // Object is NOT empty
       if (orderType === 'Sell') qty = Math.abs(qty) * -1
-      console.log('new qty after minus:' + qty)// -300
-      const { qtyPorfolio } = oldQty//???
-      console.log('qtyPorfolio :' + qtyPorfolio)// does NOT print
-      console.log('qtyPorfolio :' + typeof qtyPorfolio)// does NOT print
-      return newQty = qtyPorfolio + qty// ???
+      const { qtyPorfolio } = oldQty
+      return newQty = qtyPorfolio + qty
     }
   } catch (ex) {
     console.log(`fetchQtyPortfolio error: ${ex}`)

@@ -13,31 +13,23 @@ function isEmpty(obj) {
 
 const fetchQtyPortfolio = async (arg) => {
   try {
+    const orderType = arg.orderType
+    let qty = arg.qty
+
     const query = { symbol: arg.symbol }//Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const projection = { _id: 0 }//	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
-    const orderType = arg.orderType
-    console.log('order type:' + orderType)
-    let qty = arg.qty
-    console.log('new qty:' + qty)
 
-    let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")
+    // let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")//find returns the Object in the Array [{}]
+    const oldQty = await Portfolio.findOne(query, projection).select("qtyPorfolio")//findOne returns teh Object{} without the Array
     console.log('old qty:' + typeof oldQty)
     console.log('old qty:' + JSON.stringify(oldQty))
 
-    if (isEmpty(oldQty)) {
-      // Object is empty (Would return true in this example)
-      console.log('new qty:' + qty)
-      return qty
-    } else {
-      // Object is NOT empty
-      if (orderType === 'Sell') qty = Math.abs(qty) * -1
-      console.log('new qty after minus:' + qty)
-      const { qtyPorfolio } = oldQty[0].qtyPorfolio
-      console.log('qtyPorfolio :' + qtyPorfolio)
-      console.log('qtyPorfolio :' + typeof qtyPorfolio)
-      console.log(process.version)
-      return newQty = qtyPorfolio + qty
-    }
+    if (isEmpty(oldQty)) return qty// Object is empty (Would return true in this example)
+
+    // Object is NOT empty
+    if (orderType === 'Sell') qty = Math.abs(qty) * -1
+    const { qtyPorfolio } = oldQty
+    return newQty = qtyPorfolio + qty
   } catch (ex) {
     console.log(`fetchQtyPortfolio error: ${ex}`)
   }
