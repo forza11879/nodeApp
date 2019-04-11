@@ -1,9 +1,19 @@
 const db = require('../db/models/Transaction')
 
 exports.postAddTransaction = async (req, res) => {
-   const arg = req.body
+  const curValue = req.body.symbol
+  const arg = req.body
+  const apiTokenQuote = process.env.API_TOKEN_QUOTE
+  
+  const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`
+  
   await db.createTransaction(arg)
-  res.render('home')
+  const data = await db.fetchWebApiQuote(url)
+
+  res.render('buysell', {
+    curValue: curValue,
+    data: data
+  })
 }
 
 
