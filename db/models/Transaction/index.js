@@ -1,6 +1,8 @@
 const axios = require('axios')
 const moment = require('moment')
 
+const portfolio = require('../Portfolio')
+const db = require('../db/models/Portfolio')
 const { Transaction } = require('./Transaction')
 
 const createTransaction = async arg => {

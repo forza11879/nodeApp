@@ -3,6 +3,33 @@ const moment = require('moment')
 
 const { Portfolio } = require('./Portfolio')
 
+const addToPortfolio = async (arg, avgPrice, qty) => {
+  try {
+    const stockTransaction = new Portfolio({
+      symbol: arg.symbol,
+      price: arg.price,
+      qty: arg.qty,
+      orderType: arg.orderType
+    })
+
+    const query = { symbol: stockTransaction.symbol }
+    const update = {
+      symbol: stockTransaction.symbol,
+      price: stockTransaction.price,
+      qty: stockTransaction.qty,
+      orderType: stockTransaction.orderType
+    }
+    // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+    // upsert: bool - creates the object if it doesn't exist. defaults to false.
+    const options = { upsert: true, new: true }
+
+    const stockPortfolioResult = await Portfolio.findOneAndUpdate(query, update, options)
+    console.log("Saved portfolio to db Portfolio", stockPortfolioResult.symbol)
+  } catch (ex) {
+    console.log(`addToPortfolio error: ${ex}`)
+  }
+}
+
 const fetchWebApiQuote = async url => {
   try {
     const myJson = await axios.get(url)
@@ -26,5 +53,6 @@ const fetchWebApiQuote = async url => {
 }
 
 module.exports = {
-  fetchWebApiQuote
+  fetchWebApiQuote,
+  addToPortfolio
 }
