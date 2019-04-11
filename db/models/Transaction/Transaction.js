@@ -7,7 +7,7 @@ const ParentSchemaSymbolList = new mongoose.Schema({
     type: String,
     required: true,
     lowercase: true,
-    enum: ['buy', 'sell']
+    enum: ['Buy', 'Sell']
   },
   date: {
     type: Date,

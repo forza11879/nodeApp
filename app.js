@@ -11,6 +11,7 @@ const app = express()
 const bodyParser = require('body-parser')
 // const hbs = require('hbs');
 const exphbs = require('express-handlebars')
+const transactionRoute = require('./routes/transaction')
 const portfolioRoute = require('./routes/portfolio')
 const stockRoute = require('./routes/stock')
 const listRoute = require('./routes/list')
@@ -52,6 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   next();
 // });
 
+app.use('/transaction', transactionRoute)
 app.use('/portfolio', portfolioRoute)
 app.use('/stock', stockRoute)
 app.use('/list', listRoute)

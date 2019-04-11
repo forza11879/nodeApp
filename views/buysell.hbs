@@ -43,7 +43,8 @@
         <div class="card-body">
           <p class="card-text"><strong>Latest Update: {{data.latestUpdate}} </strong></p>
           <h5><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
-           <input type="hidden" id="nameSymbol" name="nameSymbol" value="{{data.companyName}} - symbol {{data.symbol}}">
+           <input type="hidden" id="companyName" name="companyName" value="{{data.companyName}}">
+           <input type="hidden" id="companySymbol" name="companySymbol" value="{{data.symbol}}">
           <h5>Latest Price: {{data.latestPrice}} </h5>
           <h5>Price Change: {{data.change}} </h5>
           <h5>High: {{data.high}} </h5>

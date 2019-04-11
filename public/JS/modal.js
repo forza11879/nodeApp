@@ -10,7 +10,8 @@ class UI {
     let qtyBidValue = document.querySelector("#qtyBid").value.trim()
     let askPriceValue = document.querySelector("#askPrice").value
     let bidPriceValue = document.querySelector("#bidPrice").value
-    const nameSymbolValue = document.querySelector("#nameSymbol").value
+    const companyNameValue = document.querySelector("#companyName").value
+    const companySymbolValue = document.querySelector("#companySymbol").value
 
     const btnObject = {
       buy: 'Buy',
@@ -21,19 +22,26 @@ class UI {
 
     if (arg !== 'Buy') (qtyAskValue = qtyBidValue) && (askPriceValue = bidPriceValue)
 
-    this.show.innerHTML = `<div class="modal-header">
-      <h5 class="modal-title" id="exampleModalCenterTitle">${arg} order</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      </div>
-      <div class="modal-body">
-      <p>You are placing a ${arg} order for ${qtyAskValue} shares of ${nameSymbolValue} at $${askPriceValue} per share. Please Confirm to send the order.</p>
-      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-      <button type="button" class="btn btn-primary">Confirm</button>
-      </div>`
+    this.show.innerHTML = `<form action="#" method="post">
+    <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">${arg} order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body">
+          <p>You are placing a ${arg} order for ${qtyAskValue} shares of ${companyNameValue} - symbol ${companySymbolValue} at $${askPriceValue} per share. Please Confirm to send the order.</p>
+          </div>
+          <div class="modal-footer">
+          <input type="hidden" name="symbol" value="${companySymbolValue}"></input>
+          <input type="hidden" name="price" value="${askPriceValue}"></input>
+          <input type="hidden" name="qty" value="${qtyAskValue}"></input>
+          <input type="hidden" name="orderType" value="${arg}"></input>
+          <input type="hidden" name="orderType" value="${arg}"></input>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+          </div>
+    </form>`
   }
 }
 const ui = new UI()
