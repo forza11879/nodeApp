@@ -3,21 +3,33 @@ const moment = require('moment')
 
 const { Portfolio } = require('./Portfolio')
 
-const addToPortfolio = async (arg, avgPrice, qty) => {
+const fetchQtyPortfolio = async (arg) => {
+  const query = { symbol: arg.symbol }//Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+  const projection = { _id: 0 }//	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+  const orderType = arg.orderType
+  console.log('order type:' + orderType)
+  const qty = arg.qty
+  console.log('new qty:' + qty)
+  
+  const oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")
+  console.log('old qty:' + oldQty)
+  if (!oldQty) oldQty = 0
+  if(orderType == 'Sell') qty = -1 * qty
+  console.log('new qty after minus:' + qty)
+  return newQty = oldQty + qty
+}
+
+const addToPortfolio = async (arg, qtyPorfolio) => {
   try {
-    const stockTransaction = new Portfolio({
+    const stockPortfolio = new Portfolio({
       symbol: arg.symbol,
-      price: arg.price,
-      qty: arg.qty,
-      orderType: arg.orderType
+      qtyPorfolio: qtyPorfolio
     })
 
-    const query = { symbol: stockTransaction.symbol }
+    const query = { symbol: stockPortfolio.symbol }
     const update = {
-      symbol: stockTransaction.symbol,
-      price: stockTransaction.price,
-      qty: stockTransaction.qty,
-      orderType: stockTransaction.orderType
+      symbol: stockPortfolio.symbol,
+      qtyPorfolio: stockPortfolio.qtyPorfolio,
     }
     // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
@@ -54,5 +66,6 @@ const fetchWebApiQuote = async url => {
 
 module.exports = {
   fetchWebApiQuote,
-  addToPortfolio
+  addToPortfolio,
+  fetchQtyPortfolio
 }

@@ -1,4 +1,5 @@
 const db = require('../db/models/Transaction')
+const portfolio = require('../db/models/Portfolio')
 
 exports.postAddTransaction = async (req, res) => {
   const curValue = req.body.symbol
@@ -7,7 +8,10 @@ exports.postAddTransaction = async (req, res) => {
 
   const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`
 
-  await db.createTransaction(arg)
+  const qtyPorfolio = await portfolio.fetchQtyPortfolio(arg)
+  console.log('quantity portfolio' + qtyPorfolio)
+ 
+  await db.createTransaction(arg, qtyPorfolio)
   const data = await db.fetchWebApiQuote(url)
 
   res.render('buysell', {

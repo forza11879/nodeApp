@@ -2,10 +2,9 @@ const axios = require('axios')
 const moment = require('moment')
 
 const portfolio = require('../Portfolio')
-const db = require('../db/models/Portfolio')
 const { Transaction } = require('./Transaction')
 
-const createTransaction = async arg => {
+const createTransaction = async (arg, qtyPorfolio) => {
   try {
     const stockTransaction = new Transaction({
       symbol: arg.symbol,
@@ -15,6 +14,8 @@ const createTransaction = async arg => {
     })
 
     const stockTransactionResult = await stockTransaction.save()
+    //verify if you need await 
+    await portfolio.addToPortfolio(arg, qtyPorfolio)
 
     console.log("Saved transaction to db Transaction", stockTransactionResult.symbol)
   } catch (ex) {
