@@ -9,7 +9,7 @@ exports.postAddTransaction = async (req, res) => {
   const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`
 
   const qtyPorfolio = await portfolio.fetchQtyPortfolio(arg)
-  console.log('quantity portfolio' + qtyPorfolio)
+  console.log('quantity portfolio ' + qtyPorfolio)
  
   await db.createTransaction(arg, qtyPorfolio)
   const data = await db.fetchWebApiQuote(url)
