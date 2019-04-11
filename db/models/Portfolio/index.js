@@ -14,7 +14,7 @@ function isEmpty(obj) {
 const fetchQtyPortfolio = async (arg) => {
   try {
     const orderType = arg.orderType
-    let qty = arg.qty
+    let qty = parseInt(arg.qty)
 
     const query = { symbol: arg.symbol }//Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const projection = { _id: 0 }//	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
@@ -29,6 +29,7 @@ const fetchQtyPortfolio = async (arg) => {
     // Object is NOT empty
     if (orderType === 'Sell') qty = Math.abs(qty) * -1
     const { qtyPorfolio } = oldQty
+    console.log('old qty:' + JSON.stringify(qtyPorfolio))
     return newQty = qtyPorfolio + qty
   } catch (ex) {
     console.log(`fetchQtyPortfolio error: ${ex}`)
