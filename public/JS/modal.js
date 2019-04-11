@@ -22,7 +22,7 @@ class UI {
 
     if (arg !== 'Buy') (qtyAskValue = qtyBidValue) && (askPriceValue = bidPriceValue)
 
-    this.show.innerHTML = `<form action="#" method="post">
+    this.show.innerHTML = `<form action="/transaction/add" method="post">
     <div class="modal-header">
           <h5 class="modal-title" id="exampleModalCenterTitle">${arg} order</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -37,9 +37,8 @@ class UI {
           <input type="hidden" name="price" value="${askPriceValue}"></input>
           <input type="hidden" name="qty" value="${qtyAskValue}"></input>
           <input type="hidden" name="orderType" value="${arg}"></input>
-          <input type="hidden" name="orderType" value="${arg}"></input>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
           </div>
     </form>`
   }
