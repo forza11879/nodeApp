@@ -2,6 +2,8 @@ const axios = require('axios')
 const moment = require('moment')
 
 const portfolio = require('../Portfolio')
+const user = require('../User')
+
 const { Transaction } = require('./Transaction')
 
 const createTransaction = async arg => {
@@ -15,10 +17,13 @@ const createTransaction = async arg => {
 
     const stockTransactionResult = await stockTransaction.save()
 
+    const cash = await user.fetchCash(arg)
+    await user.updateToUser(arg, cash)
+
     const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg)
     console.log('quantity portfolio ' + qtyPortfolio)
     //verify if you need await 
-    await portfolio.addToPortfolio(arg, qtyPortfolio)
+    await portfolio.updateToPortfolio(arg, qtyPortfolio)
 
     console.log("Saved transaction to db Transaction", stockTransactionResult.symbol)
   } catch (ex) {

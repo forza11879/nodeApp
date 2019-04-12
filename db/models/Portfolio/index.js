@@ -36,7 +36,7 @@ const fetchQtyPortfolio = async (arg) => {
   }
 }
 
-const addToPortfolio = async (arg, qtyPortfolio) => {
+const updateToPortfolio = async (arg, qtyPortfolio) => {
   try {
     const stockPortfolio = new Portfolio({
       symbol: arg.symbol,
@@ -83,6 +83,6 @@ const fetchWebApiQuote = async url => {
 
 module.exports = {
   fetchWebApiQuote,
-  addToPortfolio,
+  updateToPortfolio,
   fetchQtyPortfolio
 }
