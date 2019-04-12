@@ -13,9 +13,6 @@ const fetchCash = async arg => {
 
     // let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")//find returns the Object in the Array [{}]
     const oldCash = await User.findOne(query, projection).select("cash")//findOne returns teh Object{} without the Array
-    // const oldCashParsed = oldCash.map(item => ({
-    //   cash: parseFloat(item.cash)
-    // }))
     console.log('old cash:' + typeof oldCash)
     console.log('old cash:' + JSON.stringify(oldCash))
 
@@ -23,8 +20,8 @@ const fetchCash = async arg => {
     const { cash } = oldCash
     console.log('destructor cash:' + JSON.stringify(cash))
     // console.log('ParseFloat cash:' + JSON.stringify(parseFloat(cash)))
-    // return newCash = parseFloat(cash) - transactionAmount
-    return newCash = cash - transactionAmount
+    return newCash = parseFloat(cash) - transactionAmount
+    // return newCash = cash - transactionAmount
   } catch (ex) {
     console.log(`fetchCash error: ${ex}`)
   }

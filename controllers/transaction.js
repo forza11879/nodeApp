@@ -1,4 +1,5 @@
 const db = require('../db/models/Transaction')
+const user = require('../db/models/User')
 
 exports.postAddTransaction = async (req, res) => {
   const curValue = req.body.symbol
@@ -10,6 +11,8 @@ exports.postAddTransaction = async (req, res) => {
   console.log('postAddTRansaction userId ' + arg.userId)
   await db.createTransaction(arg)
   const data = await db.fetchWebApiQuote(url)
+
+  // await user.fetchUser(arg)
 
   res.render('buysell', {
     data: data

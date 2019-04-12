@@ -14,17 +14,17 @@ const createTransaction = async arg => {
       qty: arg.qty,
       orderType: arg.orderType
     })
-
     const stockTransactionResult = await stockTransaction.save()
 
+    // console.log('createTransaction cash:' + typeof cash)
+    // console.log('createTransaction cash:' + JSON.stringify(cash))
+    // console.log('createTransaction cash:' + cash.toString())
+
     const cash = await user.fetchCash(arg)
-    console.log('createTransaction cash:' + typeof cash)
-    console.log('createTransaction cash:' + JSON.stringify(cash))
-    console.log('createTransaction cash:' + cash.toString())
     await user.updateToUser(arg, cash)
+    
 
     const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg)
-    console.log('quantity portfolio ' + qtyPortfolio)
     //verify if you need await 
     await portfolio.updateToPortfolio(arg, qtyPortfolio)
 
