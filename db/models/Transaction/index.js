@@ -18,6 +18,9 @@ const createTransaction = async arg => {
     const stockTransactionResult = await stockTransaction.save()
 
     const cash = await user.fetchCash(arg)
+    console.log('createTransaction cash:' + typeof cash)
+    console.log('createTransaction cash:' + JSON.stringify(cash))
+    console.log('createTransaction cash:' + cash.toString())
     await user.updateToUser(arg, cash)
 
     const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg)

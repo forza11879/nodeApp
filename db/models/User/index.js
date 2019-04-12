@@ -21,7 +21,9 @@ const fetchCash = async arg => {
 
     if (orderType === 'Sell') transactionAmount = Math.abs(transactionAmount) * -1//converting positive Number to Negative Number in JavaScript
     const { cash } = oldCash
-    console.log('old cash:' + JSON.stringify(cash))
+    console.log('destructor cash:' + JSON.stringify(cash))
+    // console.log('ParseFloat cash:' + JSON.stringify(parseFloat(cash)))
+    // return newCash = parseFloat(cash) - transactionAmount
     return newCash = cash - transactionAmount
   } catch (ex) {
     console.log(`fetchCash error: ${ex}`)
@@ -31,11 +33,11 @@ const fetchCash = async arg => {
 const updateToUser = async (arg, cash) => {
   try {
     const stockUser = new User({
-      id: arg.userId,
+      _id: arg.userId,
       cash: cash
     })
 
-    const query = { _id: stockUser.id }
+    const query = { _id: stockUser._id }
     const update = {
       cash: stockUser.cash
     }
