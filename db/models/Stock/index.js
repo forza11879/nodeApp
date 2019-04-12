@@ -55,6 +55,7 @@ const creatStock = async (curValue, webApiData) => {
 const fetchDb = async (query, projection) => {
   try {
     const chartData = await Stock.findOne(query, projection).sort({ date: -1 })
+    console.log('chartData in services:' + JSON.stringify(chartData))
     return chartData.data.map(item => ({
       date: parseFloat(item.date),
       open: parseFloat(item.open),

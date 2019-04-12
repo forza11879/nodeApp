@@ -2,7 +2,7 @@ const axios = require('axios')
 const moment = require('moment')
 
 const portfolio = require('../Portfolio')
-const user = require('../User')
+// const user = require('../User')
 
 const { Transaction } = require('./Transaction')
 
@@ -19,10 +19,6 @@ const createTransaction = async arg => {
     // console.log('createTransaction cash:' + typeof cash)
     // console.log('createTransaction cash:' + JSON.stringify(cash))
     // console.log('createTransaction cash:' + cash.toString())
-
-    const cash = await user.fetchCash(arg)
-    await user.updateToUser(arg, cash)
-    
 
     const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg)
     //verify if you need await 

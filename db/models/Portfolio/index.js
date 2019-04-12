@@ -3,14 +3,6 @@ const moment = require('moment')
 
 const { Portfolio } = require('./Portfolio')
 
-const isEmpty = obj => {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key))
-      return false
-  }
-  return true
-}
-
 const fetchQtyPortfolio = async (arg) => {
   try {
     const orderType = arg.orderType
@@ -24,7 +16,9 @@ const fetchQtyPortfolio = async (arg) => {
     console.log('old qty:' + typeof oldQty)
     console.log('old qty:' + JSON.stringify(oldQty))
 
-    if (isEmpty(oldQty)) return qty// Object is empty (Would return true in this example)
+    // if (isEmpty(oldQty)) return qty// Object is empty (Would return true in this example)
+    if (oldQty === null) return qty// Object is empty (Would return true in this example)
+
 
     // Object is NOT empty
     if (orderType === 'Sell') qty = Math.abs(qty) * -1//converting positive Number to Negative Number in JavaScript

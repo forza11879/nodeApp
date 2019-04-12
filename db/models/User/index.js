@@ -1,6 +1,6 @@
 const { User } = require('./User')
 
-const fetchCash = async arg => {
+const fetchCashUser = async arg => {
   try {
     const orderType = arg.orderType
     const qty = parseInt(arg.qty)
@@ -9,6 +9,7 @@ const fetchCash = async arg => {
     console.log('fetchCash function for userId:' + arg.userId)
 
     const query = { _id: arg.userId }//Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+
     const projection = { _id: 1 }//	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
     // let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")//find returns the Object in the Array [{}]
@@ -16,19 +17,27 @@ const fetchCash = async arg => {
     console.log('old cash:' + typeof oldCash)
     console.log('old cash:' + JSON.stringify(oldCash))
 
-    if (orderType === 'Sell') transactionAmount = Math.abs(transactionAmount) * -1//converting positive Number to Negative Number in JavaScript
+    if (orderType === 'Sell') transactionAmount = Math.abs(transactionAmount) * -1//
     const { cash } = oldCash
     console.log('destructor cash:' + JSON.stringify(cash))
-    // console.log('ParseFloat cash:' + JSON.stringify(parseFloat(cash)))
     return newCash = parseFloat(cash) - transactionAmount
-    // return newCash = cash - transactionAmount
+
+    // const update = {
+    //   cash: newCash
+    // }
+    // const options = { upsert: true, new: true }
+    // // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+    // // upsert: bool - creates the object if it doesn't exist. defaults to false.
+
+    // return updatedUser = await User.findOneAndUpdate(query, update, options).select("name cash equity")
   } catch (ex) {
     console.log(`fetchCash error: ${ex}`)
   }
 }
 
-const updateToUser = async (arg, cash) => {
+const updateCashToUser = async (arg, cash) => {
   try {
+    console.log('stockUserResult in services:' + JSON.stringify(cash))
     const stockUser = new User({
       _id: arg.userId,
       cash: cash
@@ -42,9 +51,13 @@ const updateToUser = async (arg, cash) => {
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
     const options = { upsert: true, new: true }
 
-    const stockUserResult = await User.findOneAndUpdate(query, update, options)
-
-    console.log("Saved user to db User", stockUserResult.name)
+    const stockUserResult = await User.findOneAndUpdate(query, update, options).select("name cash equity -_id")
+    console.log('stockUserResult in services:' + JSON.stringify(stockUserResult))
+    return {
+      name: stockUserResult.name,
+      cash: parseFloat(stockUserResult.cash),
+      equity: parseFloat(stockUserResult.equity)
+    }
   } catch (ex) {
     console.log(`updateToUser error: ${ex}`)
   }
@@ -53,6 +66,6 @@ const updateToUser = async (arg, cash) => {
 
 
 module.exports = {
-  fetchCash,
-  updateToUser
+  fetchCashUser,
+  updateCashToUser
 }

@@ -6,6 +6,7 @@ class UI {
     this.show = document.querySelector("#modalContent")
   }
   showData(e) {
+    // const userId = process.env.USER_ID
     const userId = '5cb018905f293858a48565fe'
     let qtyAskValue = document.querySelector("#qtyAsk").value.trim()
     let qtyBidValue = document.querySelector("#qtyBid").value.trim()
