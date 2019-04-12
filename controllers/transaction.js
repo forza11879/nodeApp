@@ -8,14 +8,14 @@ exports.postAddTransaction = async (req, res) => {
 
   const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`
 
-  // console.log('postAddTRansaction userId ' + arg.userId)
-  await db.createTransaction(arg)
+  
+  await db.addTransaction(arg)
 
-  const cash = await user.fetchCashUser(arg)
-  console.log('fetchCashUser:' + typeof cash)
-  console.log('fetchCashUser:' + JSON.stringify(cash))
+  const cash = await user.fetchCashDB(arg)
+  console.log('fetchCashDB:' + typeof cash)
+  console.log('fetchCashDB:' + JSON.stringify(cash))
 
-  const updatedUserData = await user.updateCashToUser(arg, cash)
+  const updatedUserData = await user.updateCashDB(arg, cash)
   console.log('updatedUserData:' + typeof updatedUserData)
   console.log('updatedUserData:' + JSON.stringify(updatedUserData))
 

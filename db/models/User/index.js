@@ -1,6 +1,6 @@
 const { User } = require('./User')
 
-const fetchCashUser = async arg => {
+const fetchCashDB = async arg => {
   try {
     const orderType = arg.orderType
     const qty = parseInt(arg.qty)
@@ -17,25 +17,16 @@ const fetchCashUser = async arg => {
     console.log('old cash:' + typeof oldCash)
     console.log('old cash:' + JSON.stringify(oldCash))
 
-    if (orderType === 'Sell') transactionAmount = Math.abs(transactionAmount) * -1//
+    if (orderType === 'Sell') transactionAmount = Math.abs(transactionAmount) * -1
     const { cash } = oldCash
     console.log('destructor cash:' + JSON.stringify(cash))
     return newCash = parseFloat(cash) - transactionAmount
-
-    // const update = {
-    //   cash: newCash
-    // }
-    // const options = { upsert: true, new: true }
-    // // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
-    // // upsert: bool - creates the object if it doesn't exist. defaults to false.
-
-    // return updatedUser = await User.findOneAndUpdate(query, update, options).select("name cash equity")
   } catch (ex) {
     console.log(`fetchCash error: ${ex}`)
   }
 }
 
-const updateCashToUser = async (arg, cash) => {
+const updateCashDB = async (arg, cash) => {
   try {
     console.log('stockUserResult in services:' + JSON.stringify(cash))
     const stockUser = new User({
@@ -63,9 +54,7 @@ const updateCashToUser = async (arg, cash) => {
   }
 }
 
-
-
 module.exports = {
-  fetchCashUser,
-  updateCashToUser
+  fetchCashDB,
+  updateCashDB
 }

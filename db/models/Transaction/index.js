@@ -6,7 +6,7 @@ const portfolio = require('../Portfolio')
 
 const { Transaction } = require('./Transaction')
 
-const createTransaction = async arg => {
+const addTransaction = async arg => {
   try {
     const stockTransaction = new Transaction({
       symbol: arg.symbol,
@@ -18,8 +18,7 @@ const createTransaction = async arg => {
 
     // console.log('createTransaction cash:' + typeof cash)
     // console.log('createTransaction cash:' + JSON.stringify(cash))
-    // console.log('createTransaction cash:' + cash.toString())
-
+ 
     const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg)
     //verify if you need await 
     await portfolio.updateToPortfolio(arg, qtyPortfolio)
@@ -53,6 +52,6 @@ const fetchWebApiQuote = async url => {
 }
 
 module.exports = {
-  createTransaction,
+  addTransaction,
   fetchWebApiQuote
 }
