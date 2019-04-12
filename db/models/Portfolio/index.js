@@ -3,8 +3,8 @@ const moment = require('moment')
 
 const { Portfolio } = require('./Portfolio')
 
-function isEmpty(obj) {
-  for (var key in obj) {
+const isEmpty = obj => {
+  for (let key in obj) {
     if (obj.hasOwnProperty(key))
       return false
   }
@@ -20,33 +20,33 @@ const fetchQtyPortfolio = async (arg) => {
     const projection = { _id: 0 }//	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
     // let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")//find returns the Object in the Array [{}]
-    const oldQty = await Portfolio.findOne(query, projection).select("qtyPorfolio")//findOne returns teh Object{} without the Array
+    const oldQty = await Portfolio.findOne(query, projection).select("qtyPortfolio")//findOne returns teh Object{} without the Array
     console.log('old qty:' + typeof oldQty)
     console.log('old qty:' + JSON.stringify(oldQty))
 
     if (isEmpty(oldQty)) return qty// Object is empty (Would return true in this example)
 
     // Object is NOT empty
-    if (orderType === 'Sell') qty = Math.abs(qty) * -1
-    const { qtyPorfolio } = oldQty
-    console.log('old qty:' + JSON.stringify(qtyPorfolio))
-    return newQty = qtyPorfolio + qty
+    if (orderType === 'Sell') qty = Math.abs(qty) * -1//converting positive Number to Negative Number in JavaScript
+    const { qtyPortfolio } = oldQty
+    console.log('old qty:' + JSON.stringify(qtyPortfolio))
+    return newQty = qtyPortfolio + qty
   } catch (ex) {
     console.log(`fetchQtyPortfolio error: ${ex}`)
   }
 }
 
-const addToPortfolio = async (arg, qtyPorfolio) => {
+const addToPortfolio = async (arg, qtyPortfolio) => {
   try {
     const stockPortfolio = new Portfolio({
       symbol: arg.symbol,
-      qtyPorfolio: qtyPorfolio
+      qtyPortfolio: qtyPortfolio
     })
 
     const query = { symbol: stockPortfolio.symbol }
     const update = {
       symbol: stockPortfolio.symbol,
-      qtyPorfolio: stockPortfolio.qtyPorfolio,
+      qtyPortfolio: stockPortfolio.qtyPortfolio,
     }
     // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.

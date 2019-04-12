@@ -73,7 +73,7 @@ const dbSearchApi = async curValueDbSearch => {
     let queryRegex = `^${curValueDbSearch}`
     const query = {
       symbol: { $regex: queryRegex, $options: "i" }
-    }////Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    }//Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const searchBoxData = await Stock.find(query).limit(10)
     return searchBoxData.map(item => ({
       symbol: item.symbol
