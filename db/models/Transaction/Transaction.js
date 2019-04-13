@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const ParentSchemaSymbolList = new mongoose.Schema({
   symbol: String,
   price: { type: mongoose.Types.Decimal128 },
@@ -13,6 +13,9 @@ const ParentSchemaSymbolList = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-})
+});
 
-module.exports.Transaction = mongoose.model('Transaction', ParentSchemaSymbolList)
+module.exports.Transaction = mongoose.model(
+  'Transaction',
+  ParentSchemaSymbolList
+);

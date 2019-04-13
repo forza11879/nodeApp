@@ -1,21 +1,21 @@
-document.addEventListener("DOMContentLoaded", requestSymbolSearchList)
+document.addEventListener('DOMContentLoaded', requestSymbolSearchList);
 
-const requestSymbolList = document.querySelector("#requestSymbolList")
-const symbolTagsList = document.querySelector("#symbolTagsList")
+const requestSymbolList = document.querySelector('#requestSymbolList');
+const symbolTagsList = document.querySelector('#symbolTagsList');
 
-requestSymbolList.addEventListener("click", requestSymbolSearchList)
-symbolTagsList.addEventListener("keyup", executeEnterKey)
+requestSymbolList.addEventListener('click', requestSymbolSearchList);
+symbolTagsList.addEventListener('keyup', executeEnterKey);
 
 function executeEnterKey(event) {
   // event.preventDefault()
   if (event.keyCode === 13) {
-    requestSymbolList.click()
+    requestSymbolList.click();
   }
 }
 
 class UI {
   constructor() {
-    this.show = document.querySelector("#list")
+    this.show = document.querySelector('#list');
   }
   showData(data) {
     // console.log(data)
@@ -35,68 +35,70 @@ class UI {
               <td>${item.previousClose}</td>
               <td>${item.change}</td>
               <td>${item.changePercent}</td>
-              <td><strong><a href="/portfolio/buysell/${item.symbol}">buy/sell</a></strong></td>
+              <td><strong><a href="/portfolio/buysell/${
+                item.symbol
+              }">buy/sell</a></strong></td>
               </tr>`
       )
-      .join("")
+      .join('');
   }
 }
-const ui = new UI()
+const ui = new UI();
 //List
 function requestSymbolSearchList() {
   getDataList()
     .then(data => {
-      console.log(data)
-      ui.showData(data)
+      console.log(data);
+      ui.showData(data);
     })
-    .catch(error => console.error("Error:", error))
+    .catch(error => console.error('Error:', error));
 }
 
 function getDataList() {
-  let symbolTagsValue = symbolTagsList.value
-  let curValueSymbol = symbolTagsValue ? symbolTagsValue : "RY"
-  let url = `/list/add/${curValueSymbol}`
-  console.log(url)
-  return fetchData(url)
+  let symbolTagsValue = symbolTagsList.value;
+  let curValueSymbol = symbolTagsValue ? symbolTagsValue : 'RY';
+  let url = `/list/add/${curValueSymbol}`;
+  console.log(url);
+  return fetchData(url);
 }
 //search box
 symbolTagsList.addEventListener(
-  "input",
+  'input',
   _.debounce(() => {
-    requestSymbolSearch()
+    requestSymbolSearch();
   }, 1000)
-)
+);
 
 async function requestSymbolSearch() {
   try {
-    const dataList = await getDataSearchBox()
-    console.log(dataList)
-    $("#symbolTagsList").autocomplete({
+    const dataList = await getDataSearchBox();
+    console.log(dataList);
+    $('#symbolTagsList').autocomplete({
       source: dataList.map(item => item.symbol),
       autoFocus: true
-    })
+    });
   } catch (ex) {
-    console.log(`requestSymbolSearch error: ${ex}`)
+    console.log(`requestSymbolSearch error: ${ex}`);
   }
 }
 
 function getDataSearchBox() {
   try {
-    let curValueSymbol = symbolTagsList.value
-    let url = `/stock/websearch/${curValueSymbol}`
-    console.log(url)
-    return fetchData(url)
+    let curValueSymbol = symbolTagsList.value;
+    let url = `/stock/websearch/${curValueSymbol}`;
+    console.log(url);
+    return fetchData(url);
   } catch (ex) {
-    console.log(`getDataSearchBox error: ${ex}`)
+    console.log(`getDataSearchBox error: ${ex}`);
   }
 }
 
 async function fetchData(url) {
   try {
-    const dataResponse = await fetch(url)
-    const dataJson = await dataResponse.json()
-    return dataJson
+    const dataResponse = await fetch(url);
+    const dataJson = await dataResponse.json();
+    return dataJson;
   } catch (ex) {
-    console.log(`fetchData error: ${ex}`)
+    console.log(`fetchData error: ${ex}`);
   }
 }

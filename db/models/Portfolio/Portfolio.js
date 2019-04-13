@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const ParentSchemaSymbolList = new mongoose.Schema({
   symbol: String,
   qtyPortfolio: Number,
@@ -7,6 +7,6 @@ const ParentSchemaSymbolList = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-})
+});
 
-module.exports.Portfolio = mongoose.model('Portfolio', ParentSchemaSymbolList)
+module.exports.Portfolio = mongoose.model('Portfolio', ParentSchemaSymbolList);

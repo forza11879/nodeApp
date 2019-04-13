@@ -1,34 +1,34 @@
-document.addEventListener("DOMContentLoaded", getSymbolWebApi)
-const symbolValueCurValue = document.querySelector("#symbolValueCurValue")
-const symbolTagsChart = document.querySelector("#symbolTagsChart")
-const requestSymbolChart = document.querySelector("#requestSymbolChart")
+document.addEventListener('DOMContentLoaded', getSymbolWebApi);
+const symbolValueCurValue = document.querySelector('#symbolValueCurValue');
+const symbolTagsChart = document.querySelector('#symbolTagsChart');
+const requestSymbolChart = document.querySelector('#requestSymbolChart');
 
-requestSymbolChart.addEventListener("click", getSymbolWebApi)
-symbolTagsChart.addEventListener("keyup", executeEnterKey)
+requestSymbolChart.addEventListener('click', getSymbolWebApi);
+symbolTagsChart.addEventListener('keyup', executeEnterKey);
 
 function executeEnterKey(event) {
   // event.preventDefault()
   if (event.keyCode === 13) {
-    requestSymbolChart.click()
+    requestSymbolChart.click();
   }
 }
 
 async function getSymbolWebApi() {
-  const symbolValueCurValueValue = symbolValueCurValue.value
-  const symbolTagsChartValue = symbolTagsChart.value
+  const symbolValueCurValueValue = symbolValueCurValue.value;
+  const symbolTagsChartValue = symbolTagsChart.value;
 
   let curValueAjax = symbolTagsChartValue
     ? symbolTagsChartValue
-    : symbolValueCurValueValue
+    : symbolValueCurValueValue;
 
-  console.log(curValueAjax)
+  console.log(curValueAjax);
 
   try {
-    const response = await fetch(`/stock/app/${curValueAjax}`)
-    const data = await response.json()
+    const response = await fetch(`/stock/app/${curValueAjax}`);
+    const data = await response.json();
 
     // drawChart(data)
-    console.log(data)
+    console.log(data);
     // split the data set into ohlc and volume
     var ohlc = [],
       volume = [],
@@ -36,12 +36,12 @@ async function getSymbolWebApi() {
       // set the allowed units for data grouping
       groupingUnits = [
         [
-          "week", // unit name
+          'week', // unit name
           [1] // allowed multiples
         ],
-        ["month", [1, 2, 3, 4, 6]]
+        ['month', [1, 2, 3, 4, 6]]
       ],
-      i = 0
+      i = 0;
 
     data.map(item => {
       ohlc.push([
@@ -51,15 +51,15 @@ async function getSymbolWebApi() {
         item.low,
         item.close,
         item.volume
-      ])
+      ]);
       volume.push([
         item.date, // the date
         item.volume // the volume
-      ])
-    })
+      ]);
+    });
 
     // create the chart
-    Highcharts.stockChart("container", {
+    Highcharts.stockChart('container', {
       rangeSelector: {
         selected: 5
       },
@@ -71,13 +71,13 @@ async function getSymbolWebApi() {
       yAxis: [
         {
           labels: {
-            align: "right",
+            align: 'right',
             x: -3
           },
           title: {
-            text: "OHLC"
+            text: 'OHLC'
           },
-          height: "60%",
+          height: '60%',
           lineWidth: 2,
           resize: {
             enabled: true
@@ -85,14 +85,14 @@ async function getSymbolWebApi() {
         },
         {
           labels: {
-            align: "right",
+            align: 'right',
             x: -3
           },
           title: {
-            text: "Volume"
+            text: 'Volume'
           },
-          top: "65%",
-          height: "35%",
+          top: '65%',
+          height: '35%',
           offset: 0,
           lineWidth: 2
         }
@@ -104,7 +104,7 @@ async function getSymbolWebApi() {
 
       series: [
         {
-          type: "candlestick",
+          type: 'candlestick',
           name: curValueAjax.toUpperCase(),
           data: ohlc,
           dataGrouping: {
@@ -112,8 +112,8 @@ async function getSymbolWebApi() {
           }
         },
         {
-          type: "column",
-          name: "Volume",
+          type: 'column',
+          name: 'Volume',
           data: volume,
           yAxis: 1,
           dataGrouping: {
@@ -121,8 +121,8 @@ async function getSymbolWebApi() {
           }
         }
       ]
-    })
+    });
   } catch (error) {
-    console.error("Error", error)
+    console.error('Error', error);
   }
 }

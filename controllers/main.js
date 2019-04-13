@@ -7,5 +7,5 @@ exports.getMain = (req, res) => {
     // nameUpperCase: req.query.name.toUpperCase(),
     // name: req.query.name,
     // salesEnd: moment().endOf('day').fromNow()
-  })
-}
+  });
+};

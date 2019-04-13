@@ -1,9 +1,8 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-const { getBuySellTicket } = require('../controllers/portfolio')
+const { getBuySellTicket } = require('../controllers/portfolio');
 
-router.get('/buysell/:symbol', getBuySellTicket)
+router.get('/buysell/:symbol', getBuySellTicket);
 
-
-module.exports = router
+module.exports = router;
