@@ -11,7 +11,7 @@ const searchWebApi = async url => {
     console.log(highLow);
     return highLow;
   } catch (ex) {
-    console.log(`searchWebApi error: ${ex}`);
+    console.log(`searchWebApi error: ${ex}`)
   }
 };
 
