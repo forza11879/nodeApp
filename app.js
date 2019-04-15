@@ -40,10 +40,7 @@ app.engine(
 );
 app.set('view engine', 'hbs');
 
-//serves up static files from the public folder.Anything in public folder will just served up as the file it is
-
-// app.use(express.static(__dirname + '/public'));
-// Static folder
+//serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use((req, res, next) => {

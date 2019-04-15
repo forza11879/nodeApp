@@ -1,15 +1,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 <div>
-  <label for="symbolTagsChart">Symbol: </label>
-  <input type="text" id="symbolTagsChart" name="symbol">
-  <input type="hidden" id="symbolValueCurValue" name="symbolValueCurValue" value="{{curValue}}">
+  {{>navBar-chart}}
 
-  <label for="apiChart">Select Search Api: </label>
-  <select id="apiChart" name="routes_api">
-    <option value="websearch">Web Search Api</option>
-    <option value="dbsearch">DB Search Api</option>
-  </select>
-  <button type="submit" id="requestSymbolChart">Get Quote</button>
+
 </div>
 
 {{!-- chart --}}
