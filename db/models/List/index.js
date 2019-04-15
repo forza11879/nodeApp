@@ -42,14 +42,14 @@ const saveToDbList = async arg => {
 
 const generateUrlArrayList = async (query, projection) => {
   try {
-    const apiKey = process.env.API_KEY;
+    const apiKey = process.env.API_TOKEN_QUOTE;
     const dataFromDB = await List.find(query, projection).select('symbol');
 
     return dataFromDB.map(
       item =>
-        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${
+        `https://cloud.iexapis.com/beta/stock/${
           item.symbol
-        }&apikey=${apiKey}`
+        }/quote?token=${apiKey}`
     );
   } catch (ex) {
     console.log(`generateUrlArrayList error: ${ex}`);
@@ -66,7 +66,7 @@ const fetchDataFromDbList = async (query, projection) => {
       high: parseFloat(item.high), // high
       low: parseFloat(item.low), // low
       price: parseFloat(item.price), // price
-      volume: parseFloat(item.volume), // volume
+      volume: parseInt(item.volume), // volume
       // latestTrdDay: new Date(parseFloat(item.latestTrdDay)).toDateString(), //latestTrdDay
       latestTrdDay: moment(parseFloat(item.latestTrdDay))
         .utcOffset(-240)
@@ -85,20 +85,21 @@ const fetchWebApiList = async url => {
   try {
     const myJson = await axios.get(url);
 
-    const globalQuote = myJson.data['Global Quote'];
+    // const globalQuote = myJson.data['Global Quote'];
+    const myJsonData = myJson.data;
 
     return {
-      symbol: globalQuote['01. symbol'],
-      open: globalQuote['02. open'],
-      open: globalQuote['02. open'],
-      high: globalQuote['03. high'],
-      low: globalQuote['04. low'],
-      price: globalQuote['05. price'],
-      volume: globalQuote['06. volume'],
-      latestTrdDay: Date.parse(globalQuote['07. latest trading day']),
-      previousClose: globalQuote['08. previous close'],
-      change: globalQuote['09. change'],
-      changePercent: globalQuote['10. change percent'].slice(0, -1)
+      // symbol: globalQuote['01. symbol'],
+      symbol: myJsonData['symbol'],
+      open: myJsonData['open'],
+      high: myJsonData['high'],
+      low: myJsonData['low'],
+      price: myJsonData['latestPrice'],
+      volume: myJsonData['latestVolume'],
+      latestTrdDay: myJsonData['latestUpdate'],
+      previousClose: myJsonData['previousClose'],
+      change: myJsonData['change'],
+      changePercent: myJsonData['changePercent']
     };
   } catch (ex) {
     console.log(`fetchWebApiList error: ${ex}`);
