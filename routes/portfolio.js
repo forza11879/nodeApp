@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const { getBuySellTicket } = require('../controllers/portfolio');
+const {
+  getBuySellTicketParams,
+  postBuySellTicketBody
+} = require('../controllers/portfolio');
 
-router.get('/buysell/:symbol', getBuySellTicket);
+router.get('/buysell/:symbol', getBuySellTicketParams);
+router.post('/buysell', postBuySellTicketBody);
 
 module.exports = router;
