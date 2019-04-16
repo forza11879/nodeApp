@@ -1,24 +1,5 @@
 const { User } = require('./User');
 
-const fetchUserDataUserIdDB = async userId => {
-  try {
-    const query = { _id: userId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
-
-    const projection = { _id: 0 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
-
-    const user = await User.findOne(query, projection).select(
-      'name cash equity -_id'
-    ); //findOne() returns the Object{} without the Array vs find() Array[{}] of Objects
-    return {
-      name: user.name,
-      cash: parseFloat(user.cash),
-      equity: parseFloat(user.equity)
-    };
-  } catch (ex) {
-    console.log(`fetchUserDataDB error: ${ex}`);
-  }
-};
-
 const fetchUserDataDB = async userId => {
   try {
     const query = { _id: userId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
@@ -101,6 +82,5 @@ const updateCashDB = async (arg, cash) => {
 module.exports = {
   fetchCashDB,
   updateCashDB,
-  fetchUserDataDB,
-  fetchUserDataUserIdDB
+  fetchUserDataDB
 };
