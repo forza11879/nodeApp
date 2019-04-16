@@ -6,7 +6,7 @@ const {
   postBuySellTicketBody
 } = require('../controllers/portfolio');
 
-router.get('/buysell/:symbol', getBuySellTicketParams);
+router.get('/buysell/:symbol/:userId', getBuySellTicketParams);
 router.post('/buysell', postBuySellTicketBody);
 
 module.exports = router;

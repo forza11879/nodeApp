@@ -18,6 +18,7 @@ class UI {
     this.show = document.querySelector('#list');
   }
   showData(data) {
+    const userId = '5cb018905f293858a48565fe';
     // console.log(data)
     this.show.innerHTML = data
       .map(
@@ -37,7 +38,7 @@ class UI {
               <td>${item.changePercent}</td>
               <td><strong><a href="/portfolio/buysell/${
                 item.symbol
-              }">buy/sell</a></strong></td>
+              }/${userId}">buy/sell</a></strong></td>
               </tr>`
       )
       .join('');
