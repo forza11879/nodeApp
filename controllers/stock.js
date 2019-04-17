@@ -41,9 +41,18 @@ exports.getDbFetch = async (req, res) => {
 
 exports.getDbSearchApi = async (req, res) => {
   try {
-    const curValueDbSearch = req.params.symbol;
-    const dbSearchApiData = await db.dbSearchApi(curValueDbSearch);
+    const curValue = req.params.symbol;
+    const dbSearchApiData = await db.dbSearchApi(curValue);
+    // const obj = {
+    //   dbSearchApiData: dbSearchApiData,
+    //   curValue: curValue
+    // };
+    // res.send(obj);
     res.send(dbSearchApiData);
+    // res.render('chart', {
+    //   dbSearchApiData: dbSearchApiData,
+    //   curValue: curValue
+    // });
   } catch (ex) {
     console.log(`getDbSearchApi error: ${ex}`);
   }
@@ -60,7 +69,17 @@ exports.getSearchWebApi = async (req, res) => {
 
     const webApiData = await db.searchWebApi(url);
 
-    return res.send(webApiData);
+    // const obj = {
+    //   webApiData: webApiData,
+    //   curValue: curValue
+    // };
+
+    res.send(webApiData);
+    // res.send(obj);
+    // res.render('chart', {
+    //   webApiData: webApiData,
+    //   curValue: curValue
+    // });
   } catch (ex) {
     console.log(`getSearchWebApi error: ${ex}`);
   }

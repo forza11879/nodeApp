@@ -16,9 +16,22 @@ symbolTags.addEventListener(
   }, 2000)
 );
 
+// res.render('chart', {
+//   webApiData: webApiData,
+//   curValue: curValue
+// });
+
+// res.render(dbSearchApiData);
+// res.render('chart', {
+//   dbSearchApiData: dbSearchApiData,
+//   curValue: curValue
+// });
+
 async function requestSymbolSearch(arg) {
   try {
     const dataList = await getDataList(arg);
+    console.log('dataList:' + typeof dataList);
+    console.log('dataList:' + JSON.stringify(dataList));
     $('#symbolTags').autocomplete({
       source: dataList.map(item => item.symbol),
       autoFocus: true
