@@ -3,6 +3,6 @@ const router = express.Router();
 
 const { notFoundPage } = require('../controllers/notFound');
 
-router.use('/', notFoundPage);
+router.use('*', notFoundPage);
 
 module.exports = router;

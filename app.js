@@ -56,7 +56,7 @@ app.use('/portfolio', portfolioRoute);
 app.use('/stock', stockRoute);
 app.use('/list', listRoute);
 app.use('/', main);
-app.use('/', routesError);
+app.use('*', routesError);
 
 // hbs.registerHelper('getCurrentYear', () => {
 //   return new Date().getFullYear();
