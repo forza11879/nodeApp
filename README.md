@@ -1,6 +1,7 @@
 # nodeApp
 
 nodejs trading app
+https://tradingup.herokuapp.com/
 
 Trading Simulator
 
