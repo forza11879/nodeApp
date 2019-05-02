@@ -34,5 +34,5 @@ exports.postBuySellTicketBody = async (req, res) => {
 };
 
 exports.notFoundPage = (req, res) => {
-  res.status(404).render('portfolio404');
+  res.status(404).render('portfolio-404');
 };
