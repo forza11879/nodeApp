@@ -1,9 +1,26 @@
 <div class="form-inline ml-lg-5">
   <label for="symbolTagsChart">Symbol: </label>
-  <input id="symbolTagsChart" class="form-control mr-sm-2" type="text" name="symbol" placeholder="ex: MSFT"
-    aria-label="Search">
-  <input type="hidden" id="symbolValueCurValue" name="symbolValueCurValue" value="<%=curValue%>">
-<button id="requestSymbolChart" class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Get Quote</button>
+  <input
+    id="symbolTagsChart"
+    class="form-control mr-sm-2"
+    type="text"
+    name="symbol"
+    placeholder="ex: MSFT"
+    aria-label="Search"
+  />
+  <input
+    type="hidden"
+    id="symbolValueCurValue"
+    name="symbolValueCurValue"
+    value="<%= curValue %>"
+  />
+  <button
+    id="requestSymbolChart"
+    class="btn btn-outline-secondary my-2 my-sm-0"
+    type="submit"
+  >
+    Get Quote
+  </button>
   <label for="apiChart" class="ml-2"> Select Search Api: </label>
   <select id="apiChart" name="routes_api">
     <option value="websearch">Web Search Api</option>
