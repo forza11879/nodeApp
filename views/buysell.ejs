@@ -1,5 +1,9 @@
+<%- include('includes/head.ejs') %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-{{>navBar-buysell}}
+</head>
+<body>
+<%# {{>navBar-buysell}} %>
+<%- include('includes/navBar-buysell.ejs') %>
 <div class="card-body">
 
   <div class="row">
@@ -8,8 +12,8 @@
       <div class="card">
         <div class="card-body">
           <br>
-          <h5 class="card-title"><strong>ASK: </strong>{{data.latestPrice}}</h5>
-          <input type="hidden" id="askPrice" name="askPrice" value="{{data.latestPrice}}">
+          <h5 class="card-title"><strong>ASK: </strong><%= data.latestPrice %></h5>
+          <input type="hidden" id="askPrice" name="askPrice" value="<%= data.latestPrice %>">
           <br>
           <label for="qtyAsk">Qty: </label>
           <input type="number" id="qtyAsk" name="qtyAsk" placeholder="0">
@@ -27,8 +31,8 @@
       <div class="card">
         <div class="card-body">
           <br>
-          <h5 class="card-title"><strong>BID: </strong>{{data.latestPrice}}</h5>
-          <input type="hidden" id="bidPrice" name="bidPrice" value="{{data.latestPrice}}">
+          <h5 class="card-title"><strong>BID: </strong><%= data.latestPrice %></h5>
+          <input type="hidden" id="bidPrice" name="bidPrice" value="<%= data.latestPrice %>">
           <br>
           <label for="qtyBid">Qty: </label>
           <input type="number" id="qtyBid" name="qtyBid" placeholder="0">
@@ -45,29 +49,29 @@
     <div class="col-sm-6 col-md-4">
       <div class="card">
         <div class="card-body">
-          <p class="card-text"><strong>Latest Update: {{data.latestUpdate}} </strong></p>
-          <h5><strong>{{data.companyName}} - {{data.symbol}} </strong></h5>
-          <input type="hidden" id="companyName" name="companyName" value="{{data.companyName}}">
-          <input type="hidden" id="companySymbol" name="companySymbol" value="{{data.symbol}}">
-          <h5>Latest Price: {{data.latestPrice}} </h5>
-          <h5>Price Change: {{data.change}} </h5>
-          <h5>High: {{data.high}} </h5>
-          <h5>Low: {{data.low}}</h5>
-          <h5>High52wk: {{data.week52High}}</h5>
-          <h5>Low52wk: {{data.week52Low}}</h5>
-          <h5>Open: {{data.open}}</h5>
-          <h5>Close: {{data.previousClose}}</h5>
+          <p class="card-text"><strong>Latest Update: <%= data.latestUpdate %> </strong></p>
+          <h5><strong><%= data.companyName %> - <%= data.symbol %> </strong></h5>
+          <input type="hidden" id="companyName" name="companyName" value="<%= data.companyName %>">
+          <input type="hidden" id="companySymbol" name="companySymbol" value="<%= data.symbol %>">
+          <h5>Latest Price: <%= data.latestPrice %> </h5>
+          <h5>Price Change: <%= data.change %> </h5>
+          <h5>High: <%= data.high %> </h5>
+          <h5>Low: <%= data.low %></h5>
+          <h5>High52wk: <%= data.week52High %></h5>
+          <h5>Low52wk: <%= data.week52Low %></h5>
+          <h5>Open: <%= data.open %></h5>
+          <h5>Close: <%= data.previousClose %></h5>
         </div>
       </div>
     </div>
     <div class="col-sm-6 col-md-4">
       <div class="card">
         <div class="card-body">
-          <h5>Account Holder: <strong>{{userData.name}}</strong></h5>
+          <h5>Account Holder: <strong><%= userData.name %></strong></h5>
           <br>
-          <h5>Cash: ${{userData.cash}}</h5>
+          <h5>Cash: $<%= userData.cash %></h5>
           <br>
-          <h5>Equity: ${{userData.equity}}</h5>
+          <h5>Equity: $<%= userData.equity %></h5>
           <br>
           <h5>Gain/Loss: ${{u.equity}}</h5>
           <br>
@@ -94,3 +98,4 @@
 
 <script src="/JS/modal.js"></script>
 <script src="/JS/searchBox.js"></script>
+<%- include('includes/end.ejs') %>

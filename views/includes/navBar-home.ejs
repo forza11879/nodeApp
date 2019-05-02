@@ -1,27 +1,14 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light">
   <a class="navbar-brand" href="/">Trading Platform</a>
-  {{!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
-    <span class="navbar-toggler-icon"></span>
-  </button> --}}
-
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    {{>search-chart}}
+    <%- include('search-home.ejs') %>
     <ul class="nav justify-content-end ml-auto">
       <li class="nav-item">
         <a class="nav-link active" href="/">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/portfolio/buysell/RY/5cb018905f293858a48565fe">Place Order</a>
-        {{!-- /stock/chart/${item.symbol} --}}
-      </li>
-      <li class="nav-item">
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
       </li>
     </ul>
-
-
-
-
-
   </div>
 </nav>

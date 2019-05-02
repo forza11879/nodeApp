@@ -9,8 +9,7 @@ const app = express();
 // var morgan = require('morgan')
 
 const bodyParser = require('body-parser');
-// const hbs = require('hbs');
-const exphbs = require('express-handlebars');
+// const exphbs = require('express-handlebars');
 const transactionRoute = require('./routes/transaction');
 const portfolioRoute = require('./routes/portfolio');
 const stockRoute = require('./routes/stock');
@@ -25,20 +24,18 @@ const port = process.env.PORT;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// // view engine setup
-// hbs.registerPartials(__dirname + '/views/partials')
-// //this is the folder(by default views folder) where we keep our hbs files
+// // Handlebars Middleware - express-handlebars
+// app.engine(
+//   'hbs',
+//   exphbs({
+//     defaultLayout: 'main',
+//     extname: 'hbs'
+//   })
+// );
 // app.set('view engine', 'hbs');
 
-// Handlebars Middleware - express-handlebars
-app.engine(
-  'hbs',
-  exphbs({
-    defaultLayout: 'main',
-    extname: 'hbs'
-  })
-);
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
 //serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
