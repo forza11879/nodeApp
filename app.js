@@ -10,12 +10,13 @@ const app = express();
 
 const bodyParser = require('body-parser');
 // const exphbs = require('express-handlebars');
+const authRoute = require('./routes/auth');
 const transactionRoute = require('./routes/transaction');
 const portfolioRoute = require('./routes/portfolio');
 const stockRoute = require('./routes/stock');
 const listRoute = require('./routes/list');
-const main = require('./routes/main');
-const routesError = require('./routes/error');
+const mainRoute = require('./routes/main');
+const errorRoute = require('./routes/error');
 // const helpers = require('./helpers')
 require('./startup/db')();
 const port = process.env.PORT;
@@ -50,12 +51,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   next();
 // });
 
+app.use('/auth', authRoute);
 app.use('/transaction', transactionRoute);
 app.use('/portfolio', portfolioRoute);
 app.use('/stock', stockRoute);
 app.use('/list', listRoute);
-app.use('/', main);
-app.use('*', routesError);
+app.use('/', mainRoute);
+app.use('*', errorRoute);
 
 // hbs.registerHelper('getCurrentYear', () => {
 //   return new Date().getFullYear();

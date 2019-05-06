@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAuth } = require('../controllers/auth');
+const { postAuth } = require('../controllers/auth');
 
-router.get('/buysell/:symbol/:userId', getAuth);
+router.post('/login', postAuth);
 
 module.exports = router;

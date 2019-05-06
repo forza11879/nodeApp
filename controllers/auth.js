@@ -1,1 +1,1 @@
-exports.getAuth = async (req, res) => {};
+exports.postAuth = async (req, res) => {};
