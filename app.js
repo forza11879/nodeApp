@@ -2,12 +2,17 @@ const path = require('path');
 // const fs = require('fs')
 // const https = require('https')
 const express = require('express');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 
 // const helmet = require('helmet')
 // const compression = require('compression')
 // var morgan = require('morgan')
-
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URL,
+  collection: 'sessions'
+});
 const bodyParser = require('body-parser');
 // const exphbs = require('express-handlebars');
 const authRoute = require('./routes/auth');
@@ -20,6 +25,8 @@ const errorRoute = require('./routes/error');
 // const helpers = require('./helpers')
 require('./startup/db')();
 const port = process.env.PORT;
+
+// app.use(express.cookieParser());
 
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,6 +49,15 @@ app.set('views', 'views');
 
 //serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({
+    // secret: 'my secret',
+    secret: process.env.MY_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
 
 // app.use((req, res, next) => {
 //   res.locals.h = helpers;

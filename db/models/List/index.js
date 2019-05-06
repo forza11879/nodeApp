@@ -34,7 +34,7 @@ const saveToDbList = async arg => {
     const options = { upsert: true, new: true };
 
     const stockResult = await List.findOneAndUpdate(query, update, options);
-    console.log('Saved the symbol web TO dbList', stockResult.symbol);
+    // console.log('Saved the symbol web TO dbList', stockResult.symbol);
   } catch (ex) {
     console.log(`saveToDbList error: ${ex}`);
   }

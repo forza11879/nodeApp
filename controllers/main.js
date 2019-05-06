@@ -1,5 +1,8 @@
 // const moment = require('moment')
 exports.getMain = (req, res) => {
+  console.log(req.session.isLoggedIn);
+  // console.log(req.get('Cookie'));
+  // const isLoggedIn = req.get('Cookie');
   res.render('home', {
     // res.render('main.handlebars', {
     // res.render('index.html', {
@@ -7,5 +10,6 @@ exports.getMain = (req, res) => {
     // nameUpperCase: req.query.name.toUpperCase(),
     // name: req.query.name,
     // salesEnd: moment().endOf('day').fromNow()
+    // isAuthenticated: isLoggedIn
   });
 };

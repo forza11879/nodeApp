@@ -103,3 +103,26 @@ async function fetchData(url) {
     console.log(`fetchData error: ${ex}`);
   }
 }
+
+// async function fetchData(url) {
+//   try {
+//     const headers = new Headers();
+//     headers.append('Content-Type', 'application/json');
+//     headers.append('Accept', 'application/json');
+//     const dataResponse = await fetch(url, {
+//       method: 'GET',
+//       mode: 'same-origin',
+//       redirect: 'follow',
+//       credentials: 'include', // Don't forget to specify this if you need cookies
+//       headers: headers,
+//       body: JSON.stringify({
+//         first_name: 'John',
+//         last_name: 'Doe'
+//       })
+//     });
+//     const dataJson = await dataResponse.json();
+//     return dataJson;
+//   } catch (ex) {
+//     console.log(`fetchData error: ${ex}`);
+//   }
+// }
