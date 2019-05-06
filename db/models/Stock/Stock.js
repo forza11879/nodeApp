@@ -16,6 +16,7 @@ const ParentSchemaSymbol = new mongoose.Schema({
   _id: false,
   symbol: {
     type: String,
+    unique: true,
     trim: true,
     minlength: 1,
     maxlength: 50,

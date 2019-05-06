@@ -7,6 +7,18 @@
         <a class="nav-link active" href="/">Home</a>
       </li>
       <li class="nav-item">
+        <button
+          type="button"
+          id="buyTicket"
+          class="btn nav-link"
+          data-toggle="modal"
+          data-target="#modalCenter"
+          data-fetcher="buy"
+        >
+          Login
+        </button>
+      </li>
+      <li class="nav-item">
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"
           >Disabled</a
         >
@@ -14,3 +26,47 @@
     </ul>
   </div>
 </nav>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="modalCenter"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Log-In</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Login ID:</label>
+            <input type="text" class="form-control" id="recipient-name" />
+          </div>
+          <div class="form-group">
+            <label for="password" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="password" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Log-In</button>
+      </div>
+    </div>
+  </div>
+</div>

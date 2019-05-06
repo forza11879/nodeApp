@@ -35,6 +35,8 @@ app.use(bodyParser.json());
 // app.set('view engine', 'hbs');
 
 app.set('view engine', 'ejs');
+// views tells EJS where to look for the file.
+// it sets by default if you do not mention it
 app.set('views', 'views');
 
 //serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
