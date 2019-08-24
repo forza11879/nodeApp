@@ -23,7 +23,9 @@ const listRoute = require('./routes/list');
 const mainRoute = require('./routes/main');
 const errorRoute = require('./routes/error');
 // const helpers = require('./helpers')
-require('./startup/db')();
+
+// require('./startup/db')();
+const { connectDb } = require('./startup/db');
 const port = process.env.PORT;
 
 // app.use(express.cookieParser());
@@ -98,9 +100,16 @@ app.use('*', errorRoute);
 // HTTP request logger middleware for node.js
 // app.use(morgan('combined', {stream: accessLogStream}))
 
-app.listen(port, () => {
-  console.log(`Server is up on port ${port}`);
+connectDb().then(async () => {
+  app.listen(port, () => {
+    console.log(`Server is up on port ${port}`);
+  });
 });
+
+// app.listen(port, () => {
+//   console.log(`Server is up on port ${port}`);
+// });
+
 // if you need to implement HTTPS mode
 // https.createServer({key: privateKey, cert: certificate}, app).listen(process.env.PORT || port, () => {
 //   console.log(`Server is up on port ${port}`)

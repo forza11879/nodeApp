@@ -4,6 +4,7 @@ const user = require('../db/models/User');
 exports.getBuySellTicketParams = async (req, res) => {
   const curValue = req.params.symbol;
   const userId = req.params.userId;
+  console.log('Params:' + JSON.stringify(req.params));
   console.log('userId Params:' + typeof userId);
   console.log('userId Params:' + JSON.stringify(userId));
   const apiTokenQuote = process.env.API_TOKEN_QUOTE;
