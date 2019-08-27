@@ -5,6 +5,8 @@ const express = require('express');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
+// const User = require('../db/models/User');
+const User = require('./db/models/User');
 
 // const helmet = require('helmet')
 // const compression = require('compression')
@@ -55,11 +57,25 @@ app.use(
   session({
     // secret: 'my secret',
     secret: process.env.MY_SECRET,
-    resave: false,//does not have to save the session each time if nothing changed
-    saveUninitialized: false,//does not have to save the session each time if nothing changed
+    resave: false, //does not have to save the session each time if nothing changed
+    saveUninitialized: false, //does not have to save the session each time if nothing changed
     store: store
   })
 );
+
+app.use((req, res, next) => {
+  // const userId = '5d5f6afb11a620047486274d';
+  // console.log(req.session.user);
+  if (!req.session.user) {
+    return next();
+  }
+  User.fetchUserDataDB(req.session.user.id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+});
 
 // app.use((req, res, next) => {
 //   res.locals.h = helpers;
