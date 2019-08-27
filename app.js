@@ -55,8 +55,8 @@ app.use(
   session({
     // secret: 'my secret',
     secret: process.env.MY_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    resave: false,//does not have to save the session each time if nothing changed
+    saveUninitialized: false,//does not have to save the session each time if nothing changed
     store: store
   })
 );

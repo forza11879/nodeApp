@@ -1,5 +1,5 @@
 const user = require('../db/models/User');
-exports.postAuth = (req, res) => {
+exports.postLogin = (req, res) => {
   // res.render('home', {
   //   // res.render('main.handlebars', {
   //   // res.render('index.html', {
@@ -13,7 +13,7 @@ exports.postAuth = (req, res) => {
   // res.setHeader('Set-Cookie', 'loggedIn=true');
   // res.set('Set-Cookie', 'loggedIn=true');
   // res.header('Set-Cookie', 'loggedIn=true');
-
+  // console.log(`session is ${JSON.stringify(req.session)}`);
   const userId = '5cb018905f293858a48565fe';
   user
     .fetchUserDataDB(userId)
@@ -23,4 +23,12 @@ exports.postAuth = (req, res) => {
       res.redirect('/');
     })
     .catch();
+};
+
+exports.postLogout = (req, res) => {
+  console.log('logged out');
+  req.session.destroy((err) => {
+    console.log(err);
+    res.redirect('/');
+  });
 };
