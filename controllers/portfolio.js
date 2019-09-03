@@ -1,17 +1,22 @@
-const db = require('../db/models/Portfolio');
-const user = require('../db/models/User');
+const Db = require('../db/models/Portfolio');
+const User = require('../db/models/User');
 
 exports.getBuySellTicketParams = async (req, res) => {
   const curValue = req.params.symbol;
-  const userId = req.params.userId;
+  // const User = req.user;
+  console.log('Req.user: ' + JSON.stringify(req.user));
+  console.log('Req.user.id: ' + JSON.stringify(req.user.id));
+  console.log('User: ' + JSON.stringify(User));
+  // const userId = req.params.userId;
+  const userId = req.user.id;
   console.log('Params:' + JSON.stringify(req.params));
   console.log('userId Params:' + typeof userId);
   console.log('userId Params:' + JSON.stringify(userId));
   const apiTokenQuote = process.env.API_TOKEN_QUOTE;
   const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 
-  const data = await db.fetchWebApiQuote(url);
-  const userData = await user.fetchUserDataDB(userId);
+  const data = await Db.fetchWebApiQuote(url);
+  const userData = await User.fetchUserDataDB(userId);
 
   res.render('buysell', {
     data: data,
@@ -25,8 +30,8 @@ exports.postBuySellTicketBody = async (req, res) => {
   const apiTokenQuote = process.env.API_TOKEN_QUOTE;
   const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 
-  const data = await db.fetchWebApiQuote(url);
-  const userData = await user.fetchUserDataDB(userId);
+  const data = await Db.fetchWebApiQuote(url);
+  const userData = await User.fetchUserDataDB(userId);
 
   res.render('buysell', {
     data: data,

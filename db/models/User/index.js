@@ -20,6 +20,18 @@ const fetchUserDataDB = async userId => {
   }
 };
 
+const findUserEmailDB = async email => {
+  try {
+    const query = { email: email };
+    const user = await User.findOne(query);
+    // .select('email'); //findOne() returns the Object{} without the Array vs find() Array[{}] of Objects
+    console.log(user);
+    return user;
+  } catch (ex) {
+    console.log(`findUserEmailDB error: ${ex}`);
+  }
+};
+
 const fetchCashDB = async arg => {
   try {
     const orderType = arg.orderType;
@@ -80,8 +92,31 @@ const updateCashDB = async (arg, cash) => {
   }
 };
 
+const creatUser = async (name, email, password) => {
+  try {
+    const user = new User({
+      name: name,
+      email: email,
+      password: password
+    });
+
+    console.log(`created user: ${user}`);
+
+    await user.save();
+
+    const query = { email: email };
+
+    const newUser = await User.findOne(query);
+    console.log('new user saved to db', newUser);
+  } catch (ex) {
+    console.log(`creatStock error: ${ex}`);
+  }
+};
+
 module.exports = {
   fetchCashDB,
   updateCashDB,
-  fetchUserDataDB
+  fetchUserDataDB,
+  findUserEmailDB,
+  creatUser
 };

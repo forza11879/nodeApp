@@ -19,14 +19,13 @@ class UI {
   }
   showData(data) {
     const userId = '5d5f6afb11a620047486274d';
+    // const userId = req.session.use._id;
     // console.log(data)
     this.show.innerHTML = data
       .map(
         item =>
           `<tr>
-              <td><strong><a href="/stock/chart/${item.symbol}">${
-            item.symbol
-          }</a></strong></td>
+              <td><strong><a href="/stock/chart/${item.symbol}">${item.symbol}</a></strong></td>
               <td>${item.open}</td>
               <td>${item.high}</td>
               <td>${item.low}</td>
@@ -36,9 +35,7 @@ class UI {
               <td>${item.previousClose}</td>
               <td>${item.change}</td>
               <td>${item.changePercent}</td>
-              <td><strong><a href="/portfolio/buysell/${
-                item.symbol
-              }/${userId}">buy/sell</a></strong></td>
+              <td><strong><a href="/portfolio/buysell/${item.symbol}/${userId}">buy/sell</a></strong></td>
               </tr>`
       )
       .join('');

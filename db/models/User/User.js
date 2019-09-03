@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const Schema = mongoose.Schema;
 const ParentSchemaSymbolList = new mongoose.Schema({
-  _id: Schema.Types.ObjectId,
+  // _id: Schema.Types.ObjectId,
+  name: String,
   email: {
     type: String,
     required: true,
@@ -13,7 +14,6 @@ const ParentSchemaSymbolList = new mongoose.Schema({
       return validator.isEmail(value);
     }
   },
-  name: String,
   password: {
     type: String,
     required: true

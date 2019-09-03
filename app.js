@@ -53,18 +53,17 @@ app.set('views', 'views');
 
 //serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(
   session({
-    // secret: 'my secret',
     secret: process.env.MY_SECRET,
-    resave: false, //does not have to save the session each time if nothing changed
-    saveUninitialized: false, //does not have to save the session each time if nothing changed
+    resave: false,
+    saveUninitialized: false,
     store: store
   })
 );
 
 app.use((req, res, next) => {
-  // const userId = '5d5f6afb11a620047486274d';
   // console.log(req.session.user);
   if (!req.session.user) {
     return next();

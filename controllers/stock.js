@@ -1,4 +1,4 @@
-const db = require('../db/models/Stock');
+const Db = require('../db/models/Stock');
 
 exports.getChart = (req, res) => {
   const curValue = req.params.symbol;
@@ -15,8 +15,8 @@ exports.getWebApi = async (req, res) => {
     const apiKey = process.env.API_KEY;
     const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curValue}&outputsize=compact&apikey=${apiKey}`;
 
-    const webApiData = await db.fetchWebApi(urlCompact);
-    await db.creatStock(curValue, webApiData);
+    const webApiData = await Db.fetchWebApi(urlCompact);
+    await Db.creatStock(curValue, webApiData);
 
     res.send(webApiData);
   } catch (ex) {
@@ -32,7 +32,7 @@ exports.getDbFetch = async (req, res) => {
     const query = { symbol: curValueDbFetch };
     const projection = { _id: 0, data: 1 };
 
-    const chartData = await db.fetchDb(query, projection);
+    const chartData = await Db.fetchDb(query, projection);
     res.send(chartData);
   } catch (ex) {
     console.log(`getDbFetch error: ${ex}`);
@@ -42,7 +42,7 @@ exports.getDbFetch = async (req, res) => {
 exports.getDbSearchApi = async (req, res) => {
   try {
     const curValue = req.params.symbol;
-    const dbSearchApiData = await db.dbSearchApi(curValue);
+    const dbSearchApiData = await Db.dbSearchApi(curValue);
     // const obj = {
     //   dbSearchApiData: dbSearchApiData,
     //   curValue: curValue
@@ -67,7 +67,7 @@ exports.getSearchWebApi = async (req, res) => {
     console.log(`reqBody:${req.body}`);
     console.log(`reqParamsSymbol:${req.params.symbol}`);
 
-    const webApiData = await db.searchWebApi(url);
+    const webApiData = await Db.searchWebApi(url);
 
     // const obj = {
     //   webApiData: webApiData,

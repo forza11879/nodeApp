@@ -1,4 +1,4 @@
-const db = require('../db/models/List');
+const Db = require('../db/models/List');
 
 exports.getWebApiList = async (req, res) => {
   try {
@@ -6,18 +6,18 @@ exports.getWebApiList = async (req, res) => {
     const apiKey = process.env.API_TOKEN_QUOTE;
     const urlCompact = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiKey}`;
 
-    let urlArray = await db.generateUrlArrayList({}, { _id: 0 });
+    let urlArray = await Db.generateUrlArrayList({}, { _id: 0 });
 
     if (!urlArray.includes(urlCompact)) urlArray.push(urlCompact);
 
     await Promise.all(
       urlArray.map(async url => {
-        const data = await db.fetchWebApiList(url);
-        await db.saveToDbList(data);
+        const data = await Db.fetchWebApiList(url);
+        await Db.saveToDbList(data);
       })
     );
 
-    const dataFromDB = await db.fetchDataFromDbList({}, { _id: 0 });
+    const dataFromDB = await Db.fetchDataFromDbList({}, { _id: 0 });
 
     res.send(dataFromDB);
   } catch (ex) {
