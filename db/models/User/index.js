@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const { User } = require('./User');
 
 const fetchUserDataDB = async userId => {
@@ -94,10 +96,13 @@ const updateCashDB = async (arg, cash) => {
 
 const creatUser = async (name, email, password) => {
   try {
+    
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
     const user = new User({
       name: name,
       email: email,
-      password: password
+      password: hashedPassword
     });
 
     console.log(`created user: ${user}`);

@@ -1,42 +1,48 @@
 const Db = require('../db/models/Portfolio');
 const User = require('../db/models/User');
 
-exports.getBuySellTicketParams = async (req, res) => {
-  const curValue = req.params.symbol;
-  // const User = req.user;
-  console.log('Req.user: ' + JSON.stringify(req.user));
-  console.log('Req.user.id: ' + JSON.stringify(req.user.id));
-  console.log('User: ' + JSON.stringify(User));
-  // const userId = req.params.userId;
-  const userId = req.user.id;
-  console.log('Params:' + JSON.stringify(req.params));
-  console.log('userId Params:' + typeof userId);
-  console.log('userId Params:' + JSON.stringify(userId));
-  const apiTokenQuote = process.env.API_TOKEN_QUOTE;
-  const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
+exports.getBuySellTicket = async (req, res) => {
+  try {
+    if (!req.session.isLoggedIn) {
+      console.log('User NOT logged in');
+      return res.redirect('/');
+    }
+    const curValue = req.params.symbol;
+    const userId = req.session.user._id;
+    console.log('Authenticated User');
+    console.log('userId :' + JSON.stringify(userId));
+    const apiTokenQuote = process.env.API_TOKEN_QUOTE;
+    const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 
-  const data = await Db.fetchWebApiQuote(url);
-  const userData = await User.fetchUserDataDB(userId);
+    const data = await Db.fetchWebApiQuote(url);
+    const userData = await User.fetchUserDataDB(userId);
 
-  res.render('buysell', {
-    data: data,
-    userData: userData
-  });
+    res.render('buysell', {
+      data: data,
+      userData: userData
+    });
+  } catch (ex) {
+    console.log(`getBuySellTicketParams error${ex}`);
+  }
 };
 
 exports.postBuySellTicketBody = async (req, res) => {
-  const curValue = req.body.symbol;
-  const userId = req.body.userId;
-  const apiTokenQuote = process.env.API_TOKEN_QUOTE;
-  const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
+  try {
+    const curValue = req.body.symbol;
+    const userId = req.body.userId;
+    const apiTokenQuote = process.env.API_TOKEN_QUOTE;
+    const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 
-  const data = await Db.fetchWebApiQuote(url);
-  const userData = await User.fetchUserDataDB(userId);
+    const data = await Db.fetchWebApiQuote(url);
+    const userData = await User.fetchUserDataDB(userId);
 
-  res.render('buysell', {
-    data: data,
-    userData: userData
-  });
+    res.render('buysell', {
+      data: data,
+      userData: userData
+    });
+  } catch (ex) {
+    console.log(`postBuySellTicketBody error${ex}`);
+  }
 };
 
 exports.notFoundPage = (req, res) => {
