@@ -104,6 +104,8 @@ const creatUser = async (name, email, password) => {
 
     await user.save();
 
+    ////////////////
+
     const query = { email: email };
 
     const newUser = await User.findOne(query);

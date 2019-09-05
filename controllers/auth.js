@@ -1,4 +1,5 @@
-const User = require('../db/models/User');
+const UserModal = require('../db/models/User');
+const { User } = require('../db/models/User/User');
 exports.postLogin = (req, res) => {
   // res.render('home', {
   //   // res.render('main.handlebars', {
@@ -16,7 +17,7 @@ exports.postLogin = (req, res) => {
   console.log(`session is ${JSON.stringify(req.session)}`);
   const userId = '5d5f6afb11a620047486274d';
   // const userId = req.user.id;
-  User.fetchUserDataDB(userId)
+  UserModal.fetchUserDataDB(userId)
     .then(user => {
       req.session.isLoggedIn = true;
       req.session.user = user;
@@ -44,12 +45,13 @@ exports.postSignup = async (req, res) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
     console.log(email, name, password);
-    const userDoc = await User.findUserEmailDB(email);
+    // const userDoc = await UserModal.findUserEmailDB(email);
+    const userDoc = await User.findOne({ email: email });
     if (userDoc) {
       console.log('User already in DB');
       return res.redirect('/');
     }
-    await User.creatUser(name, email, password);
+    await UserModal.creatUser(name, email, password);
     res.redirect('/');
   } catch (ex) {
     console.log(`postSignup error: ${ex}`);
