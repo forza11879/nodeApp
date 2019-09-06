@@ -3,10 +3,6 @@ const User = require('../db/models/User');
 
 exports.getBuySellTicket = async (req, res) => {
   try {
-    // if (!req.session.isLoggedIn) {
-    //   console.log('User NOT logged in');
-    //   return res.redirect('/');
-    // }
     const curValue = req.params.symbol;
     const userId = req.session.user._id;
     console.log('Authenticated User');
@@ -28,10 +24,11 @@ exports.getBuySellTicket = async (req, res) => {
   }
 };
 
-exports.postBuySellTicketBody = async (req, res) => {
+exports.postBuySellTicket = async (req, res) => {
   try {
     const curValue = req.body.symbol;
-    const userId = req.body.userId;
+    // const userId = req.body.userId;
+    const userId = req.session.user._id;
     const apiTokenQuote = process.env.API_TOKEN_QUOTE;
     const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 

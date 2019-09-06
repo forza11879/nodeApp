@@ -6,29 +6,32 @@ const portfolio = require('../Portfolio');
 
 const { Transaction } = require('./Transaction');
 
-const addTransaction = async arg => {
+const addTransaction = async (arg, userId) => {
   try {
+    console.log('createTransaction symbol:' + typeof arg.symbol);
+    console.log('createTransaction symbol:' + JSON.stringify(arg.symbol));
     const stockTransaction = new Transaction({
-      symbol: arg.symbol,
       price: arg.price,
       qty: arg.qty,
-      orderType: arg.orderType
+      orderType: arg.orderType,
+      userId: userId,
+      symbol: arg.symbol
     });
     const stockTransactionResult = await stockTransaction.save();
 
     // console.log('createTransaction cash:' + typeof cash)
     // console.log('createTransaction cash:' + JSON.stringify(cash))
 
-    const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg);
+    const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg, userId);
     //verify if you need await
-    await portfolio.updateToPortfolio(arg, qtyPortfolio);
+    await portfolio.updateToPortfolio(arg, qtyPortfolio, userId);
 
     console.log(
       'Saved transaction to db Transaction',
       stockTransactionResult.symbol
     );
   } catch (ex) {
-    console.log(`createTransaction error: ${ex}`);
+    console.log(`addTransaction error: ${ex}`);
   }
 };
 

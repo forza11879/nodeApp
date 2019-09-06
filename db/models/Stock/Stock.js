@@ -13,7 +13,7 @@ const ChildSchemaData = new mongoose.Schema({
 });
 
 const ParentSchemaSymbol = new mongoose.Schema({
-  _id: false,
+  // _id: false,
   symbol: {
     type: String,
     unique: true,

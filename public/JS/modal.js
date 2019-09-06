@@ -6,7 +6,7 @@ class UI {
     this.show = document.querySelector('#modalContent');
   }
   showData(e) {
-    const userId = '5cb018905f293858a48565fe';
+    // const userId = '5cb018905f293858a48565fe';
     let qtyAskValue = document.querySelector('#qtyAsk').value.trim();
     let qtyBidValue = document.querySelector('#qtyBid').value.trim();
     let askPriceValue = document.querySelector('#askPrice').value;
@@ -35,7 +35,6 @@ class UI {
           <p>You are placing a ${arg} order for ${qtyAskValue} shares of ${companyNameValue} - symbol ${companySymbolValue} at $${askPriceValue} per share. Please Confirm to send the order.</p>
           </div>
           <div class="modal-footer">
-          <input type="hidden" name="userId" value="${userId}"></input>
           <input type="hidden" name="symbol" value="${companySymbolValue}"></input>
           <input type="hidden" name="price" value="${askPriceValue}"></input>
           <input type="hidden" name="qty" value="${qtyAskValue}"></input>

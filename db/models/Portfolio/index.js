@@ -3,12 +3,13 @@ const moment = require('moment');
 
 const { Portfolio } = require('./Portfolio');
 
-const fetchQtyPortfolio = async arg => {
+const fetchQtyPortfolio = async (arg, userId) => {
   try {
     const orderType = arg.orderType;
     let qty = parseInt(arg.qty);
-
-    const query = { symbol: arg.symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    // const query = { _id: { userId: userId, symbol: arg.symbol } };
+    const query = { userId: userId, symbol: arg.symbol };
+    // const query = { symbol: arg.symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const projection = { _id: 0 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
     // let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")//find returns the Object in the Array [{}]
@@ -31,17 +32,22 @@ const fetchQtyPortfolio = async arg => {
   }
 };
 
-const updateToPortfolio = async (arg, qtyPortfolio) => {
+const updateToPortfolio = async (arg, qtyPortfolio, userId) => {
   try {
     const stockPortfolio = new Portfolio({
-      symbol: arg.symbol,
-      qtyPortfolio: qtyPortfolio
+      qtyPortfolio: qtyPortfolio,
+      userId: userId,
+      symbol: arg.symbol
     });
 
-    const query = { symbol: stockPortfolio.symbol };
+    const query = {
+      userId: stockPortfolio.userId,
+      symbol: stockPortfolio.symbol
+    };
     const update = {
-      symbol: stockPortfolio.symbol,
-      qtyPortfolio: stockPortfolio.qtyPortfolio
+      qtyPortfolio: stockPortfolio.qtyPortfolio,
+      userId: stockPortfolio.userId,
+      symbol: stockPortfolio.symbol
     };
     // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.

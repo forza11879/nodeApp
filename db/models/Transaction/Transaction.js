@@ -18,6 +18,7 @@ const ParentSchema = new mongoose.Schema(
     },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     symbol: { type: Schema.Types.ObjectId, ref: 'Stock', required: true }
+    // symbol: { type: String, ref: 'Stock', required: true }
   },
   { timestamps: true }
 );
