@@ -64,7 +64,7 @@ exports.getSearchWebApi = async (req, res) => {
     const apiKeyGetSearchWebApi = process.env.API_KEY_GET_SEARCH_WEB_API;
     const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${curValue}&apikey=${apiKeyGetSearchWebApi}`;
 
-    console.log(`reqBody:${req.body}`);
+    console.log(`reqBody:${JSON.stringify(req.body)}`);
     console.log(`reqParamsSymbol:${req.params.symbol}`);
 
     const webApiData = await Db.searchWebApi(url);

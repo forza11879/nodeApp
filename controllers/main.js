@@ -10,7 +10,7 @@ exports.getMain = (req, res) => {
   // console.log(req.session.user._id);
   // console.log(req.get('Cookie'));
   // const isLoggedIn = req.get('Cookie');
-  res.render('home', {
+  res.render('landing', {
     // res.render('main.handlebars', {
     // res.render('index.html', {
     // pageTitle: 'Home Page by '
