@@ -25,32 +25,58 @@ exports.getList = (req, res) => {
   });
 };
 
+// exports.getWebApiList = async (req, res) => {
+//   try {
+//     const userId = req.session.user._id;
+//     // console.log(
+//     //   `getWebApiList user ID: ${JSON.stringify(req.session.user._id)}`
+//     // );
+//     const curValue = req.params.symbol;
+//     const apiKey = process.env.API_TOKEN_QUOTE;
+//     const urlCompact = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiKey}`;
+
+//     let urlArray = await Db.generateUrlArrayList({}, { _id: 0 });
+
+//     if (!urlArray.includes(urlCompact)) urlArray.push(urlCompact);
+
+//     await Promise.all(
+//       urlArray.map(async url => {
+//         const data = await Db.fetchWebApiList(url);
+//         await Db.saveToDbList(data, userId);
+//       })
+//     );
+
+//     const dataFromDB = await Db.fetchDataFromDbList({}, { _id: 0 });
+
+//     res.send(dataFromDB);
+//   } catch (ex) {
+//     // example of nice error handling - 500 Internal Server Error
+//     res.status(500).send(`getWebApiList: ${ex}`);
+//   }
+// };
+
 exports.getWebApiList = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    // console.log(
-    //   `getWebApiList user ID: ${JSON.stringify(req.session.user._id)}`
-    // );
-    const curValue = req.params.symbol;
-    const apiKey = process.env.API_TOKEN_QUOTE;
-    const urlCompact = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiKey}`;
+    const symbol = req.params.symbol;
 
-    let urlArray = await Db.generateUrlArrayList({}, { _id: 0 });
+    await Db.saveToDbList(symbol, userId);
 
-    if (!urlArray.includes(urlCompact)) urlArray.push(urlCompact);
+    let urlArray = await Db.generateUrlArrayList(userId);
+    console.log(`urlArray list: ${urlArray}`);
 
-    await Promise.all(
+    Promise.all(
       urlArray.map(async url => {
-        const data = await Db.fetchWebApiList(url);
-        await Db.saveToDbList(data, userId);
+        return await Db.fetchWebApiList(url);
       })
-    );
-
-    const dataFromDB = await Db.fetchDataFromDbList({}, { _id: 0 });
-
-    res.send(dataFromDB);
+    )
+      .then(item => {
+        console.log(item);
+        res.send(item);
+      })
+      .catch(ex => console.log(`PromiseAll error: ${ex}`));
   } catch (ex) {
     // example of nice error handling - 500 Internal Server Error
-    res.status(500).send(`getWebApiList: ${ex}`);
+    res.status(500).send(`getWebApiList error: ${ex}`);
   }
 };

@@ -11,7 +11,7 @@ const searchWebApi = async url => {
     console.log(highLow);
     return highLow;
   } catch (ex) {
-    console.log(`searchWebApi error: ${ex}`)
+    console.log(`searchWebApi error: ${ex}`);
   }
 };
 
@@ -36,6 +36,11 @@ const fetchWebApi = async url => {
 
 const creatStock = async (curValue, webApiData) => {
   try {
+    console.log(`creatStock curValue: ${typeof curValue}`);
+    console.log(`creatStock curValue: ${curValue}`);
+    console.log(`creatStock webApiData: ${typeof webApiData}`);
+    console.log(`creatStock webApiData: ${webApiData}`);
+    console.log(`creatStock webApiData: ${JSON.stringify(webApiData)}`);
     const stock = new Stock({
       symbol: curValue,
       data: webApiData

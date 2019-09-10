@@ -2,54 +2,45 @@ const axios = require('axios');
 const moment = require('moment');
 const { List } = require('./List');
 
-const saveToDbList = async (arg, userId) => {
+const saveToDbList = async (symbol, userId) => {
   try {
+    // console.log(`saveToDbList symbol: ${typeof symbol}`);
+    // console.log(`saveToDbList symbol: ${symbol}`);
+    // console.log(`saveToDbList userId: ${typeof userId}`);
+    // console.log(`saveToDbList userId: ${userId}`);
+
     const stockList = new List({
-      // symbol: arg.symbol,
-      // open: arg.open,
-      // high: arg.high,
-      // low: arg.low,
-      // price: arg.price,
-      // volume: arg.volume,
-      // latestTrdDay: arg.latestTrdDay,
-      // previousClose: arg.previousClose,
-      // change: arg.change,
-      // changePercent: arg.changePercent,
-      data: arg.symbol,
+      data: { symbol }, //subDocuments accept objects I think so!!!
       userId: userId
     });
 
-    // const query = { symbol: stockList.symbol };
+    // console.log(`saveToDbList stockList: ${JSON.stringify(stockList)}`);
+    // console.log(`saveToDbList stockList: ${JSON.stringify(stockList.data)}`);
+
     const query = { userId: stockList.userId };
     const update = { $addToSet: { data: stockList.data } };
-    const options = { upsert: true, new: true };
-    // const update = {
-    //   open: stockList.open,
-    //   high: stockList.high,
-    //   low: stockList.low,
-    //   price: stockList.price,
-    //   volume: stockList.volume,
-    //   latestTrdDay: stockList.latestTrdDay,
-    //   previousClose: stockList.previousClose,
-    //   change: stockList.change,
-    //   changePercent: stockList.changePercent
-    // };
-    // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+    const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
 
     const stockResult = await List.findOneAndUpdate(query, update, options);
-    console.log('Saved the symbol web TO dbList', stockResult.data);
+    console.log('Saved the symbol TO dbList', stockList.data);
+    console.log('Symbol array', stockResult.data);
   } catch (ex) {
     console.log(`saveToDbList error: ${ex}`);
   }
 };
 
-const generateUrlArrayList = async (query, projection) => {
+const generateUrlArrayList = async userId => {
   try {
-    const apiKey = process.env.API_TOKEN_QUOTE;
-    const dataFromDB = await List.find(query, projection).select('symbol');
+    const query = { userId: userId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const projection = { _id: 0 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
-    return dataFromDB.map(
+    const apiKey = process.env.API_TOKEN_QUOTE;
+    const dataFromDB = await List.findOne(query, projection).select('data'); //findOne returns the Object{} without the Array
+    // const dataFromDB = await List.find(query, projection).select('symbol');
+    console.log(`dataFromDB: ${JSON.stringify(dataFromDB)}`);
+
+    return dataFromDB.data.map(
       item =>
         `https://cloud.iexapis.com/beta/stock/${item.symbol}/quote?token=${apiKey}`
     );

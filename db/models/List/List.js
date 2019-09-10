@@ -43,10 +43,13 @@ const ChildSchemaData = new mongoose.Schema({
   }
 });
 
-const ParentSchemaSymbolList = new mongoose.Schema({
+const ParentSchema = new mongoose.Schema({
+  _id: false,
   // Array of subdocuments
   data: [ChildSchemaData],
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
-module.exports.List = mongoose.model('List', ParentSchemaSymbolList);
+ParentSchema.index({ userId: 1 }, { unique: true });
+
+module.exports.List = mongoose.model('List', ParentSchema);
