@@ -25,6 +25,32 @@ exports.getList = (req, res) => {
   });
 };
 
+exports.getWebApiList = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const symbol = req.params.symbol;
+
+    await Db.saveToDbList(symbol, userId);
+
+    let urlArray = await Db.generateUrlArrayList(userId);
+    console.log(`urlArray list: ${urlArray}`);
+
+    Promise.all(
+      urlArray.map(async url => {
+        return await Db.fetchWebApiList(url);
+      })
+    )
+      .then(item => {
+        console.log(item);
+        res.send(item);
+      })
+      .catch(ex => console.log(`PromiseAll error: ${ex}`));
+  } catch (ex) {
+    // example of nice error handling - 500 Internal Server Error
+    res.status(500).send(`getWebApiList error: ${ex}`);
+  }
+};
+
 // exports.getWebApiList = async (req, res) => {
 //   try {
 //     const userId = req.session.user._id;
@@ -54,29 +80,3 @@ exports.getList = (req, res) => {
 //     res.status(500).send(`getWebApiList: ${ex}`);
 //   }
 // };
-
-exports.getWebApiList = async (req, res) => {
-  try {
-    const userId = req.session.user._id;
-    const symbol = req.params.symbol;
-
-    await Db.saveToDbList(symbol, userId);
-
-    let urlArray = await Db.generateUrlArrayList(userId);
-    console.log(`urlArray list: ${urlArray}`);
-
-    Promise.all(
-      urlArray.map(async url => {
-        return await Db.fetchWebApiList(url);
-      })
-    )
-      .then(item => {
-        console.log(item);
-        res.send(item);
-      })
-      .catch(ex => console.log(`PromiseAll error: ${ex}`));
-  } catch (ex) {
-    // example of nice error handling - 500 Internal Server Error
-    res.status(500).send(`getWebApiList error: ${ex}`);
-  }
-};

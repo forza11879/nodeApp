@@ -36,8 +36,9 @@ const generateUrlArrayList = async userId => {
     const projection = { _id: 0 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
     const apiKey = process.env.API_TOKEN_QUOTE;
+
     const dataFromDB = await List.findOne(query, projection).select('data'); //findOne returns the Object{} without the Array
-    // const dataFromDB = await List.find(query, projection).select('symbol');
+
     console.log(`dataFromDB: ${JSON.stringify(dataFromDB)}`);
 
     return dataFromDB.data.map(
@@ -89,7 +90,9 @@ const fetchWebApiList = async url => {
       low: myJsonData['low'],
       price: myJsonData['latestPrice'],
       volume: myJsonData['latestVolume'],
-      latestTrdDay: myJsonData['latestUpdate'],
+      latestTrdDay: moment(parseFloat(myJsonData['latestUpdate']))
+        .utcOffset(-240)
+        .format('lll'),
       previousClose: myJsonData['previousClose'],
       change: myJsonData['change'],
       changePercent: myJsonData['changePercent']
