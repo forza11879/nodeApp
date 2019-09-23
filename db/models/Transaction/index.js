@@ -1,34 +1,50 @@
 const axios = require('axios');
 const moment = require('moment');
-
+//services
 const portfolio = require('../Portfolio');
-// const user = require('../User')
-
+//models
 const { Transaction } = require('./Transaction');
+const { Stock } = require('../Stock/Stock');
 
 const addTransaction = async (arg, userId) => {
   try {
     console.log('createTransaction symbol:' + typeof arg.symbol);
     console.log('createTransaction symbol:' + JSON.stringify(arg.symbol));
+
+    const query = { symbol: arg.symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+
+    const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+
+    const symbolId = await Stock.findOne(query, projection);
+    console.log('addTransaction symbolId typeof:' + typeof symbolId);
+    console.log('addTransaction symbolId:' + JSON.stringify(symbolId));
+
     const stockTransaction = new Transaction({
       price: arg.price,
       qty: arg.qty,
       orderType: arg.orderType,
       userId: userId,
-      symbol: arg.symbol
+      symbolId: symbolId
     });
     const stockTransactionResult = await stockTransaction.save();
 
     // console.log('createTransaction cash:' + typeof cash)
     // console.log('createTransaction cash:' + JSON.stringify(cash))
 
-    const qtyPortfolio = await portfolio.fetchQtyPortfolio(arg, userId);
+    const qtyPortfolio = await portfolio.fetchQtyPortfolio(
+      arg,
+      userId,
+      symbolId
+    );
+    console.log('addTransaction qtyPortfolio:' + typeof qtyPortfolio);
+    console.log('addTransaction qtyPortfolio:' + JSON.stringify(qtyPortfolio));
+
     //verify if you need await
-    await portfolio.updateToPortfolio(arg, qtyPortfolio, userId);
+    await portfolio.updateToPortfolio(qtyPortfolio, userId, symbolId);
 
     console.log(
       'Saved transaction to db Transaction',
-      stockTransactionResult.symbol
+      JSON.stringify(stockTransactionResult)
     );
   } catch (ex) {
     console.log(`addTransaction error: ${ex}`);

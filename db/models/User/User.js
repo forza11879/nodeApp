@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const Schema = mongoose.Schema;
-const ParentSchemaSymbolList = new mongoose.Schema({
+
+const ParentSchema = new mongoose.Schema({
   // _id: Schema.Types.ObjectId,
   name: String,
   email: {
@@ -29,4 +30,4 @@ const ParentSchemaSymbolList = new mongoose.Schema({
   }
 });
 
-module.exports.User = mongoose.model('User', ParentSchemaSymbolList);
+module.exports.User = mongoose.model('User', ParentSchema);

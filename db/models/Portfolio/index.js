@@ -3,62 +3,125 @@ const moment = require('moment');
 
 const { Portfolio } = require('./Portfolio');
 
-const fetchQtyPortfolio = async (arg, userId) => {
+const fetchQtyPortfolio = async (arg, userId, symbolId) => {
   try {
     const orderType = arg.orderType;
+    // console.log('fetchQtyPortfolio orderType:' + typeof orderType);
+    // console.log('fetchQtyPortfolio orderType:' + JSON.stringify(orderType));
+
     let qty = parseInt(arg.qty);
-    // const query = { _id: { userId: userId, symbol: arg.symbol } };
-    const query = { userId: userId, symbol: arg.symbol };
-    // const query = { symbol: arg.symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
-    const projection = { _id: 0 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+    // console.log('fetchQtyPortfolio qty:' + typeof qty);
+    // console.log('fetchQtyPortfolio qty:' + JSON.stringify(qty));
 
-    // let oldQty = await Portfolio.find(query, projection).select("qtyPorfolio")//find returns the Object in the Array [{}]
-    const oldQty = await Portfolio.findOne(query, projection).select(
-      'qtyPortfolio'
-    ); //findOne returns teh Object{} without the Array
-    console.log('old qty:' + typeof oldQty);
-    console.log('old qty:' + JSON.stringify(oldQty));
+    // console.log('fetchQtyPortfolio userId:' + typeof userId);
+    // console.log('fetchQtyPortfolio userId:' + JSON.stringify(userId));
 
-    // if (isEmpty(oldQty)) return qty// Object is empty (Would return true in this example)
-    if (oldQty === null) return qty; // Object is empty (Would return true in this example)
+    // console.log('fetchQtyPortfolio symbolId:' + typeof symbolId);
+    // console.log('fetchQtyPortfolio symbolId:' + JSON.stringify(symbolId));
 
-    // Object is NOT empty
     if (orderType === 'Sell') qty = Math.abs(qty) * -1; //converting positive Number to Negative Number in JavaScript
-    const { qtyPortfolio } = oldQty;
-    console.log('old qty:' + JSON.stringify(qtyPortfolio));
+
+    // console.log('fetchQtyPortfolio qty:' + typeof qty);
+    // console.log('fetchQtyPortfolio qty:' + JSON.stringify(qty));
+
+    const queryDoesExist = { userId: userId, symbolId: symbolId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const projectionDoesExist = {
+      _id: 0,
+      userId: 1,
+      symbolId: 1,
+      qtyPortfolio: 1
+    }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+
+    const doesExist = await Portfolio.findOne(
+      queryDoesExist,
+      projectionDoesExist
+    );
+
+    // console.log('fetchQtyPortfolio doesExist:' + typeof doesExist);
+    // console.log('fetchQtyPortfolio doesExist:' + JSON.stringify(doesExist));
+
+    if (!doesExist) {
+      const stockPortfolio = new Portfolio({
+        qtyPortfolio: qty,
+        userId: userId,
+        symbolId: symbolId
+      });
+
+      const query = {
+        userId: stockPortfolio.userId,
+        symbolId: stockPortfolio.symbolId
+      };
+      const update = {
+        qtyPortfolio: qty,
+        userId: userId,
+        symbolId: symbolId
+      };
+
+      const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+      // upsert: bool - creates the object if it doesn't exist. defaults to false.
+
+      const oldQty = await Portfolio.findOneAndUpdate(
+        query,
+        update,
+        options
+      ).select('qtyPortfolio');
+
+      // console.log('old qty:' + typeof oldQty);
+      // console.log('old qty:' + JSON.stringify(oldQty));
+
+      const { qtyPortfolio } = oldQty;
+      // console.log('old qtyOne:' + JSON.stringify(qtyPortfolio));
+      return qtyPortfolio;
+    }
+
+    const { qtyPortfolio } = doesExist;
+    // console.log('old qtyTwo:' + JSON.stringify(qtyPortfolio));
     return (newQty = qtyPortfolio + qty);
   } catch (ex) {
     console.log(`fetchQtyPortfolio error: ${ex}`);
   }
 };
 
-const updateToPortfolio = async (arg, qtyPortfolio, userId) => {
+const updateToPortfolio = async (qtyPortfolio, userId, symbolId) => {
   try {
+    console.log('updateToPortfolio qtyPortfolio:' + typeof qtyPortfolio);
+    console.log(
+      'updateToPortfolio qtyPortfolio:' + JSON.stringify(qtyPortfolio)
+    );
+
+    console.log('updateToPortfolio userId:' + typeof userId);
+    console.log('updateToPortfolio userId:' + JSON.stringify(userId));
+
+    console.log('updateToPortfolio symbolId:' + typeof symbolId);
+    console.log('updateToPortfolio symbolId:' + JSON.stringify(symbolId));
     const stockPortfolio = new Portfolio({
       qtyPortfolio: qtyPortfolio,
       userId: userId,
-      symbol: arg.symbol
+      symbolId: symbolId
     });
 
     const query = {
       userId: stockPortfolio.userId,
-      symbol: stockPortfolio.symbol
+      symbolId: stockPortfolio.symbolId
     };
     const update = {
       qtyPortfolio: stockPortfolio.qtyPortfolio,
       userId: stockPortfolio.userId,
-      symbol: stockPortfolio.symbol
+      symbolId: stockPortfolio.symbolId
     };
-    // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+
+    const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
-    const options = { upsert: true, new: true };
 
     const stockPortfolioResult = await Portfolio.findOneAndUpdate(
       query,
       update,
       options
     );
-    console.log('Saved portfolio to db Portfolio', stockPortfolioResult.symbol);
+    console.log(
+      'Saved portfolio to db Portfolio',
+      JSON.stringify(stockPortfolioResult)
+    );
   } catch (ex) {
     console.log(`addToPortfolio error: ${ex}`);
   }
