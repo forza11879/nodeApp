@@ -1,6 +1,22 @@
 const Db = require('../db/models/Portfolio');
 const User = require('../db/models/User');
 
+exports.getPortfolioList = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    console.log(`getPortfolioList userId: ${userId}`);
+    const portfolioList = await Db.fetchPortfolioList(userId);
+
+    // console.log(`getPortfolioList Portfolio List: ${portfolioList}`);
+
+    res.render('portfolio', {
+      isAuthenticated: req.session.isLoggedIn //use it when needed - example
+    });
+  } catch (ex) {
+    console.log(`getPortfolioList error${ex}`);
+  }
+};
+
 exports.getBuySellTicket = async (req, res) => {
   try {
     const curValue = req.params.symbol;

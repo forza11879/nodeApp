@@ -3,7 +3,18 @@ const moment = require('moment');
 
 const { Portfolio } = require('./Portfolio');
 
-const fetchQtyPortfolio = async (arg, userId, symbolId) => {
+const fetchPortfolioList = async userId => {
+  try {
+    const query = { userId: userId };
+    const portfolioList = await Portfolio.find(query);
+    console.log(`fetchPortfolioList Portfolio List: ${portfolioList}`);
+    return portfolioList;
+  } catch (ex) {
+    console.log(`fetchPortfolioList error: ${ex}`);
+  }
+};
+
+const fetchQtyPortfolio = async (arg, userId, symbol) => {
   try {
     const orderType = arg.orderType;
     // console.log('fetchQtyPortfolio orderType:' + typeof orderType);
@@ -24,11 +35,11 @@ const fetchQtyPortfolio = async (arg, userId, symbolId) => {
     // console.log('fetchQtyPortfolio qty:' + typeof qty);
     // console.log('fetchQtyPortfolio qty:' + JSON.stringify(qty));
 
-    const queryDoesExist = { userId: userId, symbolId: symbolId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const queryDoesExist = { userId: userId, symbol: symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const projectionDoesExist = {
       _id: 0,
       userId: 1,
-      symbolId: 1,
+      symbol: 1,
       qtyPortfolio: 1
     }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
@@ -44,17 +55,17 @@ const fetchQtyPortfolio = async (arg, userId, symbolId) => {
       const stockPortfolio = new Portfolio({
         qtyPortfolio: qty,
         userId: userId,
-        symbolId: symbolId
+        symbol: symbol
       });
 
       const query = {
         userId: stockPortfolio.userId,
-        symbolId: stockPortfolio.symbolId
+        symbol: stockPortfolio.symbol
       };
       const update = {
         qtyPortfolio: qty,
         userId: userId,
-        symbolId: symbolId
+        symbol: symbol
       };
 
       const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
@@ -82,32 +93,32 @@ const fetchQtyPortfolio = async (arg, userId, symbolId) => {
   }
 };
 
-const updateToPortfolio = async (qtyPortfolio, userId, symbolId) => {
+const updateToPortfolio = async (qtyPortfolio, userId, symbol) => {
   try {
-    console.log('updateToPortfolio qtyPortfolio:' + typeof qtyPortfolio);
-    console.log(
-      'updateToPortfolio qtyPortfolio:' + JSON.stringify(qtyPortfolio)
-    );
+    // console.log('updateToPortfolio qtyPortfolio:' + typeof qtyPortfolio);
+    // console.log(
+    //   'updateToPortfolio qtyPortfolio:' + JSON.stringify(qtyPortfolio)
+    // );
 
-    console.log('updateToPortfolio userId:' + typeof userId);
-    console.log('updateToPortfolio userId:' + JSON.stringify(userId));
+    // console.log('updateToPortfolio userId:' + typeof userId);
+    // console.log('updateToPortfolio userId:' + JSON.stringify(userId));
 
-    console.log('updateToPortfolio symbolId:' + typeof symbolId);
-    console.log('updateToPortfolio symbolId:' + JSON.stringify(symbolId));
+    // console.log('updateToPortfolio symbolId:' + typeof symbolId);
+    // console.log('updateToPortfolio symbolId:' + JSON.stringify(symbolId));
     const stockPortfolio = new Portfolio({
       qtyPortfolio: qtyPortfolio,
       userId: userId,
-      symbolId: symbolId
+      symbol: symbol
     });
 
     const query = {
       userId: stockPortfolio.userId,
-      symbolId: stockPortfolio.symbolId
+      symbol: stockPortfolio.symbol
     };
     const update = {
       qtyPortfolio: stockPortfolio.qtyPortfolio,
       userId: stockPortfolio.userId,
-      symbolId: stockPortfolio.symbolId
+      symbol: stockPortfolio.symbol
     };
 
     const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
@@ -152,6 +163,7 @@ const fetchWebApiQuote = async url => {
 };
 
 module.exports = {
+  fetchPortfolioList,
   fetchWebApiQuote,
   updateToPortfolio,
   fetchQtyPortfolio

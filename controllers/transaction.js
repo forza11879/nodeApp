@@ -15,12 +15,12 @@ exports.postAddTransaction = async (req, res) => {
     await Db.addTransaction(arg, userId);
 
     const cash = await User.fetchCashDB(arg, userId);
-    console.log('fetchCashDB:' + typeof cash);
-    console.log('fetchCashDB:' + JSON.stringify(cash));
+    // console.log('fetchCashDB:' + typeof cash);
+    // console.log('fetchCashDB:' + JSON.stringify(cash));
 
     const updatedUserData = await User.updateCashDB(arg, cash, userId);
-    console.log('updatedUserData:' + typeof updatedUserData);
-    console.log('updatedUserData:' + JSON.stringify(updatedUserData));
+    // console.log('updatedUserData:' + typeof updatedUserData);
+    // console.log('updatedUserData:' + JSON.stringify(updatedUserData));
 
     const data = await Db.fetchWebApiQuote(url);
     res.render('buysell', {

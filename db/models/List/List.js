@@ -44,7 +44,7 @@ const ChildSchemaData = new mongoose.Schema({
 });
 
 const ParentSchema = new mongoose.Schema({
-  _id: false,
+  // _id: false,
   // Array of subdocuments
   data: [ChildSchemaData],
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }

@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const slug = require('slug');
 
 const ChildSchemaData = new mongoose.Schema({
   _id: false,
@@ -13,7 +11,6 @@ const ChildSchemaData = new mongoose.Schema({
 });
 
 const ParentSchemaSymbol = new mongoose.Schema({
-  // _id: false,
   symbol: {
     type: String,
     unique: true,
@@ -24,8 +21,7 @@ const ParentSchemaSymbol = new mongoose.Schema({
     required: 'Please enter a valid symbol, min 1 character'
   },
   // Array of subdocuments
-  data: [ChildSchemaData],
-  slug: String
+  data: [ChildSchemaData]
 });
 
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);

@@ -19,6 +19,7 @@ const saveToDbList = async (symbol, userId) => {
 
     const query = { userId: stockList.userId };
     const update = { $addToSet: { data: stockList.data } };
+    // const update = { data: stockList.data };
     const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
 
