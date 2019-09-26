@@ -3,14 +3,15 @@ const User = require('../db/models/User');
 
 exports.postAddTransaction = async (req, res) => {
   try {
-    const curValue = req.body.symbol;
+    const { symbol } = req.body;
     const arg = req.body;
+    // console.log('postAddTransaction req.body:' + typeof req.body);
+    // console.log('postAddTransaction req.body:' + JSON.stringify(req.body));
     const userId = req.session.user._id;
 
-    // const User = req.user;
     const apiTokenQuote = process.env.API_TOKEN_QUOTE;
 
-    const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
+    const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
     await Db.addTransaction(arg, userId);
 

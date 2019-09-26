@@ -8,17 +8,19 @@ const { Stock } = require('../Stock/Stock');
 
 const addTransaction = async (arg, userId) => {
   try {
+    const { price, qty, orderType, symbol } = arg;
+
     //////////////////
-    // // console.log('createTransaction symbol:' + typeof arg.symbol);
-    // // console.log('createTransaction symbol:' + JSON.stringify(arg.symbol));
+    // console.log('createTransaction symbol:' + typeof arg.symbol);
+    // console.log('createTransaction symbol:' + JSON.stringify(arg.symbol));
 
-    // const query = { symbol: arg.symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const query = { symbol: symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
 
-    // const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+    const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
-    // const symbolId = await Stock.findOne(query, projection);
-    // // console.log('addTransaction symbolId typeof:' + typeof symbolId);
-    // // console.log('addTransaction symbolId:' + JSON.stringify(symbolId));
+    const symbolId = await Stock.findOne(query, projection);
+    console.log('addTransaction symbolId typeof:' + typeof symbolId);
+    console.log('addTransaction symbolId:' + JSON.stringify(symbolId));
 
     ///////////////////
 
@@ -26,12 +28,12 @@ const addTransaction = async (arg, userId) => {
     console.log('createTransaction arg:' + JSON.stringify(arg));
 
     const stockTransaction = new Transaction({
-      price: arg.price,
-      qty: arg.qty,
-      orderType: arg.orderType,
+      price: price,
+      qty: qty,
+      orderType: orderType,
       userId: userId,
-      symbol: arg.symbol
-      // symbolId: symbolId
+      // symbol: arg.symbol
+      symbolId: symbolId
     });
     const stockTransactionResult = await stockTransaction.save();
 
@@ -41,14 +43,14 @@ const addTransaction = async (arg, userId) => {
     const qtyPortfolio = await portfolio.fetchQtyPortfolio(
       arg,
       userId,
-      // symbolId,
-      arg.symbol
+      symbolId
+      // symbol
     );
     // console.log('addTransaction qtyPortfolio:' + typeof qtyPortfolio);
     // console.log('addTransaction qtyPortfolio:' + JSON.stringify(qtyPortfolio));
 
     //verify if you need await
-    await portfolio.updateToPortfolio(qtyPortfolio, userId, arg.symbol);
+    await portfolio.updateToPortfolio(qtyPortfolio, userId, symbolId);
 
     console.log(
       'Saved transaction to db Transaction',

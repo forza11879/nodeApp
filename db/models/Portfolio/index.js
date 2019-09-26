@@ -5,20 +5,38 @@ const { Portfolio } = require('./Portfolio');
 
 const fetchPortfolioList = async userId => {
   try {
-    const query = { userId: userId };
-    const portfolioList = await Portfolio.find(query);
+    // console.log(`fetchPortfolioList userId: ${userId}`);
+    // console.log(`fetchPortfolioList userId: ${JSON.stringify(userId)}`);
+
+    const portfolioList = await Portfolio.aggregate([
+      { $match: { userId: userId } },
+      {
+        $lookup: {
+          from: 'stocks', // collection name in db
+          localField: 'symbolId',
+          foreignField: '_id',
+          as: 'symbolDb'
+        }
+      }
+    ]);
+
+    console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);
     console.log(`fetchPortfolioList Portfolio List: ${portfolioList}`);
+    // console.log(
+    //   `fetchPortfolioList Portfolio List: ${JSON.stringify(portfolioList)}`
+    // );
     return portfolioList;
   } catch (ex) {
     console.log(`fetchPortfolioList error: ${ex}`);
   }
 };
 
-const fetchQtyPortfolio = async (arg, userId, symbol) => {
+const fetchQtyPortfolio = async (arg, userId, symbolId) => {
   try {
-    const orderType = arg.orderType;
-    // console.log('fetchQtyPortfolio orderType:' + typeof orderType);
-    // console.log('fetchQtyPortfolio orderType:' + JSON.stringify(orderType));
+    // const orderType = arg.orderType;
+    const { orderType } = arg;
+    console.log('fetchQtyPortfolio orderType:' + typeof orderType);
+    console.log('fetchQtyPortfolio orderType:' + JSON.stringify(orderType));
 
     let qty = parseInt(arg.qty);
     // console.log('fetchQtyPortfolio qty:' + typeof qty);
@@ -27,19 +45,19 @@ const fetchQtyPortfolio = async (arg, userId, symbol) => {
     // console.log('fetchQtyPortfolio userId:' + typeof userId);
     // console.log('fetchQtyPortfolio userId:' + JSON.stringify(userId));
 
-    // console.log('fetchQtyPortfolio symbolId:' + typeof symbolId);
-    // console.log('fetchQtyPortfolio symbolId:' + JSON.stringify(symbolId));
+    console.log('fetchQtyPortfolio symbolId:' + typeof symbolId);
+    console.log('fetchQtyPortfolio symbolId:' + JSON.stringify(symbolId));
 
     if (orderType === 'Sell') qty = Math.abs(qty) * -1; //converting positive Number to Negative Number in JavaScript
 
     // console.log('fetchQtyPortfolio qty:' + typeof qty);
     // console.log('fetchQtyPortfolio qty:' + JSON.stringify(qty));
 
-    const queryDoesExist = { userId: userId, symbol: symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const queryDoesExist = { userId: userId, symbolId: symbolId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const projectionDoesExist = {
       _id: 0,
       userId: 1,
-      symbol: 1,
+      symbolId: 1,
       qtyPortfolio: 1
     }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
@@ -55,17 +73,17 @@ const fetchQtyPortfolio = async (arg, userId, symbol) => {
       const stockPortfolio = new Portfolio({
         qtyPortfolio: qty,
         userId: userId,
-        symbol: symbol
+        symbolId: symbolId
       });
 
       const query = {
         userId: stockPortfolio.userId,
-        symbol: stockPortfolio.symbol
+        symbolId: stockPortfolio.symbolId
       };
       const update = {
         qtyPortfolio: qty,
         userId: userId,
-        symbol: symbol
+        symbolId: symbolId
       };
 
       const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
@@ -93,7 +111,7 @@ const fetchQtyPortfolio = async (arg, userId, symbol) => {
   }
 };
 
-const updateToPortfolio = async (qtyPortfolio, userId, symbol) => {
+const updateToPortfolio = async (qtyPortfolio, userId, symbolId) => {
   try {
     // console.log('updateToPortfolio qtyPortfolio:' + typeof qtyPortfolio);
     // console.log(
@@ -108,17 +126,17 @@ const updateToPortfolio = async (qtyPortfolio, userId, symbol) => {
     const stockPortfolio = new Portfolio({
       qtyPortfolio: qtyPortfolio,
       userId: userId,
-      symbol: symbol
+      symbolId: symbolId
     });
 
     const query = {
       userId: stockPortfolio.userId,
-      symbol: stockPortfolio.symbol
+      symbolId: stockPortfolio.symbolId
     };
     const update = {
       qtyPortfolio: stockPortfolio.qtyPortfolio,
       userId: stockPortfolio.userId,
-      symbol: stockPortfolio.symbol
+      symbolId: stockPortfolio.symbolId
     };
 
     const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
