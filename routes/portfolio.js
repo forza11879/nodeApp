@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const isAuth = require('../middleware/is-auth');
 const {
+  getPortfolio,
   getPortfolioList,
   getBuySellTicket,
   postBuySellTicket,
   notFoundPage
 } = require('../controllers/portfolio');
 
+router.get('/', isAuth, getPortfolio);
 router.get('/list', isAuth, getPortfolioList);
 router.get('/buysell/:symbol', isAuth, getBuySellTicket);
 router.post('/buysell', postBuySellTicket);
