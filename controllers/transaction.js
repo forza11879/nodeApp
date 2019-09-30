@@ -1,6 +1,20 @@
 const Db = require('../db/models/Transaction');
 const User = require('../db/models/User');
 
+function addTransactionOne(arg, userId) {
+  return Db.addTransaction(arg, userId);
+}
+
+async function updateCashTwo(arg, userId) {
+  const cash = await User.fetchCashDB(arg, userId);
+
+  return User.updateCashDB(arg, cash, userId);
+}
+
+function dataThree(url) {
+  return Db.fetchWebApiQuote(url);
+}
+
 exports.postAddTransaction = async (req, res) => {
   try {
     const { symbol } = req.body;
@@ -13,20 +27,19 @@ exports.postAddTransaction = async (req, res) => {
 
     const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
-    await Db.addTransaction(arg, userId);
+    const promises = [
+      addTransactionOne(arg, userId),
+      updateCashTwo(arg, userId),
+      dataThree(url)
+    ];
 
-    const cash = await User.fetchCashDB(arg, userId);
-    // console.log('fetchCashDB:' + typeof cash);
-    // console.log('fetchCashDB:' + JSON.stringify(cash));
+    const [one, updatedUserDataTwoResult, dataThreeResult] = await Promise.all(
+      promises
+    );
 
-    const updatedUserData = await User.updateCashDB(arg, cash, userId);
-    // console.log('updatedUserData:' + typeof updatedUserData);
-    // console.log('updatedUserData:' + JSON.stringify(updatedUserData));
-
-    const data = await Db.fetchWebApiQuote(url);
     res.render('buysell', {
-      data: data,
-      userData: updatedUserData
+      data: dataThreeResult,
+      userData: updatedUserDataTwoResult
     });
   } catch (ex) {
     console.log(`postAddTransaction error${ex}`);
