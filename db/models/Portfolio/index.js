@@ -20,11 +20,11 @@ const fetchPortfolioList = async userId => {
       }
     ]);
 
-    console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);
+    // console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);
     console.log(`fetchPortfolioList Portfolio List: ${portfolioList}`);
-    console.log(
-      `fetchPortfolioList Portfolio List: ${JSON.stringify(portfolioList)}`
-    );
+    // console.log(
+    //   `fetchPortfolioList Portfolio List: ${JSON.stringify(portfolioList)}`
+    // );
     return portfolioList;
   } catch (ex) {
     console.log(`fetchPortfolioList error: ${ex}`);
@@ -35,8 +35,8 @@ const fetchQtyPortfolio = async (arg, userId, symbolId) => {
   try {
     // const orderType = arg.orderType;
     const { orderType } = arg;
-    console.log('fetchQtyPortfolio orderType:' + typeof orderType);
-    console.log('fetchQtyPortfolio orderType:' + JSON.stringify(orderType));
+    // console.log('fetchQtyPortfolio orderType:' + typeof orderType);
+    // console.log('fetchQtyPortfolio orderType:' + JSON.stringify(orderType));
 
     let qty = parseInt(arg.qty);
     // console.log('fetchQtyPortfolio qty:' + typeof qty);
@@ -45,8 +45,8 @@ const fetchQtyPortfolio = async (arg, userId, symbolId) => {
     // console.log('fetchQtyPortfolio userId:' + typeof userId);
     // console.log('fetchQtyPortfolio userId:' + JSON.stringify(userId));
 
-    console.log('fetchQtyPortfolio symbolId:' + typeof symbolId);
-    console.log('fetchQtyPortfolio symbolId:' + JSON.stringify(symbolId));
+    // console.log('fetchQtyPortfolio symbolId:' + typeof symbolId);
+    // console.log('fetchQtyPortfolio symbolId:' + JSON.stringify(symbolId));
 
     if (orderType === 'Sell') qty = Math.abs(qty) * -1; //converting positive Number to Negative Number in JavaScript
 
@@ -147,10 +147,10 @@ const updateToPortfolio = async (qtyPortfolio, userId, symbolId) => {
       update,
       options
     );
-    console.log(
-      'Saved portfolio to db Portfolio',
-      JSON.stringify(stockPortfolioResult)
-    );
+    // console.log(
+    //   'Saved portfolio to db Portfolio',
+    //   JSON.stringify(stockPortfolioResult)
+    // );
   } catch (ex) {
     console.log(`addToPortfolio error: ${ex}`);
   }

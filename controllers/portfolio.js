@@ -1,10 +1,11 @@
 const Db = require('../db/models/Portfolio');
 const User = require('../db/models/User');
+const Transaction = require('../db/models/Transaction');
 
 exports.getPortfolio = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    console.log(`getPortfolioList userId: ${userId}`);
+    // console.log(`getPortfolioList userId: ${userId}`);
     // const portfolioList = await Db.fetchPortfolioList(userId);
 
     // console.log(`getPortfolioList Portfolio List: ${portfolioList}`);
@@ -20,7 +21,7 @@ exports.getPortfolio = async (req, res) => {
 exports.getPortfolioList = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    console.log(`getPortfolioList userId: ${userId}`);
+    // console.log(`getPortfolioList userId: ${userId}`);
     const portfolioList = await Db.fetchPortfolioList(userId);
 
     // console.log(`getPortfolioList Portfolio List: ${portfolioList}`);

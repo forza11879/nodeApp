@@ -61,6 +61,41 @@ const addTransaction = async (arg, userId) => {
   }
 };
 
+const fetchTotalBuyTradeAmount = async (userId, symbolId) => {
+  try {
+    console.log(`fetchTotalBuyTradeAmount userId: ${userId}`);
+    console.log(`fetchTotalBuyTradeAmount userId: ${JSON.stringify(userId)}`);
+
+    console.log(`fetchTotalBuyTradeAmount symbolId: ${symbolId}`);
+    console.log(
+      `fetchTotalBuyTradeAmount symbolId: ${JSON.stringify(symbolId)}`
+    );
+
+    const totalBuyTradeValue = await Transaction.aggregate([
+      { $match: { userId: userId, symbolId: symbolId, orderType: 'buy' } }
+      // {
+      //   $group: {
+      //     _id: { orderType: 'buy' },
+      //     totalBuyTradeAmount: { $sum: { $multiply: ['$price', '$qty'] } }
+      //   }
+      // }
+    ]);
+
+    // console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);
+    console.log(
+      `fetchTotalBuyTradeAmount Total Buy Trade Value: ${typeof totalBuyTradeValue}`
+    );
+    console.log(
+      `fetchTotalBuyTradeAmount Total Buy Trade Value: ${JSON.stringify(
+        totalBuyTradeValue
+      )}`
+    );
+    return totalBuyTradeValue;
+  } catch (ex) {
+    console.log(`fetchPortfolioList error: ${ex}`);
+  }
+};
+
 const fetchWebApiQuote = async url => {
   try {
     const myJson = await axios.get(url);
@@ -87,5 +122,6 @@ const fetchWebApiQuote = async url => {
 
 module.exports = {
   addTransaction,
-  fetchWebApiQuote
+  fetchWebApiQuote,
+  fetchTotalBuyTradeAmount
 };
