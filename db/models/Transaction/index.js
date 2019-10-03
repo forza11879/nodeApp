@@ -72,13 +72,13 @@ const fetchTotalBuyTradeAmount = async (userId, symbolId) => {
     );
 
     const totalBuyTradeValue = await Transaction.aggregate([
-      { $match: { userId: userId, symbolId: symbolId, orderType: 'buy' } }
-      // {
-      //   $group: {
-      //     _id: { orderType: 'buy' },
-      //     totalBuyTradeAmount: { $sum: { $multiply: ['$price', '$qty'] } }
-      //   }
-      // }
+      { $match: { userId: userId, symbolId: symbolId, orderType: 'buy' } },
+      {
+        $group: {
+          _id: { orderType: '$orderType' },
+          totalBuyTradeAmount: { $sum: { $multiply: ['$price', '$qty'] } }
+        }
+      }
     ]);
 
     // console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);

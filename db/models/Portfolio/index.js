@@ -10,6 +10,12 @@ const fetchPortfolioList = async userId => {
 
     const portfolioList = await Portfolio.aggregate([
       { $match: { userId: userId } },
+      // {
+      //   $group: {
+      //     _id: { orderType: '$orderType' },
+      //     totalBuyTradeAmount: { $sum: { $multiply: ['$price', '$qty'] } }
+      //   }
+      // },
       {
         $lookup: {
           from: 'stocks', // collection name in db
@@ -20,8 +26,51 @@ const fetchPortfolioList = async userId => {
       }
     ]);
 
+    const portfolioListQ = await Portfolio.aggregate([
+      { $match: { userId: userId } },
+      {
+        $lookup: {
+          from: 'stocks', // collection name in db
+          let: { symbolId: '$symbolId' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
+            {
+              $lookup: {
+                from: 'transactions', // collection name in db
+                let: { stockId: '$_id' },
+                pipeline: [
+                  {
+                    $match: {
+                      userId: userId,
+                      $expr: {
+                        $eq: ['$symbolId', '$$stockId']
+                      }
+                      // orderType: 'buy'
+                    }
+                  },
+                  {
+                    $group: {
+                      _id: { orderType: '$orderType' },
+                      totalBuySellTradeAmount: {
+                        $sum: { $multiply: ['$price', '$qty'] }
+                      }
+                    }
+                  }
+                ],
+                as: 'transactionDb'
+              }
+            }
+          ],
+          as: 'symbolDb'
+        }
+      }
+    ]);
+
+    console.log(
+      `fetchPortfolioList Portfolio ListQ: ${JSON.stringify(portfolioListQ)}`
+    );
     // console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);
-    console.log(`fetchPortfolioList Portfolio List: ${portfolioList}`);
+    // console.log(`fetchPortfolioList Portfolio List: ${portfolioList}`);
     // console.log(
     //   `fetchPortfolioList Portfolio List: ${JSON.stringify(portfolioList)}`
     // );
