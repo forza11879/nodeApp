@@ -66,15 +66,15 @@ const fetchPortfolioList = async userId => {
       }
     ]);
 
-    console.log(
-      `fetchPortfolioList Portfolio ListQ: ${JSON.stringify(portfolioListQ)}`
-    );
+    // console.log(
+    //   `fetchPortfolioList Portfolio ListQ: ${JSON.stringify(portfolioListQ)}`
+    // );
     // console.log(`fetchPortfolioList Portfolio List: ${typeof portfolioList}`);
     // console.log(`fetchPortfolioList Portfolio List: ${portfolioList}`);
     // console.log(
     //   `fetchPortfolioList Portfolio List: ${JSON.stringify(portfolioList)}`
     // );
-    return portfolioList;
+    return portfolioListQ;
   } catch (ex) {
     console.log(`fetchPortfolioList error: ${ex}`);
   }
