@@ -30,7 +30,7 @@ class UI {
           item.symbolDb[0].transactionDb[1].totalBuySellTradeAmount
             .$numberDecimal
         );
-        let avrPrice = (buyPrice - sellPrice) / parseFloat(item.qtyPortfolio);
+        let avrPrice = (buyPrice - sellPrice) / parseInt(item.qtyPortfolio);
         // console.log(`sellPrice: ${typeof sellPrice}`);
         // console.log(`sellPrice: ${JSON.stringify(sellPrice)}`);
         // console.log(`buyPrice: ${typeof buyPrice}`);
@@ -41,7 +41,7 @@ class UI {
             <td>${item.symbolDb[0].symbol}</td>
             <td>${item.symbolDb[0].data[0].close.$numberDecimal}</td>
             <td>${item.qtyPortfolio}</td>
-            <td>${avrPrice}</td>
+            <td>${avrPrice.toFixed(2)}</td>
             <td>${item.symbolDb[0].symbol}</td>
          </tr>`;
       })

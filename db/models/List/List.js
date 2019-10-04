@@ -39,7 +39,10 @@ const ChildSchemaData = new mongoose.Schema({
     trim: true,
     minlength: 1,
     maxlength: 50,
-    uppercase: true
+    uppercase: true,
+    require: true,
+    sparse: true // need to look into it
+    // https://stackoverflow.com/questions/24430220/e11000-duplicate-key-error-index-in-mongodb-mongoose
   }
 });
 
