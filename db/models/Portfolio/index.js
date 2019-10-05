@@ -34,6 +34,7 @@ const fetchPortfolioList = async userId => {
           let: { symbolId: '$symbolId' },
           pipeline: [
             { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
+            { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
             {
               $lookup: {
                 from: 'transactions', // collection name in db
