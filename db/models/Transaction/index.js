@@ -5,8 +5,9 @@ const portfolio = require('../Portfolio');
 //models
 const { Transaction } = require('./Transaction');
 const { Stock } = require('../Stock/Stock');
+const ErrorResponse = require('../../../utils/errorResponse');
 
-const addTransaction = async (arg, userId) => {
+const addTransaction = async (arg, userId, next) => {
   try {
     const { price, qty, orderType, symbol } = arg;
 
@@ -19,15 +20,24 @@ const addTransaction = async (arg, userId) => {
 
     const symbolId = await Stock.findOne(query, projection);
 
-    const stockTransaction = new Transaction({
+    // const stockTransaction = new Transaction({
+    //   price: price,
+    //   qty: qty,
+    //   orderType: orderType,
+    //   userId: userId,
+    //   symbolId: symbolId
+    // });
+
+    // stockTransaction.save();
+
+    //error is catched by try/catch
+    Transaction.create({
       price: price,
       qty: qty,
       orderType: orderType,
       userId: userId,
       symbolId: symbolId
     });
-
-    stockTransaction.save();
 
     const portfolioPosition = await portfolio.fetchPortfolioPosition(
       arg,
@@ -39,6 +49,8 @@ const addTransaction = async (arg, userId) => {
     await portfolio.updateToPortfolio(portfolioPosition);
   } catch (ex) {
     console.log(`addTransaction error: ${ex}`);
+    // next(new ErrorResponse(`Error: ${ex}`, 404));
+    // next(ex);
   }
 };
 

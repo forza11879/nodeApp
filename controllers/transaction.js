@@ -1,9 +1,10 @@
 const Db = require('../db/models/Transaction');
 const User = require('../db/models/User');
 const { Stock } = require('../db/models/Stock/Stock');
+// const ErrorResponse = require('../utils/errorResponse');
 
-function addTransaction(arg, userId) {
-  return Db.addTransaction(arg, userId);
+function addTransaction(arg, userId, next) {
+  return Db.addTransaction(arg, userId, next);
 }
 
 async function updateCash(arg, userId) {
@@ -16,7 +17,7 @@ function fetchData(url) {
   return Db.fetchWebApiQuote(url);
 }
 
-exports.postAddTransaction = async (req, res) => {
+exports.postAddTransaction = async (req, res, next) => {
   try {
     const { symbol } = req.body;
     const arg = req.body;
@@ -29,7 +30,7 @@ exports.postAddTransaction = async (req, res) => {
     const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
     const promises = [
-      addTransaction(arg, userId),
+      addTransaction(arg, userId, next),
       updateCash(arg, userId),
       fetchData(url)
     ];
@@ -44,5 +45,6 @@ exports.postAddTransaction = async (req, res) => {
     });
   } catch (ex) {
     console.log(`postAddTransaction error${ex}`);
+    // next(new ErrorResponse(`Error: ${err}`, 404));
   }
 };

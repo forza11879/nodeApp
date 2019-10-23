@@ -2,9 +2,15 @@ const path = require('path');
 // const fs = require('fs')
 // const https = require('https')
 const express = require('express');
+const morgan = require('morgan');
+const errorHandler = require('./middleware/error');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
+
+// Dev logging middleware - ONLY in development
+app.use(morgan('dev'));
+
 // const User = require('../db/models/User');
 const User = require('./db/models/User');
 
@@ -15,7 +21,7 @@ const store = new MongoDBStore({
   uri: process.env.MONGODB_URL,
   collection: 'sessions'
 });
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 // const exphbs = require('express-handlebars');
 const authRoute = require('./routes/auth');
 const transactionRoute = require('./routes/transaction');
@@ -33,8 +39,11 @@ const port = process.env.PORT;
 // app.use(express.cookieParser());
 
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json()); //utilizes the body-parser package
+// Takes the raw requests(like forms) and turns them into usable properties on req.body
+app.use(express.urlencoded()); //Parse URL-encoded bodies
+app.use(express.json()); //Used to parse JSON bodies
 
 // // Handlebars Middleware - express-handlebars
 // app.engine(
@@ -84,6 +93,7 @@ app.use((req, res, next) => {
 //   next();
 // });
 
+//Mount Rout
 app.use('/auth', authRoute);
 app.use('/transaction', transactionRoute);
 app.use('/portfolio', portfolioRoute);
@@ -91,6 +101,8 @@ app.use('/stock', stockRoute);
 app.use('/list', listRoute);
 app.use('/', mainRoute);
 app.use('*', errorRoute);
+
+app.use(errorHandler);
 
 // hbs.registerHelper('getCurrentYear', () => {
 //   return new Date().getFullYear();

@@ -18,7 +18,7 @@ const ParentSchemaSymbol = new mongoose.Schema({
     minlength: 1,
     maxlength: 50,
     uppercase: true,
-    required: 'Please enter a valid symbol, min 1 character'
+    required: [true, 'Please enter a valid symbol, min 1 character']
   },
   // Array of subdocuments
   data: [ChildSchemaData]

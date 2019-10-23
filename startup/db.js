@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
-module.exports.connectDb = () => {
+//VERIFY async/await
+module.exports.connectDb = async () => {
   mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
   // Connect to our Database and handle any bad connections
 
-  mongoose.connect(process.env.MONGODB_URL, {
+  await mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false

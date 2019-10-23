@@ -76,14 +76,22 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
     const doesExistDoc = await Portfolio.findOne(query, projection);
 
     if (!doesExistDoc) {
-      const stockPortfolio = new Portfolio({
+      // const stockPortfolio = new Portfolio({
+      //   qtyPortfolio: qty,
+      //   avgPrice: price,
+      //   userId: userId,
+      //   symbolId: symbolId
+      // });
+
+      // await stockPortfolio.save();
+
+      // error is catched by try/catch
+      await Portfolio.create({
         qtyPortfolio: qty,
         avgPrice: price,
         userId: userId,
         symbolId: symbolId
       });
-
-      await stockPortfolio.save();
 
       const queryP = { userId: userId, symbolId: symbolId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
       const projectionP = {
@@ -121,7 +129,7 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
       symbolId: symbolId
     };
   } catch (ex) {
-    console.log(`fetchQtyPortfolio error: ${ex}`);
+    console.log(`fetchPortfolioPosition error: ${ex}`);
   }
 };
 
