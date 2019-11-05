@@ -1,7 +1,6 @@
 const Db = require('../db/models/Transaction');
 const User = require('../db/models/User');
 const { Stock } = require('../db/models/Stock/Stock');
-// const ErrorResponse = require('../utils/errorResponse');
 
 function addTransaction(arg, userId, next) {
   return Db.addTransaction(arg, userId, next);
@@ -45,6 +44,5 @@ exports.postAddTransaction = async (req, res, next) => {
     });
   } catch (ex) {
     console.log(`postAddTransaction error${ex}`);
-    // next(new ErrorResponse(`Error: ${err}`, 404));
   }
 };

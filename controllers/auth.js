@@ -42,18 +42,15 @@ exports.postLogout = (req, res) => {
 
 exports.postSignup = async (req, res) => {
   try {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const { name, email, password } = req.body;
     const confirmPassword = req.body.confirmPassword;
     console.log(email, name, password);
-    // const userDoc = await UserModal.findUserEmailDB(email);
     const userDoc = await User.findOne({ email: email });
     if (userDoc) {
       console.log('User already in DB');
       return res.redirect('/');
     }
-    await UserModal.creatUser(name, email, password);
+    await User.create({ name, email, password });
     res.redirect('/');
   } catch (ex) {
     console.log(`postSignup error: ${ex}`);

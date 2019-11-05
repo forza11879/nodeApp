@@ -106,10 +106,11 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
       return Portfolio.findOne(queryP, projectionP);
     }
     const { qtyPortfolio, avgPrice } = doesExistDoc;
+    newQty = qtyPortfolio + qty;
 
     if (orderType === 'Buy') {
-      const newAvgPrice = (avgPrice + price) / 2;
-      newQty = qtyPortfolio + qty;
+      const newAvgPrice = (avgPrice * qtyPortfolio + price * qty) / newQty;
+
       console.log('Position already exist buy order');
       return {
         avgPrice: newAvgPrice,
@@ -119,7 +120,6 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
       };
     }
 
-    newQty = qtyPortfolio + qty;
     console.log('Position already exist sell order');
 
     return {
