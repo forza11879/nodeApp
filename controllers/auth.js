@@ -1,36 +1,50 @@
 const bcrypt = require('bcryptjs');
+const colors = require('colors');
 
 const UserModal = require('../db/models/User');
 const { User } = require('../db/models/User/User');
+const asyncHandler = require('../middleware/async');
+const ErrorResponse = require('../utils/errorResponse');
 
-exports.postLogin = async (req, res) => {
+// @desc      Post Login
+// @route     POST /auth/login
+// @access    Public
+exports.postLogin = asyncHandler(async (req, res, next) => {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ email: email });
+    // Validate emil & password
+    if (!email || !password) {
+      return next(
+        new ErrorResponse('Please provide an email and password', 400)
+      );
+      // return res.redirect('/');
+    }
+    const user = await User.findOne({ email: email }).select('+password');
 
     if (!user) {
-      return res.redirect('/');
+      return next(new ErrorResponse('Invalid credentials', 401));
+      // return res.redirect('/');
     }
     const doMatch = await bcrypt.compare(password, user.password);
 
-    if (doMatch) {
-      console.log('password doMatch');
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      return req.session.save(err => {
-        console.log(err);
-        res.redirect('/list'); // it is better to save() before re-directing cause redirect() might hapend before the new session was created in DB
-      });
+    if (!doMatch) {
+      console.log('password !doMatch');
+      return next(new ErrorResponse('Invalid credentials', 401));
+      // res.redirect('/');
     }
-    console.log('password !doMatch');
-    res.redirect('/');
+    console.log('password doMatch');
+    req.session.isLoggedIn = true;
+    req.session.user = user;
+    return req.session.save(err => {
+      console.log(err);
+      res.redirect('/list'); // it is better to save() before re-directing cause redirect() might hapend before the new session was created in DB
+    });
   } catch (ex) {
     console.log(`postLogin error: ${ex}`);
     res.redirect('/');
   }
-};
+});
 
 exports.postLogout = (req, res) => {
   console.log('logged out');

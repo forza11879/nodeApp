@@ -1,9 +1,4 @@
 document.addEventListener('DOMContentLoaded', requestPortfolioList);
-// const requestPortfolioList = document.querySelector('#portfolioList');
-// const symbolTagsList = document.querySelector('#symbolTagsList');
-
-// requestPortfolioList.addEventListener('click', requestSymbolSearchList);
-// symbolTagsList.addEventListener('keyup', executeEnterKey);
 
 function executeEnterKey(event) {
   // event.preventDefault()
@@ -17,8 +12,6 @@ class UI {
     this.show = document.querySelector('#porfolioList');
   }
   showData(portfolio) {
-    // const userId = '5d5f6afb11a620047486274d';
-    // const userId = req.session.use._id;
     console.log(portfolio);
     this.show.innerHTML = portfolio
       .map(item => {

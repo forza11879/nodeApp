@@ -20,7 +20,7 @@ const ParentSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     required: true
-    // select: false --- select: {Boolean} - Specifies default path selection behavior. In other words, you can specify if this path should be included or excluded from query results by default.----By default it is not going to return the password when fetching a query. We have to SELECT the field to return it
+    //select: false //--- select: {Boolean} - Specifies default path selection behavior. In other words, you can specify if this path should be included or excluded from query results by default.----By default it is not going to return the password when fetching a query. We have to SELECT the field to return it
   },
   resetToken: String,
   resetTokenExperation: Date,

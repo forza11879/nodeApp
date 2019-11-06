@@ -1,3 +1,4 @@
+const colors = require('colors');
 const ErrorResponse = require('../utils/errorResponse');
 
 const errorHandler = (err, req, res, next) => {
@@ -6,8 +7,11 @@ const errorHandler = (err, req, res, next) => {
   error.message = err.message;
 
   // Log to console for dev
-  console.log(`Error response error name: ${err.name}`);
-  console.log(`Error response error name: ${err}`);
+  console.log(`Error response error name: ${err.name}`.underline);
+  console.log(`Error response error name: ${JSON.stringify(err)}`);
+  console.log(`Error response error name: ${JSON.stringify(error)}`);
+  console.log(`Error response error name: ${error.message}`.red);
+  console.log(`Error response error name: ${err.message}`.red);
 
   // Mongoose bad ObjectId
   if (err.name === 'CastError') {
@@ -27,10 +31,20 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(message, 400);
   }
 
-  res.status(error.statusCode || 500).json({
+  // res.redirect('/', {
+  //   success: false,
+  //   error: error.message || 'Server Error'
+  // });
+  res.render('landing', {
     success: false,
-    error: error.message || 'Server Error'
+    statusCode: error.statusCode || 500,
+    error: error.message || 'Server Error',
+    isAuthenticated: req.session.isLoggedIn
   });
+  // res.status(error.statusCode || 500).json({
+  //   success: false,
+  //   error: error.message || 'Server Error'
+  // });
 };
 
 module.exports = errorHandler;
