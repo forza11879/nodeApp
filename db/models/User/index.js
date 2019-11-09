@@ -28,17 +28,13 @@ const fetchCashDB = async (arg, userId) => {
   }
 };
 
-const updateCashDB = async (arg, cash, userId) => {
+const updateCashDB = async (cash, userId) => {
   try {
     console.log('updateCashDB cash as the arg:' + JSON.stringify(cash));
-    const stockUser = new User({
-      _id: userId,
-      cash: cash
-    });
+    const query = { _id: userId };
 
-    const query = { _id: stockUser._id };
     const update = {
-      cash: stockUser.cash
+      cash: cash
     };
     // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.

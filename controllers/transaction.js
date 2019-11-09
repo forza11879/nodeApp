@@ -9,7 +9,7 @@ function addTransaction(arg, userId, next) {
 async function updateCash(arg, userId) {
   const cash = await User.fetchCashDB(arg, userId);
 
-  return User.updateCashDB(arg, cash, userId);
+  return User.updateCashDB(cash, userId);
 }
 
 function fetchData(url) {

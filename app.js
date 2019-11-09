@@ -74,14 +74,15 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  // console.log(req.session.user);
-  if (!req.session.user) {
+  const { user } = req.session;
+  // console.log(user);
+  if (!user) {
     return next();
   }
-  User.findById({ _id: req.session.user._id })
+  User.findById({ _id: user._id })
     .select('_id name cash equity')
-    .then(user => {
-      req.user = user;
+    .then(userItem => {
+      req.user = userItem;
       next();
     })
     .catch(err => console.log(err));
