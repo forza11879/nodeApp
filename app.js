@@ -12,7 +12,8 @@ const app = express();
 app.use(morgan('dev'));
 
 // const User = require('../db/models/User');
-const User = require('./db/models/User');
+// const User = require('./db/models/User');
+const { User } = require('./db/models/User/User');
 
 // const helmet = require('helmet')
 // const compression = require('compression')
@@ -77,7 +78,8 @@ app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
-  User.fetchUserDataDB(req.session.user._id)
+  User.findById({ _id: req.session.user._id })
+    .select('_id name cash equity')
     .then(user => {
       req.user = user;
       next();

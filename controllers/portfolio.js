@@ -1,5 +1,6 @@
 const Db = require('../db/models/Portfolio');
-const User = require('../db/models/User');
+const UserModal = require('../db/models/User');
+const { User } = require('../db/models/User/User');
 const Transaction = require('../db/models/Transaction');
 
 exports.getPortfolio = async (req, res) => {
@@ -43,7 +44,9 @@ exports.getBuySellTicket = async (req, res) => {
     const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 
     const data = await Db.fetchWebApiQuote(url);
-    const userData = await User.fetchUserDataDB(userId);
+    const userData = await User.findById({ _id: userId }).select(
+      '_id name cash equity'
+    );
 
     res.render('buysell', {
       data: data,
@@ -64,7 +67,7 @@ exports.postBuySellTicket = async (req, res) => {
     const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
 
     const data = await Db.fetchWebApiQuote(url);
-    const userData = await User.fetchUserDataDB(userId);
+    const userData = await UserModal.fetchUserDataDB(userId);
 
     res.render('buysell', {
       data: data,
