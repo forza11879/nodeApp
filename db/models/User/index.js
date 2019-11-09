@@ -1,14 +1,12 @@
-const bcrypt = require('bcryptjs');
-
 const { User } = require('./User');
 
-const fetchCashDB = async (arg, userId) => {
+const fetchNewCash = async (arg, userId) => {
   try {
     const orderType = arg.orderType;
     const qty = parseInt(arg.qty);
     const price = parseFloat(arg.price);
     let transactionAmount = qty * price;
-    console.log('fetchCashDB function for userId:' + userId);
+    console.log('fetchNewCash function for userId:' + userId);
 
     const query = { _id: userId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
 
@@ -24,7 +22,7 @@ const fetchCashDB = async (arg, userId) => {
     console.log('destructor cash:' + JSON.stringify(cash));
     return (newCash = parseFloat(cash) - transactionAmount);
   } catch (ex) {
-    console.log(`fetchCashDB error: ${ex}`);
+    console.log(`fetchNewCash error: ${ex}`);
   }
 };
 
@@ -59,6 +57,6 @@ const updateCashDB = async (cash, userId) => {
 };
 
 module.exports = {
-  fetchCashDB,
+  fetchNewCash,
   updateCashDB
 };

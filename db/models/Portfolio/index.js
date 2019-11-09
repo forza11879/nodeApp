@@ -2,6 +2,31 @@ const axios = require('axios');
 const moment = require('moment');
 //model
 const { Portfolio } = require('./Portfolio');
+const { Stock } = require('../Stock/Stock.js');
+
+const removeZeroPosition = async (userId, arg) => {
+  try {
+    const { symbol } = arg;
+    console.log(`argument removeZeroPosition: ${typeof symbol}`);
+    console.log(`argument removeZeroPosition: ${JSON.stringify(symbol)}`);
+    const query = { symbol: symbol };
+    const projection = { _id: 1 };
+    const symbolId = await Stock.findOne(query, projection);
+    console.log(`argument removeZeroPosition: ${typeof symbolId}`);
+    console.log(`argument removeZeroPosition: ${JSON.stringify(symbolId)}`);
+
+    const queryP = { userId: userId, symbolId: symbolId };
+    const position = await Portfolio.findOne(queryP);
+    console.log(`removeZeroPosition userId: ${typeof position.qtyPortfolio}`);
+    console.log(
+      `removeZeroPosition userId: ${JSON.stringify(position.qtyPortfolio)}`
+    );
+    if (position.qtyPortfolio === 0) await Portfolio.deleteOne(queryP);
+  } catch (err) {
+    console.error(`erro from removeZeroPosition${err}`.red);
+    console.log(`erro from removeZeroPosition${err}`.red);
+  }
+};
 
 const fetchPortfolioList = async userId => {
   try {
@@ -200,5 +225,6 @@ module.exports = {
   fetchPortfolioList,
   fetchWebApiQuote,
   updateToPortfolio,
-  fetchPortfolioPosition
+  fetchPortfolioPosition,
+  removeZeroPosition
 };

@@ -1,13 +1,15 @@
 const Db = require('../db/models/Transaction');
 const User = require('../db/models/User');
+const Portfolio = require('../db/models/Portfolio');
 const { Stock } = require('../db/models/Stock/Stock');
 
-function addTransaction(arg, userId, next) {
-  return Db.addTransaction(arg, userId, next);
+async function addTransaction(arg, userId, next) {
+  await Db.addTransaction(arg, userId, next);
+  await Portfolio.removeZeroPosition(userId, arg);
 }
 
 async function updateCash(arg, userId) {
-  const cash = await User.fetchCashDB(arg, userId);
+  const cash = await User.fetchNewCash(arg, userId);
 
   return User.updateCashDB(cash, userId);
 }
