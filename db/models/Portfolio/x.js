@@ -38,3 +38,20 @@ ParentSchema.virtual('portfolioSymbol', {
 // https://mongoosejs.com/docs/populate.html#populate-virtuals
 
 module.exports.Portfolio = mongoose.model('Portfolio', ParentSchema);
+
+// After save
+// ParentSchema.pre('save', async function(next) {
+//   try {
+//     const query = { userId: this.userId, symbolId: this.symbolId };
+//     if (this.qtyPortfolio === 0) {
+//       console.log(`console Pre SAVE`.red);
+//       console.log(`User ID ${this.userId}`.red);
+//       console.log(`Symbol ID ${this.symbolId}`.red);
+
+//       await this.model('Portfolio').deleteOne(query);
+//     }
+//     next();
+//   } catch (err) {
+//     console.log(`error from Pre SAVE hook${err}`.red);
+//   }
+// });

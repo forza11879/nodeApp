@@ -1,3 +1,4 @@
+const colors = require('colors');
 const axios = require('axios');
 const moment = require('moment');
 //model
@@ -65,7 +66,7 @@ const fetchPortfolioList = async userId => {
 
     return portfolioListQ;
   } catch (ex) {
-    console.log(`fetchPortfolioList error: ${ex}`);
+    console.log(`fetchPortfolioList error: ${ex}`.red);
   }
 };
 
@@ -144,7 +145,7 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
       symbolId: symbolId
     };
   } catch (ex) {
-    console.log(`fetchPortfolioPosition error: ${ex}`);
+    console.log(`fetchPortfolioPosition error: ${ex}`.red);
   }
 };
 
@@ -186,10 +187,10 @@ const updateToPortfolio = async portfolioPosition => {
       update,
       options
     );
-    // no need to USE save() but to implement pre('save') hook on shenma levele we need to trigger it with the save() since it is not triggered by findOneAndUpdate() -  https://mongoosejs.com/docs/middleware.html#types-of-middleware **** Notes on findAndUpdate() and Query Middleware
+    // no need to USE save() but to implement pre('save') hook on shema level we need to trigger it with the save() since it is not triggered by findOneAndUpdate() -  https://mongoosejs.com/docs/middleware.html#types-of-middleware **** Notes on findAndUpdate() and Query Middleware
     portfolioUpdate.save();
   } catch (ex) {
-    console.log(`addToPortfolio error: ${ex}`);
+    console.log(`updateToPortfolio error: ${ex}`.red);
   }
 };
 
@@ -213,7 +214,7 @@ const fetchWebApiQuote = async url => {
       previousClose: myJsonData['previousClose']
     };
   } catch (ex) {
-    console.log(`fetchWebApiQuote error: ${ex}`);
+    console.log(`fetchWebApiQuote error: ${ex}`.red);
   }
 };
 
