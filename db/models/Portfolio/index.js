@@ -7,21 +7,11 @@ const { Stock } = require('../Stock/Stock.js');
 const removeZeroPosition = async (userId, arg) => {
   try {
     const { symbol } = arg;
-    console.log(`argument removeZeroPosition: ${typeof symbol}`);
-    console.log(`argument removeZeroPosition: ${JSON.stringify(symbol)}`);
-    const query = { symbol: symbol };
-    const projection = { _id: 1 };
-    const symbolId = await Stock.findOne(query, projection);
-    console.log(`argument removeZeroPosition: ${typeof symbolId}`);
-    console.log(`argument removeZeroPosition: ${JSON.stringify(symbolId)}`);
+    const symbolId = await Stock.findOne({ symbol: symbol }, { _id: 1 });
 
-    const queryP = { userId: userId, symbolId: symbolId };
-    const position = await Portfolio.findOne(queryP);
-    console.log(`removeZeroPosition userId: ${typeof position.qtyPortfolio}`);
-    console.log(
-      `removeZeroPosition userId: ${JSON.stringify(position.qtyPortfolio)}`
-    );
-    if (position.qtyPortfolio === 0) await Portfolio.deleteOne(queryP);
+    const query = { userId: userId, symbolId: symbolId };
+    const position = await Portfolio.findOne(query);
+    if (position.qtyPortfolio === 0) await Portfolio.deleteOne(query);
   } catch (err) {
     console.error(`erro from removeZeroPosition${err}`.red);
     console.log(`erro from removeZeroPosition${err}`.red);
@@ -191,7 +181,13 @@ const updateToPortfolio = async portfolioPosition => {
     const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
 
-    await Portfolio.findOneAndUpdate(query, update, options);
+    const portfolioUpdate = await Portfolio.findOneAndUpdate(
+      query,
+      update,
+      options
+    );
+    // no need to USE save() but to implement pre('save') hook on shenma levele we need to trigger it with the save() since it is not triggered by findOneAndUpdate() -  https://mongoosejs.com/docs/middleware.html#types-of-middleware **** Notes on findAndUpdate() and Query Middleware
+    portfolioUpdate.save();
   } catch (ex) {
     console.log(`addToPortfolio error: ${ex}`);
   }

@@ -5,7 +5,7 @@ const { Stock } = require('../db/models/Stock/Stock');
 
 async function addTransaction(arg, userId, next) {
   await Db.addTransaction(arg, userId, next);
-  await Portfolio.removeZeroPosition(userId, arg);
+  // await Portfolio.removeZeroPosition(userId, arg);
 }
 
 async function updateCash(arg, userId) {
