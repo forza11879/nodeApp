@@ -1,7 +1,8 @@
+/* eslint-disable object-shorthand */
 const colors = require('colors');
 const axios = require('axios');
 const moment = require('moment');
-//model
+// model
 const { Portfolio } = require('./Portfolio');
 const { Stock } = require('../Stock/Stock.js');
 
@@ -24,7 +25,7 @@ const fetchPortfolioList = async userId => {
     // console.log(`fetchPortfolioList userId: ${userId}`);
     // console.log(`fetchPortfolioList userId: ${JSON.stringify(userId)}`);
 
-    const portfolioListQ = await Portfolio.aggregate([
+    const portfolioList = await Portfolio.aggregate([
       { $match: { userId: userId } },
       {
         $lookup: {
@@ -33,38 +34,13 @@ const fetchPortfolioList = async userId => {
           pipeline: [
             { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
             { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
-            {
-              $lookup: {
-                from: 'transactions', // collection name in db
-                let: { stockId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      userId: userId,
-                      $expr: {
-                        $eq: ['$symbolId', '$$stockId']
-                      }
-                    }
-                  },
-                  {
-                    $group: {
-                      _id: { orderType: '$orderType' },
-                      totalBuySellTradeAmount: {
-                        $sum: { $multiply: ['$price', '$qty'] }
-                      }
-                    }
-                  }
-                ],
-                as: 'transactionDb'
-              }
-            }
           ],
-          as: 'symbolDb'
-        }
-      }
+          as: 'symbolDb',
+        },
+      },
     ]);
 
-    return portfolioListQ;
+    return portfolioList;
   } catch (ex) {
     console.log(`fetchPortfolioList error: ${ex}`.red);
   }
@@ -72,57 +48,46 @@ const fetchPortfolioList = async userId => {
 
 const fetchPortfolioPosition = async (arg, userId, symbolId) => {
   try {
-    let newQty;
     const { orderType } = arg;
 
     let qty = parseInt(arg.qty);
     const price = parseFloat(arg.price);
 
-    if (orderType === 'Sell') qty = Math.abs(qty) * -1; //converting positive Number to Negative Number in JavaScript
+    if (orderType === 'Sell') qty = Math.abs(qty) * -1; // converting positive Number to Negative Number in JavaScript
 
-    const query = { userId: userId, symbolId: symbolId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const query = { userId: userId, symbolId: symbolId }; // Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
     const projection = {
       _id: 0,
       userId: 1,
       symbolId: 1,
       qtyPortfolio: 1,
-      avgPrice: 1
+      avgPrice: 1,
     }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
     const doesExistDoc = await Portfolio.findOne(query, projection);
 
     if (!doesExistDoc) {
-      // const stockPortfolio = new Portfolio({
-      //   qtyPortfolio: qty,
-      //   avgPrice: price,
-      //   userId: userId,
-      //   symbolId: symbolId
-      // });
-
-      // await stockPortfolio.save();
-
-      // error is catched by try/catch
       await Portfolio.create({
         qtyPortfolio: qty,
         avgPrice: price,
         userId: userId,
-        symbolId: symbolId
+        symbolId: symbolId,
       });
 
-      const queryP = { userId: userId, symbolId: symbolId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+      const queryP = { userId: userId, symbolId: symbolId }; // Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
       const projectionP = {
         _id: 0,
         userId: 1,
         symbolId: 1,
         qtyPortfolio: 1,
-        avgPrice: 1
+        avgPrice: 1,
       }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
       console.log('New Position');
 
       return Portfolio.findOne(queryP, projectionP);
     }
     const { qtyPortfolio, avgPrice } = doesExistDoc;
-    newQty = qtyPortfolio + qty;
+    const newQty = qtyPortfolio + qty;
 
     if (orderType === 'Buy') {
       const newAvgPrice = (avgPrice * qtyPortfolio + price * qty) / newQty;
@@ -132,7 +97,7 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
         avgPrice: newAvgPrice,
         qtyPortfolio: newQty,
         userId: userId,
-        symbolId: symbolId
+        symbolId: symbolId,
       };
     }
 
@@ -142,7 +107,7 @@ const fetchPortfolioPosition = async (arg, userId, symbolId) => {
       avgPrice: avgPrice,
       qtyPortfolio: newQty,
       userId: userId,
-      symbolId: symbolId
+      symbolId: symbolId,
     };
   } catch (ex) {
     console.log(`fetchPortfolioPosition error: ${ex}`.red);
@@ -165,18 +130,18 @@ const updateToPortfolio = async portfolioPosition => {
       qtyPortfolio: qtyPortfolio,
       avgPrice: avgPrice,
       userId: userId,
-      symbolId: symbolId
+      symbolId: symbolId,
     });
 
     const query = {
       userId: stockPortfolio.userId,
-      symbolId: stockPortfolio.symbolId
+      symbolId: stockPortfolio.symbolId,
     };
     const update = {
       qtyPortfolio: stockPortfolio.qtyPortfolio,
       avgPrice: stockPortfolio.avgPrice,
       userId: stockPortfolio.userId,
-      symbolId: stockPortfolio.symbolId
+      symbolId: stockPortfolio.symbolId,
     };
 
     const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
@@ -187,8 +152,8 @@ const updateToPortfolio = async portfolioPosition => {
       update,
       options
     );
-    // no need to USE save() but to implement pre('save') hook on shema level we need to trigger it with the save() since it is not triggered by findOneAndUpdate() -  https://mongoosejs.com/docs/middleware.html#types-of-middleware **** Notes on findAndUpdate() and Query Middleware
-    portfolioUpdate.save();
+    // no need to USE save() but to implement pre('save') hook on shema level we need to trigger it with the save() since it is not triggered by findOneAndUpdate() -  https://mongoosejs.com/docs/middleware.html#types-of-middleware **** Notes on findAndUpdate() and Query Middleware *** https://medium.com/@micahbales/keeping-mongodb-attributes-in-sync-can-be-tricky-but-theres-more-than-one-way-to-skin-a-cat-dcbe500d6bd1
+    await portfolioUpdate.save();
   } catch (ex) {
     console.log(`updateToPortfolio error: ${ex}`.red);
   }
@@ -199,19 +164,19 @@ const fetchWebApiQuote = async url => {
     const myJson = await axios.get(url);
     const myJsonData = myJson.data;
     return {
-      symbol: myJsonData['symbol'],
-      companyName: myJsonData['companyName'],
-      latestPrice: myJsonData['latestPrice'],
-      change: myJsonData['change'],
-      latestUpdate: moment(myJsonData['latestUpdate'])
+      symbol: myJsonData.symbol,
+      companyName: myJsonData.companyName,
+      latestPrice: myJsonData.latestPrice,
+      change: myJsonData.change,
+      latestUpdate: moment(myJsonData.latestUpdate)
         .utcOffset(-240)
         .format('LLLL'),
-      high: myJsonData['high'],
-      low: myJsonData['low'],
-      week52High: myJsonData['week52High'],
-      week52Low: myJsonData['week52Low'],
-      open: myJsonData['open'],
-      previousClose: myJsonData['previousClose']
+      high: myJsonData.high,
+      low: myJsonData.low,
+      week52High: myJsonData.week52High,
+      week52Low: myJsonData.week52Low,
+      open: myJsonData.open,
+      previousClose: myJsonData.previousClose,
     };
   } catch (ex) {
     console.log(`fetchWebApiQuote error: ${ex}`.red);
@@ -223,5 +188,5 @@ module.exports = {
   fetchWebApiQuote,
   updateToPortfolio,
   fetchPortfolioPosition,
-  removeZeroPosition
+  removeZeroPosition,
 };

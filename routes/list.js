@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const isAuth = require('../middleware/is-auth');
+
+const router = express.Router();
 
 const { getWebApiList, getList } = require('../controllers/list');
 

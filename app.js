@@ -43,7 +43,7 @@ const port = process.env.PORT;
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json()); //utilizes the body-parser package
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
-app.use(express.urlencoded()); //Parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
 app.use(express.json()); //Used to parse JSON bodies
 
 // // Handlebars Middleware - express-handlebars

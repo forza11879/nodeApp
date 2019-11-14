@@ -1,8 +1,10 @@
 {
-  "extends": ["airbnb", "prettier", "prettier/react"],
+  // "extends": ["airbnb", "prettier", "prettier/react"],
+  "extends": ["wesbos"],
   "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
+    // Can I remove these now?
     "ecmaFeatures": {
       "impliedStrict": true,
       "classes": true
@@ -105,10 +107,9 @@
       {
         "aspects": ["invalidHref"]
       }
-    ]
+    ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
-  "plugins": [
-    // "html",
-    "prettier"
-  ]
+  "plugins": ["html", "prettier", "react-hooks"]
 }

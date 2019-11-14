@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node app.js",
-    "dev": "env-cmd ./config/dev.env nodemon app.js -e js, hbs"
+    "dev": "env-cmd ./config/dev.env nodemon app.js -e js, hbs",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix"
   },
   "author": "",
   "license": "ISC",
@@ -39,7 +41,19 @@
     "validator": "^11.1.0"
   },
   "devDependencies": {
+    "babel-eslint": "^9.0.0",
     "env-cmd": "^8.0.2",
-    "nodemon": "^1.19.1"
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-wesbos": "0.0.19",
+    "eslint-plugin-html": "^5.0.5",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.19.1"
   }
 }

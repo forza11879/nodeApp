@@ -1,8 +1,38 @@
-const Db = require('../db/models/Stock');
+const Db = require("../db/models/Stock");
+const { Stock } = require("../db/models/Stock/Stock");
+
+exports.getSymbolId = async (req, res) => {
+  try {
+    const { symbol } = req.params;
+
+    console.log("getSymbolId symbol:" + typeof symbol);
+    console.log("getSymbolId symbol:" + JSON.stringify(symbol));
+
+    const query = { symbol: symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+
+    const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+
+    const symbolId = await Stock.findOne(query, projection);
+    console.log("getSymbolId symbol:" + typeof symbolId._id);
+    console.log("getSymbolId symbol:" + JSON.stringify(symbolId._id));
+
+    console.log("getSymbolId req.params:" + typeof req.params);
+    console.log("getSymbolId req.params:" + JSON.stringify(req.params));
+
+    req.params.symbol = symbolId._id;
+
+    console.log("getSymbolId req.params after:" + typeof req.params);
+    console.log("getSymbolId req.params:after " + JSON.stringify(req.params));
+
+    res.status(200).json({ data: symbolId._id });
+  } catch (err) {
+    console.log(`getSymbolId symbol Error: ${err}`);
+  }
+};
 
 exports.getChart = (req, res) => {
   const curValue = req.params.symbol;
-  res.render('chart', {
+  res.render("chart", {
     curValue: curValue
   });
 };

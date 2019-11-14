@@ -1,11 +1,9 @@
 const Db = require('../db/models/Transaction');
 const User = require('../db/models/User');
-const Portfolio = require('../db/models/Portfolio');
 const { Stock } = require('../db/models/Stock/Stock');
 
 async function addTransaction(arg, userId, next) {
   await Db.addTransaction(arg, userId, next);
-  // await Portfolio.removeZeroPosition(userId, arg);
 }
 
 async function updateCash(arg, userId) {
@@ -22,10 +20,9 @@ exports.postAddTransaction = async (req, res, next) => {
   try {
     const { symbol } = req.body;
     const arg = req.body;
-    // console.log('postAddTransaction req.body:' + typeof req.body);
-    // console.log('postAddTransaction req.body:' + JSON.stringify(req.body));
+    // console.log(`postAddTransaction req.body:${typeof req.body}`);
+    // console.log(`postAddTransaction req.body:${JSON.stringify(req.body)}`);
     const userId = req.session.user._id;
-
     const apiTokenQuote = process.env.API_TOKEN_QUOTE;
 
     const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
@@ -33,7 +30,7 @@ exports.postAddTransaction = async (req, res, next) => {
     const promises = [
       addTransaction(arg, userId, next),
       updateCash(arg, userId),
-      fetchData(url)
+      fetchData(url),
     ];
 
     const [one, updatedUserDataTwoResult, dataThreeResult] = await Promise.all(
@@ -42,7 +39,7 @@ exports.postAddTransaction = async (req, res, next) => {
 
     res.render('buysell', {
       data: dataThreeResult,
-      userData: updatedUserDataTwoResult
+      userData: updatedUserDataTwoResult,
     });
   } catch (ex) {
     console.log(`postAddTransaction error${ex}`);

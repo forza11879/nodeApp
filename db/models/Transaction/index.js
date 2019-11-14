@@ -1,8 +1,9 @@
+/* eslint-disable object-shorthand */
 const axios = require('axios');
 const moment = require('moment');
-//services
+// services
 const portfolio = require('../Portfolio');
-//models
+// models
 const { Transaction } = require('./Transaction');
 const { Stock } = require('../Stock/Stock');
 const ErrorResponse = require('../../../utils/errorResponse');
@@ -15,29 +16,17 @@ const addTransaction = async (arg, userId, next) => {
     // console.log('addTransaction symbol:' + typeof arg.symbol);
     // console.log('addTransaction symbol:' + JSON.stringify(arg.symbol));
 
-    const query = { symbol: symbol }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
-
-    const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
-
+    const query = { symbol: symbol };
+    const projection = { _id: 1 };
     const symbolId = await Stock.findOne(query, projection);
 
-    // const stockTransaction = new Transaction({
-    //   price: price,
-    //   qty: qty,
-    //   orderType: orderType,
-    //   userId: userId,
-    //   symbolId: symbolId
-    // });
-
-    // stockTransaction.save();
-
-    //error is catched by try/catch
+    // error is catched by try/catch
     Transaction.create({
       price: price,
       qty: qty,
       orderType: orderType,
       userId: userId,
-      symbolId: symbolId
+      symbolId: symbolId,
     });
 
     const portfolioPosition = await portfolio.fetchPortfolioPosition(
@@ -83,19 +72,19 @@ const fetchWebApiQuote = async url => {
     const myJson = await axios.get(url);
     const myJsonData = myJson.data;
     return {
-      symbol: myJsonData['symbol'],
-      companyName: myJsonData['companyName'],
-      latestPrice: myJsonData['latestPrice'],
-      change: myJsonData['change'],
-      latestUpdate: moment(myJsonData['latestUpdate'])
+      symbol: myJsonData.symbol,
+      companyName: myJsonData.companyName,
+      latestPrice: myJsonData.latestPrice,
+      change: myJsonData.change,
+      latestUpdate: moment(myJsonData.latestUpdate)
         .utcOffset(-240)
         .format('LLLL'),
-      high: myJsonData['high'],
-      low: myJsonData['low'],
-      week52High: myJsonData['week52High'],
-      week52Low: myJsonData['week52Low'],
-      open: myJsonData['open'],
-      previousClose: myJsonData['previousClose']
+      high: myJsonData.high,
+      low: myJsonData.low,
+      week52High: myJsonData.week52High,
+      week52Low: myJsonData.week52Low,
+      open: myJsonData.open,
+      previousClose: myJsonData.previousClose,
     };
   } catch (ex) {
     console.log(`fetchWebApiQuote error: ${ex}`);
@@ -104,5 +93,5 @@ const fetchWebApiQuote = async url => {
 
 module.exports = {
   addTransaction,
-  fetchWebApiQuote
+  fetchWebApiQuote,
 };

@@ -18,7 +18,7 @@ exports.getMain = (req, res) => {
     // name: req.query.name,
     // salesEnd: moment().endOf('day').fromNow()
 
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
     // user: req.session.user
   });
 };
