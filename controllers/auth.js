@@ -1,5 +1,6 @@
-const bcrypt = require('bcryptjs');
+// eslint-disable-next-line no-unused-vars
 const colors = require('colors');
+const bcrypt = require('bcryptjs');
 
 const UserModal = require('../db/models/User');
 const { User } = require('../db/models/User/User');
@@ -20,7 +21,7 @@ exports.postLogin = asyncHandler(async (req, res, next) => {
       );
       // return res.redirect('/');
     }
-    const user = await User.findOne({ email: email }).select('+password');
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       return next(new ErrorResponse('Invalid credentials', 401));
@@ -57,9 +58,9 @@ exports.postLogout = (req, res) => {
 exports.postSignup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const confirmPassword = req.body.confirmPassword;
+    // const {confirmPassword} = req.body;
     console.log(email, name, password);
-    const userDoc = await User.findOne({ email: email });
+    const userDoc = await User.findOne({ email });
     if (userDoc) {
       console.log('User already in DB');
       return res.redirect('/');

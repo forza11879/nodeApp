@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const colors = require('colors');
+
 const Db = require('../db/models/List');
 
 exports.getList = (req, res) => {
@@ -20,7 +23,7 @@ exports.getList = (req, res) => {
     // name: req.query.name,
     // salesEnd: moment().endOf('day').fromNow()
 
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
     // user: req.session.user
   });
 };
@@ -28,55 +31,23 @@ exports.getList = (req, res) => {
 exports.getWebApiList = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    const symbol = req.params.symbol;
+    const { symbol } = req.params;
 
     await Db.saveToDbList(symbol, userId);
 
-    let urlArray = await Db.generateUrlArrayList(userId);
-    console.log(`urlArray list: ${urlArray}`);
+    const urlArray = await Db.generateUrlArrayList(userId);
+    console.log(`urlArray list: ${urlArray}`.green);
 
-    Promise.all(
-      urlArray.map(async url => {
-        return await Db.fetchWebApiList(url);
-      })
-    )
+    // Promise.all(urlArray.map(async url => await Db.fetchWebApiList(url)))
+    Promise.all(urlArray.map(async url => Db.fetchWebApiList(url)))
+      // Inside an async function, return await is seldom useful
       .then(item => {
         console.log(item);
         res.send(item);
       })
-      .catch(ex => console.log(`PromiseAll error: ${ex}`));
+      .catch(ex => console.log(`PromiseAll error: ${ex}`.red));
   } catch (ex) {
     // example of nice error handling - 500 Internal Server Error
-    res.status(500).send(`getWebApiList error: ${ex}`);
+    res.status(500).send(`getWebApiList error: ${ex}`.red);
   }
 };
-
-// exports.getWebApiList = async (req, res) => {
-//   try {
-//     const userId = req.session.user._id;
-//     // console.log(
-//     //   `getWebApiList user ID: ${JSON.stringify(req.session.user._id)}`
-//     // );
-//     const curValue = req.params.symbol;
-//     const apiKey = process.env.API_TOKEN_QUOTE;
-//     const urlCompact = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiKey}`;
-
-//     let urlArray = await Db.generateUrlArrayList({}, { _id: 0 });
-
-//     if (!urlArray.includes(urlCompact)) urlArray.push(urlCompact);
-
-//     await Promise.all(
-//       urlArray.map(async url => {
-//         const data = await Db.fetchWebApiList(url);
-//         await Db.saveToDbList(data, userId);
-//       })
-//     );
-
-//     const dataFromDB = await Db.fetchDataFromDbList({}, { _id: 0 });
-
-//     res.send(dataFromDB);
-//   } catch (ex) {
-//     // example of nice error handling - 500 Internal Server Error
-//     res.status(500).send(`getWebApiList: ${ex}`);
-//   }
-// };

@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const colors = require('colors');
+
 const Db = require('../db/models/Portfolio');
 const UserModal = require('../db/models/User');
 const { User } = require('../db/models/User/User');
@@ -29,12 +32,14 @@ exports.getPortfolioList = async (req, res) => {
 
 exports.getBuySellTicket = async (req, res) => {
   try {
-    // const symbol = req.params.symbol;
     const { symbol } = req.params;
     const userId = req.session.user._id;
+
     console.log('Authenticated User');
     console.log(`userId : ${JSON.stringify(userId)}`);
+
     console.log(`res.session.isLoggedIn: ${req.session.isLoggedIn}`);
+
     const apiTokenQuote = process.env.API_TOKEN_QUOTE;
     const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
