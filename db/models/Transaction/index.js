@@ -1,4 +1,7 @@
 /* eslint-disable object-shorthand */
+// eslint-disable-next-line no-unused-vars
+const colors = require('colors');
+
 const axios = require('axios');
 const moment = require('moment');
 // services
@@ -9,7 +12,7 @@ const { Stock } = require('../Stock/Stock');
 const ErrorResponse = require('../../../utils/errorResponse');
 const asyncHandler = require('../../../middleware/async');
 
-const addTransaction = async (arg, userId, next) => {
+const addTransaction = async (arg, userId) => {
   try {
     const { price, qty, orderType, symbol } = arg;
 
@@ -20,6 +23,9 @@ const addTransaction = async (arg, userId, next) => {
     const projection = { _id: 1 };
     const symbolId = await Stock.findOne(query, projection);
 
+    arg.userId = userId;
+    arg.symbolId = symbolId;
+
     // error is catched by try/catch
     Transaction.create({
       price: price,
@@ -29,43 +35,13 @@ const addTransaction = async (arg, userId, next) => {
       symbolId: symbolId,
     });
 
-    const portfolioPosition = await portfolio.fetchPortfolioPosition(
-      arg,
-      userId,
-      symbolId
-    );
-
-    // need await to wait for new data to update
-    await portfolio.updateToPortfolio(portfolioPosition);
+    await portfolio.fetchPortfolioPosition(arg);
   } catch (ex) {
-    console.log(`addTransaction error: ${ex}`);
+    console.log(`addTransaction error: ${ex}`.red);
     // next(new ErrorResponse(`Error: ${ex}`, 404));
     // next(ex);
   }
 };
-
-// const addTransaction = asyncHandler(async (arg, userId, next) => {
-//   const { price, qty, orderType, symbol } = arg;
-//   const query = { symbol: symbol };
-//   const projection = { _id: 1 };
-//   const symbolId = await Stock.findOne(query, projection);
-
-//   Transaction.create({
-//     price: price,
-//     qty: qty,
-//     orderType: orderType,
-//     userId: userId,
-//     symbolId: symbolId
-//   });
-
-//   const portfolioPosition = await portfolio.fetchPortfolioPosition(
-//     arg,
-//     userId,
-//     symbolId
-//   );
-
-//   await portfolio.updateToPortfolio(portfolioPosition);
-// });
 
 const fetchWebApiQuote = async url => {
   try {
@@ -87,7 +63,7 @@ const fetchWebApiQuote = async url => {
       previousClose: myJsonData.previousClose,
     };
   } catch (ex) {
-    console.log(`fetchWebApiQuote error: ${ex}`);
+    console.log(`fetchWebApiQuote error: ${ex}`.red);
   }
 };
 

@@ -2,25 +2,26 @@ const { User } = require('./User');
 
 const fetchNewCash = async (arg, userId) => {
   try {
-    const orderType = arg.orderType;
+    const { orderType } = arg;
     const qty = parseInt(arg.qty);
     const price = parseFloat(arg.price);
     let transactionAmount = qty * price;
-    console.log('fetchNewCash function for userId:' + userId);
+    console.log(`fetchNewCash function for userId: ${userId}`);
 
-    const query = { _id: userId }; //Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+    const query = { _id: userId }; // Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
 
     const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
-    const oldCash = await User.findOne(query, projection).select('cash'); //findOne() returns the Object{} without the Array vs find() Array[{}] of Objects
-    console.log('old cash:' + typeof oldCash);
-    console.log('old cash:' + JSON.stringify(oldCash));
+    const oldCash = await User.findOne(query, projection).select('cash'); // findOne() returns the Object{} without the Array vs find() Array[{}] of Objects
+    console.log(`old cash:${typeof oldCash}`);
+    console.log(`old cash:${JSON.stringify(oldCash)}`);
 
     if (orderType === 'Sell')
       transactionAmount = Math.abs(transactionAmount) * -1;
     const { cash } = oldCash;
-    console.log('destructor cash:' + JSON.stringify(cash));
-    return (newCash = parseFloat(cash) - transactionAmount);
+
+    console.log(`destructor cash:${JSON.stringify(cash)}`);
+    return parseFloat(cash) - transactionAmount;
   } catch (ex) {
     console.log(`fetchNewCash error: ${ex}`);
   }
@@ -28,11 +29,11 @@ const fetchNewCash = async (arg, userId) => {
 
 const updateCashDB = async (cash, userId) => {
   try {
-    console.log('updateCashDB cash as the arg:' + JSON.stringify(cash));
+    console.log(`updateCashDB cash as the arg:${JSON.stringify(cash)}`);
     const query = { _id: userId };
 
     const update = {
-      cash: cash
+      cash,
     };
     // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
     // upsert: bool - creates the object if it doesn't exist. defaults to false.
@@ -44,12 +45,12 @@ const updateCashDB = async (cash, userId) => {
       options
     ).select('name cash equity -_id');
     console.log(
-      'stockUserResult in services:' + JSON.stringify(stockUserResult)
+      `stockUserResult in services:${JSON.stringify(stockUserResult)}`
     );
     return {
       name: stockUserResult.name,
       cash: parseFloat(stockUserResult.cash),
-      equity: parseFloat(stockUserResult.equity)
+      equity: parseFloat(stockUserResult.equity),
     };
   } catch (ex) {
     console.log(`updateToUser error: ${ex}`);
@@ -58,5 +59,5 @@ const updateCashDB = async (cash, userId) => {
 
 module.exports = {
   fetchNewCash,
-  updateCashDB
+  updateCashDB,
 };

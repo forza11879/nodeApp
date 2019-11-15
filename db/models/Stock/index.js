@@ -40,8 +40,8 @@ const fetchWebApi = async url => {
 
 const creatStock = async (symbol, webApiData) => {
   try {
-    console.log(`creatStock curValue: ${typeof symbol}`);
-    console.log(`creatStock curValue: ${symbol}`);
+    console.log(`creatStock curValue: ${typeof symbol}`.green);
+    console.log(`creatStock curValue: ${symbol}`.green);
 
     const stock = new Stock({
       symbol: symbol,

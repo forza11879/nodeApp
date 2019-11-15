@@ -1,16 +1,15 @@
-// const colors = require('colors');
+// eslint-disable-next-line no-unused-vars
+const colors = require('colors');
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
 const ParentSchema = new mongoose.Schema({
-  // _id: { userId: 1, symbol: 1 }, //The _id field is always unique. That way you kind of get a composite primary key. Just be careful when creating these ids that the order of keys (a(userId) and b(symbol) in the example) matters, if you swap them around, it is considered a different object.
   qtyPortfolio: {
     type: Number,
     required: true,
   },
   avgPrice: { type: Number, required: true },
-  // avgPrice: { type: mongoose.Types.Decimal128, default: 0.0 },
   date: {
     type: Date,
     default: Date.now,
@@ -30,9 +29,9 @@ ParentSchema.statics.removeZeroPosition = async function(
   try {
     const query = { userId, symbolId };
     if (qtyPortfolio === 0) {
-      console.log(`console Pre SAVE`.red);
-      console.log(`User ID ${userId}`.red);
-      console.log(`Symbol ID ${symbolId}`.red);
+      // console.log(`console Pre SAVE`.red);
+      // console.log(`User ID ${userId}`.red);
+      // console.log(`Symbol ID ${symbolId}`.red);
 
       await this.model('Portfolio').deleteOne(query);
     }

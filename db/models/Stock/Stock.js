@@ -7,7 +7,7 @@ const ChildSchemaData = new mongoose.Schema({
   high: { type: mongoose.Types.Decimal128 },
   low: { type: mongoose.Types.Decimal128 },
   close: { type: mongoose.Types.Decimal128 },
-  volume: { type: mongoose.Types.Decimal128 }
+  volume: { type: mongoose.Types.Decimal128 },
 });
 
 const ParentSchemaSymbol = new mongoose.Schema({
@@ -18,10 +18,10 @@ const ParentSchemaSymbol = new mongoose.Schema({
     minlength: 1,
     maxlength: 50,
     uppercase: true,
-    required: [true, 'Please enter a valid symbol, min 1 character']
+    required: [true, 'Please enter a valid symbol, min 1 character'],
   },
   // Array of subdocuments
-  data: [ChildSchemaData]
+  data: [ChildSchemaData],
 });
 
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);

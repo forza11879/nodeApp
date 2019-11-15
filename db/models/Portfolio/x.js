@@ -108,3 +108,82 @@ module.exports.Portfolio = mongoose.model('Portfolio', ParentSchema);
 //     console.log(`fetchPortfolioList error: ${ex}`.red);
 //   }
 // };
+
+// *******findOne*************
+// const query = { userId: userId, symbolId: symbolId }; // Optional. Specifies selection filter using query operators. To return all documents in a collection, omit this parameter or pass an empty document ({}).
+// const projection = {
+//   _id: 0,
+//   userId: 1,
+//   symbolId: 1,
+//   qtyPortfolio: 1,
+//   avgPrice: 1,
+// }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
+
+// const doesExistDoc = await Portfolio.findOne(query, projection);
+
+// ****** findOneAndUpdate*******
+// const query = {
+//   userId: stockPortfolio.userId,
+//   symbolId: stockPortfolio.symbolId,
+// };
+// const update = {
+//   qtyPortfolio: stockPortfolio.qtyPortfolio,
+//   avgPrice: stockPortfolio.avgPrice,
+//   userId: stockPortfolio.userId,
+//   symbolId: stockPortfolio.symbolId,
+// };
+
+// const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+// // upsert: bool - creates the object if it doesn't exist. defaults to false.
+
+// const portfolioUpdate = await Portfolio.findOneAndUpdate(
+//   query,
+//   update,
+//   options
+// );
+
+// ************
+// const updateToPortfolio = async portfolioPosition => {
+//   try {
+//     // console.log(
+//     //   'updateToPortfolio Portfolio Position:' + typeof portfolioPosition
+//     // );
+//     // console.log(
+//     //   'updateToPortfolio Portfolio Position:' +
+//     //     JSON.stringify(portfolioPosition)
+//     // );
+
+//     const { qtyPortfolio, avgPrice, userId, symbolId } = portfolioPosition;
+
+//     const stockPortfolio = new Portfolio({
+//       qtyPortfolio: qtyPortfolio,
+//       avgPrice: avgPrice,
+//       userId: userId,
+//       symbolId: symbolId,
+//     });
+
+//     const query = {
+//       userId: stockPortfolio.userId,
+//       symbolId: stockPortfolio.symbolId,
+//     };
+//     const update = {
+//       qtyPortfolio: stockPortfolio.qtyPortfolio,
+//       avgPrice: stockPortfolio.avgPrice,
+//       userId: stockPortfolio.userId,
+//       symbolId: stockPortfolio.symbolId,
+//     };
+
+//     const options = { upsert: true, new: true }; // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
+//     // upsert: bool - creates the object if it doesn't exist. defaults to false.
+
+//     const portfolioUpdate = await Portfolio.findOneAndUpdate(
+//       query,
+//       update,
+//       options
+//     );
+//     // no need to USE save() but to implement pre('save') hook on shema level we need to trigger it with the save() since it is not triggered by findOneAndUpdate() -  https://mongoosejs.com/docs/middleware.html#types-of-middleware **** Notes on findAndUpdate() and Query Middleware *** https://medium.com/@micahbales/keeping-mongodb-attributes-in-sync-can-be-tricky-but-theres-more-than-one-way-to-skin-a-cat-dcbe500d6bd1
+//     await portfolioUpdate.save();
+//   } catch (ex) {
+//     console.log(`updateToPortfolio error: ${ex}`.red);
+//   }
+// };
