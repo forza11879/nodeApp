@@ -2,7 +2,7 @@
 const colors = require('colors');
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const { ObjectId } = mongoose.Schema.Types;
 
 const ParentSchema = new mongoose.Schema({
   qtyPortfolio: {
@@ -14,8 +14,8 @@ const ParentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  symbolId: { type: Schema.Types.ObjectId, ref: 'Stock', required: true },
+  userId: { type: ObjectId, ref: 'User', required: true },
+  symbolId: { type: ObjectId, ref: 'Stock', required: true },
 });
 
 ParentSchema.index({ userId: 1, symbolId: 1 }, { unique: true });

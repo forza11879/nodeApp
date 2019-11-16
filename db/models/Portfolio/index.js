@@ -66,15 +66,10 @@ const fetchPortfolioPosition = async arg => {
     if (orderType === 'Buy') {
       const newAvgPrice = (avgPrice * qtyPortfolio + price * qty) / newQty;
 
-      console.log('Position already exist buy order'.green);
-
       position.avgPrice = newAvgPrice;
-      position.qtyPortfolio = newQty;
-
-      return await position.save();
     }
 
-    console.log('Position already exist sell order'.green);
+    console.log(`Position already exist ${orderType} order`.green);
 
     position.qtyPortfolio = newQty;
     await position.save();

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const { ObjectId } = mongoose.Schema.Types;
 
 const ChildSchemaData = new mongoose.Schema({
   _id: false,
@@ -19,7 +19,7 @@ const ChildSchemaData = new mongoose.Schema({
 
 const ParentSchema = new mongoose.Schema({
   data: [ChildSchemaData],
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: ObjectId, ref: 'User', required: true },
 });
 
 ParentSchema.index({ userId: 1 }, { unique: true });

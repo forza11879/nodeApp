@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const { ObjectId } = mongoose.Schema.Types;
+
 const ParentSchema = new mongoose.Schema(
   {
     price: {
@@ -17,8 +18,8 @@ const ParentSchema = new mongoose.Schema(
       lowercase: true,
       enum: ['buy', 'sell'],
     },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    symbolId: { type: Schema.Types.ObjectId, ref: 'Stock', required: true },
+    userId: { type: ObjectId, ref: 'User', required: true },
+    symbolId: { type: ObjectId, ref: 'Stock', required: true },
     // symbol: { type: String, required: true }
   },
   { timestamps: true }

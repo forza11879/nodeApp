@@ -12,7 +12,7 @@ exports.getPortfolio = async (req, res) => {
       isAuthenticated: req.session.isLoggedIn, // use it when needed - example
     });
   } catch (ex) {
-    console.log(`getPortfolioList error${ex}`);
+    console.log(`getPortfolioList error${ex}`.red);
   }
 };
 
@@ -26,7 +26,7 @@ exports.getPortfolioList = async (req, res) => {
 
     res.send(portfolioList);
   } catch (ex) {
-    console.log(`getPortfolioList error${ex}`);
+    console.log(`getPortfolioList error${ex}`.red);
   }
 };
 
@@ -35,8 +35,8 @@ exports.getBuySellTicket = async (req, res) => {
     const { symbol } = req.params;
     const userId = req.session.user._id;
 
-    console.log('Authenticated User');
-    console.log(`userId : ${JSON.stringify(userId)}`);
+    console.log('Authenticated User'.green);
+    console.log(`userId : ${JSON.stringify(userId)}`.green);
 
     console.log(`res.session.isLoggedIn: ${req.session.isLoggedIn}`);
 
@@ -54,17 +54,16 @@ exports.getBuySellTicket = async (req, res) => {
       isAuthenticated: req.session.isLoggedIn, // use it when needed - example
     });
   } catch (ex) {
-    console.log(`getBuySellTicketParams error${ex}`);
+    console.log(`getBuySellTicketParams error${ex}`.red);
   }
 };
 
 exports.postBuySellTicket = async (req, res) => {
   try {
-    const curValue = req.body.symbol;
-    // const userId = req.body.userId;
+    const { symbol } = req.params;
     const userId = req.session.user._id;
     const apiTokenQuote = process.env.API_TOKEN_QUOTE;
-    const url = `https://cloud.iexapis.com/beta/stock/${curValue}/quote?token=${apiTokenQuote}`;
+    const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
     const data = await Db.fetchWebApiQuote(url);
     const userData = await UserModal.fetchUserDataDB(userId);
@@ -74,7 +73,7 @@ exports.postBuySellTicket = async (req, res) => {
       userData,
     });
   } catch (ex) {
-    console.log(`postBuySellTicketBody error${ex}`);
+    console.log(`postBuySellTicketBody error${ex}`.red);
   }
 };
 
