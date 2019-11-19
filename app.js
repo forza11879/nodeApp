@@ -1,12 +1,37 @@
 const path = require('path');
 // const fs = require('fs')
 // const https = require('https')
+const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
-const errorHandler = require('./middleware/error');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const Pusher = require('pusher');
+const errorHandler = require('./middleware/error');
+
+// pusher
+const pusher = new Pusher({
+  appId: process.env.INSERT_APP_ID,
+  key: process.env.INSERT_APP_KEY,
+  secret: process.env.INSERT_APP_SECRET,
+  cluster: process.env.INSERT_APP_CLUSTER,
+  encrypted: true,
+});
+// pusher
+const channel = 'tasks';
+
 const app = express();
+
+// // pusher
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept'
+//   );
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//   next();
+// });
 
 // Dev logging middleware - ONLY in development
 app.use(morgan('dev'));
@@ -20,7 +45,7 @@ const { User } = require('./db/models/User/User');
 // var morgan = require('morgan')
 const store = new MongoDBStore({
   uri: process.env.MONGODB_URL,
-  collection: 'sessions'
+  collection: 'sessions',
 });
 // const bodyParser = require('body-parser');
 // const exphbs = require('express-handlebars');
@@ -35,6 +60,7 @@ const errorRoute = require('./routes/error');
 
 // require('./startup/db')();
 const { connectDb } = require('./startup/db');
+
 const port = process.env.PORT;
 
 // app.use(express.cookieParser());
@@ -43,8 +69,8 @@ const port = process.env.PORT;
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json()); //utilizes the body-parser package
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
-app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
-app.use(express.json()); //Used to parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // Used to parse JSON bodies
 
 // // Handlebars Middleware - express-handlebars
 // app.engine(
@@ -61,7 +87,7 @@ app.set('view engine', 'ejs');
 // it sets by default if you do not mention it
 app.set('views', 'views');
 
-//serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
+// serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -69,7 +95,7 @@ app.use(
     secret: process.env.MY_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: store
+    store,
   })
 );
 
@@ -96,7 +122,7 @@ app.use((req, res, next) => {
 //   next();
 // });
 
-//Mount Rout
+// Mount Rout
 app.use('/auth', authRoute);
 app.use('/transaction', transactionRoute);
 app.use('/portfolio', portfolioRoute);
@@ -107,15 +133,7 @@ app.use('*', errorRoute);
 
 app.use(errorHandler);
 
-// hbs.registerHelper('getCurrentYear', () => {
-//   return new Date().getFullYear();
-// })
-
-// hbs.registerHelper('getTimeFromNow', () => {
-//   return moment().endOf('day').fromNow()
-// })
-
-//need
+// need
 // require('./models/Stock')
 // HTTP request logger MORGAN middleware for node.js
 // const accessLogStream = fs.createWriteStream(
@@ -123,16 +141,58 @@ app.use(errorHandler);
 //   { flags: 'a' }
 // )
 
-// Helmet helps you secure your Express apps by setting various HTTP headers. It’s not a silver bullet, but it can help!
-// app.use(helmet())
-// The middleware will attempt to compress response bodies for all request that traverse through the middleware, based on the given options.
-// app.use(compression())
-// HTTP request logger middleware for node.js
-// app.use(morgan('combined', {stream: accessLogStream}))
+mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
+// Connect to our Database and handle any bad connections
 
-connectDb().then(async () => {
+// await mongoose.connect(process.env.MONGODB_URL.REPLICASET.RS, {
+
+mongoose.connect('mongodb://localhost:27017/myapp?replicaSet=rs0', {
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  // useUnifiedTopology: true,
+  useCreateIndex: true,
+});
+
+// (node:571) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+mongoose.set('useCreateIndex', true);
+
+const db = mongoose.connection;
+
+db.on('error', err => {
+  console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
+});
+
+// connectDb().then(async () => {
+//   app.listen(port, () => {
+//     console.log(`Server is up on port ${port}`);
+//   });
+// });
+
+// const db = connectDb();
+// pusher
+db.once('open', () => {
   app.listen(port, () => {
     console.log(`Server is up on port ${port}`);
+  });
+
+  const taskCollection = db.collection('stocks');
+  const changeStream = taskCollection.watch();
+  changeStream.on('change', change => {
+    console.log(
+      `CHANGE : ${
+        JSON.stringify(change.updateDescription.updatedFields.data[0]).green
+      }`
+    );
+
+    // if (change.operationType === 'insert') {
+    //   const task = change.fullDocument;
+    //   pusher.trigger(channel, 'inserted', {
+    //     id: task._id,
+    //     task: task.task,
+    //   });
+    // } else if (change.operationType === 'delete') {
+    //   pusher.trigger(channel, 'deleted', change.documentKey._id);
+    // }
   });
 });
 
@@ -153,4 +213,4 @@ connectDb().then(async () => {
 // // serves up static files from the public folder. anything in public/ will just served us as the file is
 // app.use(express.static(path.join(__dirname, 'public')))
 
-///////////////////
+// /////////////////

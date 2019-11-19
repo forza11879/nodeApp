@@ -1,0 +1,94 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Pusher = require('pusher');
+
+const api = require('./routes/api');
+
+// pusher
+const pusher = new Pusher({
+  appId: process.env.INSERT_APP_ID,
+  key: process.env.INSERT_APP_KEY,
+  secret: process.env.INSERT_APP_SECRET,
+  cluster: process.env.INSERT_APP_CLUSTER,
+  encrypted: true,
+});
+// pusher
+const channel = 'tasks';
+
+const app = express();
+
+// pusher
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  next();
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/api', api);
+
+mongoose.connect('mongodb://localhost/tasksDb?replicaSet=rs');
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'Connection Error:'));
+
+db.once('open', () => {
+  app.listen(port, () => {
+    console.log(`Server is up on port ${port}`);
+  });
+
+  const taskCollection = db.collection('stocks');
+  const changeStream = taskCollection.watch();
+  changeStream.on('change', change => {
+    console.log(change);
+
+    if (change.operationType === 'insert') {
+      const task = change.fullDocument;
+      pusher.trigger(channel, 'inserted', {
+        id: task._id,
+        task: task.task,
+      });
+    } else if (change.operationType === 'delete') {
+      pusher.trigger(channel, 'deleted', change.documentKey._id);
+    }
+  });
+});
+
+// const { MongoClient } = require('mongodb').MongoClient;
+
+// const pipeline = [{ $project: { documentKey: false } }];
+
+// MongoClient.connect(
+//   'mongodb://localhost:27017?replicaSet=mongo-repl',
+//   { useNewUrlParser: true },
+//   function(err, database) {
+//     if (err) throw err;
+
+//     const db = database.db('demo-db');
+
+//     console.log('[mongodb] Mongo connection established');
+//     // Show database docs for debugging
+//     console.log('[mongodb] Mongo db dump: ');
+
+//     db.collection('data')
+//       .find({}, { fields: { _id: false } })
+//       .toArray(function(err, result) {
+//         if (err) throw err;
+//         console.log(result);
+//       });
+
+//     const changeStream = db.collection('data').watch(pipeline);
+
+//     changeStream.on('change', function(change) {
+//       const dataObj = { sensor: change.fullDocument.sensor };
+//       console.log(dataObj);
+//     });
+//   }
+// );
