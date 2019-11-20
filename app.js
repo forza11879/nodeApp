@@ -149,7 +149,7 @@ mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
 mongoose.connect('mongodb://localhost:27017/myapp?replicaSet=rs0', {
   useNewUrlParser: true,
   useFindAndModify: false,
-  // useUnifiedTopology: true,
+  useUnifiedTopology: true,
   useCreateIndex: true,
 });
 
