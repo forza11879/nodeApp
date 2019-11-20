@@ -40,20 +40,50 @@ const fetchWebApi = async url => {
 
 const creatStock = async (symbol, webApiData) => {
   try {
-    console.log(`creatStock curValue: ${typeof symbol}`.green);
-    console.log(`creatStock curValue: ${symbol}`.green);
-
-    const stock = new Stock({
-      symbol: symbol,
-      data: webApiData,
-    });
+    // console.log(`creatStock curValue: ${typeof webApiData[0].volume}`.green);
+    // console.log(
+    //   `creatStock curValue: ${JSON.stringify(webApiData[0].volume)}`.green
+    // );
 
     const query = { symbol: symbol };
-    const update = { $addToSet: { data: stock.data } };
+    const update = { $addToSet: { data: webApiData } };
     const options = { upsert: true, new: true };
 
     const stockResult = await Stock.findOneAndUpdate(query, update, options);
-    console.log('Saved the symbol web TO db', stockResult.symbol.green);
+
+    const newOpen = webApiData[0].open.toString();
+    const newHigh = webApiData[0].high.toString();
+    const newLow = webApiData[0].low.toString();
+    const newClose = webApiData[0].close.toString();
+    const newVolume = webApiData[0].volume.toString();
+
+    // console.log(`creatStock open: ${typeof newOpen}`.green);
+    // console.log(`creatStock open: ${JSON.stringify(newOpen)}`.green);
+    // console.log(`creatStock newHigh: ${typeof newHigh}`.green);
+    // console.log(`creatStock newHigh: ${JSON.stringify(newHigh)}`.green);
+    // console.log(`creatStock newLow: ${typeof newLow}`.green);
+    // console.log(`creatStock newLow: ${JSON.stringify(newLow)}`.green);
+    // console.log(`creatStock newClose: ${typeof newClose}`.green);
+    // console.log(`creatStock newClose: ${JSON.stringify(newClose)}`.green);
+    // console.log(`creatStock newVolume: ${typeof newVolume}`.green);
+    // console.log(`creatStock newVolume: ${JSON.stringify(newVolume)}`.green);
+
+    stockResult.data[0].open = newOpen;
+    stockResult.data[0].high = newHigh;
+    stockResult.data[0].low = newLow;
+    stockResult.data[0].close = newClose;
+    stockResult.data[0].volume = newVolume;
+
+    await stockResult.save();
+    // console.log(`creatStock curValue: ${typeof stockResult.data[0]}`.green);
+    // console.log(
+    //   `creatStock curValue: ${JSON.stringify(stockResult.data[0])}`.green
+    // );
+
+    // console.log(`creatStock curValue: ${typeof stockResult.data}`.green);
+    // console.log(
+    //   `creatStock curValue: ${JSON.stringify(stockResult.data)}`.green
+    // );
   } catch (ex) {
     console.log(`creatStock error: ${ex}`.red);
   }

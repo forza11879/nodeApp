@@ -178,11 +178,33 @@ db.once('open', () => {
   const taskCollection = db.collection('stocks');
   const changeStream = taskCollection.watch();
   changeStream.on('change', change => {
-    console.log(
-      `CHANGE : ${
-        JSON.stringify(change.updateDescription.updatedFields.data[0]).green
-      }`
-    );
+    if (change.operationType === 'insert') {
+      console.log(
+        `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      );
+    }
+    if (change.operationType === 'update') {
+      console.log(`CHANGE update : ${JSON.stringify(change).green}`);
+
+      // console.log(
+      //   `CHANGE Update : ${
+      //     JSON.stringify(change.updateDescription.updatedFields.data[0]).green
+      //   }`
+      // );
+      console.log(`CHANGE Update : ${JSON.stringify(change).green}`);
+    }
+    if (change.operationType === 'replace') {
+      console.log(
+        `CHANGE Replace : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      );
+      console.log(`CHANGE Replace : ${JSON.stringify(change).green}`);
+    }
+    if (
+      change.operationType !== 'update' &&
+      change.operationType !== 'insert' &&
+      change.operationType !== 'replace'
+    )
+      console.log(`CHANGE : ${JSON.stringify(change).green}`);
 
     // if (change.operationType === 'insert') {
     //   const task = change.fullDocument;
