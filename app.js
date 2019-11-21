@@ -15,7 +15,7 @@ const pusher = new Pusher({
   key: process.env.INSERT_APP_KEY,
   secret: process.env.INSERT_APP_SECRET,
   cluster: process.env.INSERT_APP_CLUSTER,
-  encrypted: true,
+  useTLS: true,
 });
 // pusher
 const channel = 'tasks';
@@ -179,32 +179,32 @@ db.once('open', () => {
   const changeStream = taskCollection.watch();
   changeStream.on('change', change => {
     if (change.operationType === 'insert') {
-      console.log(
-        `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
-      );
+      // console.log(
+      //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      // );
     }
     if (change.operationType === 'update') {
-      console.log(`CHANGE update : ${JSON.stringify(change).green}`);
-
+      // console.log(`CHANGE update : ${JSON.stringify(change).green}`);
       // console.log(
       //   `CHANGE Update : ${
       //     JSON.stringify(change.updateDescription.updatedFields.data[0]).green
       //   }`
       // );
-      console.log(`CHANGE Update : ${JSON.stringify(change).green}`);
+      // console.log(`CHANGE Update : ${JSON.stringify(change).green}`);
     }
     if (change.operationType === 'replace') {
-      console.log(
-        `CHANGE Replace : ${JSON.stringify(change.fullDocument.data[0]).green}`
-      );
-      console.log(`CHANGE Replace : ${JSON.stringify(change).green}`);
+      // console.log(
+      //   `CHANGE Replace : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      // );
+      // console.log(`CHANGE Replace : ${JSON.stringify(change).green}`);
     }
     if (
       change.operationType !== 'update' &&
       change.operationType !== 'insert' &&
       change.operationType !== 'replace'
     )
-      console.log(`CHANGE : ${JSON.stringify(change).green}`);
+      // console.log(`CHANGE : ${JSON.stringify(change).green}`);
+      console.log(`CHANGE`);
 
     // if (change.operationType === 'insert') {
     //   const task = change.fullDocument;
