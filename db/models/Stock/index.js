@@ -52,12 +52,11 @@ const creatStock = async (symbol, webApiData) => {
     const stockResult = await Stock.findOneAndUpdate(query, update, options);
     const lastElement = stockResult.data.length - 1;
 
-    const queryR = { symbol };
-    const updateR = {
+    const updatePull = {
       $pull: { data: { date: stockResult.data[lastElement].date } },
     };
     // removes last date from data array
-    await Stock.findOneAndUpdate(queryR, updateR);
+    await Stock.findOneAndUpdate(query, updatePull);
     // update Stock
     await Stock.findOneAndUpdate(query, update);
   } catch (ex) {

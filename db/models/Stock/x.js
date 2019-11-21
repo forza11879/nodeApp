@@ -75,66 +75,64 @@
 //   }
 // };
 
+// Mongoose: tests.remove({}, {})
+// Mongoose: tests.insert({ name: 'john doe', phone: '+12345678901', _id: ObjectId("596efb0ec941ff0ec319ac1e"), __v: 0 })
+// {
+//   "__v": 0,
+//   "name": "john doe",
+//   "phone": "+12345678901",
+//   "_id": "596efb0ec941ff0ec319ac1e"
+// }
+// Mongoose: tests.findAndModify({ _id: ObjectId("596efb0ec941ff0ec319ac1e") }, [], { '$set': { name: 'Bill S. Preston' } }, { new: true, upsert: false, remove: false, fields: {} })
+// {
+//   "_id": "596efb0ec941ff0ec319ac1e",
+//   "name": "Bill S. Preston",
+//   "phone": "+12345678901",
+//   "__v": 0
+// }
+// Mongoose: tests.findAndModify({ _id: ObjectId("596efb0ec941ff0ec319ac1e") }, [], { name: 'Dan Smith' }, { new: true, overwrite: true, upsert: false, remove: false, fields: {} })
+// {
+//   "_id": "596efb0ec941ff0ec319ac1e",
+//   "name": "Dan Smith"
+// }
 
-Mongoose: tests.remove({}, {})
-Mongoose: tests.insert({ name: 'john doe', phone: '+12345678901', _id: ObjectId("596efb0ec941ff0ec319ac1e"), __v: 0 })
-{
-  "__v": 0,
-  "name": "john doe",
-  "phone": "+12345678901",
-  "_id": "596efb0ec941ff0ec319ac1e"
-}
-Mongoose: tests.findAndModify({ _id: ObjectId("596efb0ec941ff0ec319ac1e") }, [], { '$set': { name: 'Bill S. Preston' } }, { new: true, upsert: false, remove: false, fields: {} })
-{
-  "_id": "596efb0ec941ff0ec319ac1e",
-  "name": "Bill S. Preston",
-  "phone": "+12345678901",
-  "__v": 0
-}
-Mongoose: tests.findAndModify({ _id: ObjectId("596efb0ec941ff0ec319ac1e") }, [], { name: 'Dan Smith' }, { new: true, overwrite: true, upsert: false, remove: false, fields: {} })
-{
-  "_id": "596efb0ec941ff0ec319ac1e",
-  "name": "Dan Smith"
-}
+// db.survey.update( // select your doc in moongo
+//     { }, // your query, usually match by _id
+//     { $pull: { results: { $elemMatch: { score: 8 , item: "B" } } } }, // item(s) to match from array you want to pull/remove
+//     { multi: true } // set this to true if you want to remove multiple elements.
+// )
 
-db.survey.update( // select your doc in moongo
-    { }, // your query, usually match by _id
-    { $pull: { results: { $elemMatch: { score: 8 , item: "B" } } } }, // item(s) to match from array you want to pull/remove
-    { multi: true } // set this to true if you want to remove multiple elements.
-)
+// var mongoose = require('mongoose'),
+//     Schema = mongoose.Schema;
 
+// var favorite = new Schema({
+//     cn: String,
+//     favorites: Array
+// });
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+// module.exports = mongoose.model('Favorite', favorite, 'favorite');
 
-var favorite = new Schema({
-    cn: String,
-    favorites: Array
-});
+// exports.deleteFavorite = function (req, res, next) {
+//     if (req.params.callback !== null) {
+//         res.contentType = 'application/javascript';
+//     }
+//     Favorite.find({cn: req.params.name}, function (error, docs) {
+//         var records = {'records': docs};
+//         if (error) {
+//             process.stderr.write(error);
+//         }
+//         docs[0]._doc.favorites.remove({uid: req.params.deleteUid});
 
-module.exports = mongoose.model('Favorite', favorite, 'favorite');
+//         Favorite.save(function (error, docs) {
+//             var records = {'records': docs};
+//             if (error) {
+//                 process.stderr.write(error);
+//             }
+//             res.send(records);
 
-exports.deleteFavorite = function (req, res, next) {
-    if (req.params.callback !== null) {
-        res.contentType = 'application/javascript';
-    }
-    Favorite.find({cn: req.params.name}, function (error, docs) {
-        var records = {'records': docs};
-        if (error) {
-            process.stderr.write(error);
-        }
-        docs[0]._doc.favorites.remove({uid: req.params.deleteUid});
+//             return next();
+//         });
+//     });
+// };
 
-        Favorite.save(function (error, docs) {
-            var records = {'records': docs};
-            if (error) {
-                process.stderr.write(error);
-            }
-            res.send(records);
-
-            return next();
-        });
-    });
-};
-
-Favorite.update( {cn: req.params.name}, { $pullAll: {uid: [req.params.deleteUid] } } )
+// Favorite.update( {cn: req.params.name}, { $pullAll: {uid: [req.params.deleteUid] } } )

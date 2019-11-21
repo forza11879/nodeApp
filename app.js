@@ -179,32 +179,41 @@ db.once('open', () => {
   const changeStream = taskCollection.watch();
   changeStream.on('change', change => {
     if (change.operationType === 'insert') {
-      // console.log(
-      //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
-      // );
+      console.log(
+        `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      );
     }
     if (change.operationType === 'update') {
-      // console.log(`CHANGE update : ${JSON.stringify(change).green}`);
-      // console.log(
-      //   `CHANGE Update : ${
-      //     JSON.stringify(change.updateDescription.updatedFields.data[0]).green
-      //   }`
-      // );
-      // console.log(`CHANGE Update : ${JSON.stringify(change).green}`);
+      const lastElement =
+        change.updateDescription.updatedFields.data.length - 1;
+      console.log(
+        `CHANGE Update lastElement : ${JSON.stringify(lastElement).green}`
+      );
+
+      console.log(
+        `CHANGE Update updatedFields : ${
+          JSON.stringify(
+            change.updateDescription.updatedFields.data[lastElement]
+          ).green
+        }`
+      );
+      console.log(
+        `CHANGE Update removedFields : ${
+          JSON.stringify(change.updateDescription.removedFields).green
+        }`
+      );
     }
     if (change.operationType === 'replace') {
-      // console.log(
-      //   `CHANGE Replace : ${JSON.stringify(change.fullDocument.data[0]).green}`
-      // );
-      // console.log(`CHANGE Replace : ${JSON.stringify(change).green}`);
+      console.log(
+        `CHANGE Replace : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      );
     }
     if (
       change.operationType !== 'update' &&
       change.operationType !== 'insert' &&
       change.operationType !== 'replace'
     )
-      // console.log(`CHANGE : ${JSON.stringify(change).green}`);
-      console.log(`CHANGE`);
+      console.log(`CHANGE : ${JSON.stringify(change).green}`);
 
     // if (change.operationType === 'insert') {
     //   const task = change.fullDocument;
