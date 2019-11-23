@@ -26,9 +26,9 @@ exports.getSymbolId = async (req, res) => {
 };
 
 exports.getChart = (req, res) => {
-  const curValue = req.params.symbol;
+  const { symbol } = req.params;
   res.render('chart', {
-    curValue,
+    symbol,
   });
 };
 
@@ -39,11 +39,18 @@ exports.getWebApi = async (req, res) => {
     console.log(`${symbol} - seacrhBox value`);
     console.log(typeof symbol);
 
-    const apiKey = process.env.API_KEY;
+    // const apiKey = process.env.API_KEY;
+    // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+    const apiKey = process.env.API_TOKEN_QUOTE;
 
-    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKey}`;
+    // const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKey}`;
+
+    // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
+
+    const urlCompact = `https://cloud.iexapis.com/beta/stock/${symbol}/chart?token=${apiKey}`;
 
     const webApiData = await Db.fetchWebApi(urlCompact);
+    // console.log(`web api data: ${JSON.stringify(webApiData)}`.red);
     await Db.creatStock(symbol, webApiData);
 
     res.send(webApiData);

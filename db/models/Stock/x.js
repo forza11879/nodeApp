@@ -134,5 +134,3 @@
 //         });
 //     });
 // };
-
-// Favorite.update( {cn: req.params.name}, { $pullAll: {uid: [req.params.deleteUid] } } )

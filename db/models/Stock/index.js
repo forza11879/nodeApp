@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
@@ -22,17 +23,28 @@ const searchWebApi = async url => {
 const fetchWebApi = async url => {
   try {
     const response = await axios.get(url);
-    return Object.entries(response.data['Time Series (Daily)']).map(
-      ([date, dateObj]) => ({
-        date: Date.parse(date),
-        open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
-        high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
-        low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
-        close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-        volume: parseInt(dateObj['5. volume']),
-        // parseInt vs unary plus  +dateObj["5. volume"]
-      })
-    );
+    // console.log(response);
+    return response.data.map(item => ({
+      date: Date.parse(item.date),
+      open: item.open,
+      high: item.high,
+      low: item.low,
+      close: item.close,
+      volume: item.volume,
+      // parseInt vs unary plus  +dateObj["5. volume"]
+    }));
+
+    // return Object.entries(response.data['Time Series (Daily)']).map(
+    //   ([date, dateObj]) => ({
+    //     date: Date.parse(date),
+    //     open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
+    //     high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
+    //     low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
+    //     close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
+    //     volume: parseInt(dateObj['5. volume']),
+    //     // parseInt vs unary plus  +dateObj["5. volume"]
+    //   })
+    // );
   } catch (ex) {
     console.log(`fetchWebApi error: ${ex}`.red);
   }
@@ -40,25 +52,39 @@ const fetchWebApi = async url => {
 
 const creatStock = async (symbol, webApiData) => {
   try {
-    // console.log(`creatStock curValue: ${typeof webApiData}`.green);
-    // console.log(`creatStock curValue: ${JSON.stringify(webApiData)}`.green);
-
     const webApiDataReversed = webApiData.reverse();
-
     const query = { symbol };
-    const update = { $addToSet: { data: webApiDataReversed } };
-    const options = { upsert: true, new: true };
-    // create/update Stock
-    const stockResult = await Stock.findOneAndUpdate(query, update, options);
-    const lastElement = stockResult.data.length - 1;
 
-    const updatePull = {
-      $pull: { data: { date: stockResult.data[lastElement].date } },
-    };
-    // removes last date from data array
-    await Stock.findOneAndUpdate(query, updatePull);
-    // update Stock
-    await Stock.findOneAndUpdate(query, update);
+    const position = await Stock.findOne(query);
+
+    if (!position) {
+      console.log('New stock'.green);
+      return Stock.create({
+        symbol,
+        data: webApiDataReversed,
+      });
+    }
+
+    await Stock.bulkWrite([
+      {
+        updateOne: {
+          // updateOne() allows for updating fields vs replaceOne() you can only replace the entire document
+          // https://stackoverflow.com/questions/35848688/whats-the-difference-between-replaceone-and-updateone-in-mongodb
+          filter: query,
+          update: { $pop: { data: 1 } },
+        },
+      },
+      {
+        updateOne: {
+          filter: query,
+          update: {
+            $addToSet: {
+              data: webApiDataReversed,
+            },
+          },
+        },
+      },
+    ]);
   } catch (ex) {
     console.log(`creatStock error: ${ex}`.red);
   }
@@ -70,7 +96,7 @@ const fetchDb = async symbol => {
     const projection = { _id: 0, data: 1 };
 
     const chartData = await Stock.findOne(query, projection).sort({ date: -1 });
-    console.log(`chartData in services:${JSON.stringify(chartData)}`.green);
+    // console.log(`chartData in services:${JSON.stringify(chartData)}`.green);
     return chartData.data.map(item => ({
       date: parseFloat(item.date),
       open: parseFloat(item.open),

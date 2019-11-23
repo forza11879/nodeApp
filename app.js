@@ -7,7 +7,10 @@ const morgan = require('morgan');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const Pusher = require('pusher');
+const cors = require('cors');
 const errorHandler = require('./middleware/error');
+// const stockModel = require('./db/models/Stock');
+// const { getWebApi } = require('./controllers/stock');
 
 // pusher
 const pusher = new Pusher({
@@ -15,12 +18,15 @@ const pusher = new Pusher({
   key: process.env.INSERT_APP_KEY,
   secret: process.env.INSERT_APP_SECRET,
   cluster: process.env.INSERT_APP_CLUSTER,
+  // encrypted: true,
   useTLS: true,
 });
 // pusher
-const channel = 'tasks';
+const channel = 'myChannel';
 
 const app = express();
+
+app.use(cors());
 
 // // pusher
 // app.use((req, res, next) => {
@@ -133,6 +139,10 @@ app.use('*', errorRoute);
 
 app.use(errorHandler);
 
+// setInterval(function() {
+//   getWebApi();
+// }, 5000);
+
 // need
 // require('./models/Stock')
 // HTTP request logger MORGAN middleware for node.js
@@ -176,50 +186,72 @@ db.once('open', () => {
   });
 
   const taskCollection = db.collection('stocks');
-  const changeStream = taskCollection.watch();
+  const changeStream = taskCollection.watch({ fullDocument: 'updateLookup' });
   changeStream.on('change', change => {
-    if (change.operationType === 'insert') {
-      console.log(
-        `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
-      );
+    const { operationType, fullDocument } = change;
+
+    const logData = fullDocument.data.map(item => ({
+      date: parseFloat(item.date),
+      open: parseFloat(item.open),
+      high: parseFloat(item.high),
+      low: parseFloat(item.low),
+      close: parseFloat(item.close),
+      volume: parseInt(item.volume),
+    }));
+
+    if (operationType === 'insert') {
+      // pusher.trigger(channel, 'inserted', {
+      //   // eslint-disable-next-line object-shorthand
+      //   chartData: logData,
+      // });
+      // console.log(
+      //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
+      // );
     }
-    if (change.operationType === 'update') {
-      const lastElement =
-        change.updateDescription.updatedFields.data.length - 1;
-      console.log(
-        `CHANGE Update lastElement : ${JSON.stringify(lastElement).green}`
-      );
+    if (operationType === 'update') {
+      // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
+      pusher.trigger(channel, 'updated', {
+        // eslint-disable-next-line object-shorthand
+        chartData: logData,
+      });
+      //   console.log(
+      //   `CHANGE Update lastElement : ${JSON.stringify(lastElement).green}`
+      // );
+      // console.log(
+      //   `CHANGE Update updatedFields : ${
+      //     JSON.stringify(
+      //       change.updateDescription.updatedFields.data[lastElement]
+      //     ).green
+      //   }`
+      // );
+      // console.log(
+      //   `CHANGE Update removedFields : ${
+      //     JSON.stringify(change.updateDescription.removedFields).green
+      //   }`
+      // );
+    }
+    if (operationType === 'replace') {
+      // pusher.trigger(channel, 'replaced', {
+      //   // eslint-disable-next-line object-shorthand
+      //   chartData: logData,
+      // });
 
       console.log(
-        `CHANGE Update updatedFields : ${
-          JSON.stringify(
-            change.updateDescription.updatedFields.data[lastElement]
-          ).green
-        }`
-      );
-      console.log(
-        `CHANGE Update removedFields : ${
-          JSON.stringify(change.updateDescription.removedFields).green
-        }`
-      );
-    }
-    if (change.operationType === 'replace') {
-      console.log(
-        `CHANGE Replace : ${JSON.stringify(change.fullDocument.data[0]).green}`
+        `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
       );
     }
     if (
-      change.operationType !== 'update' &&
-      change.operationType !== 'insert' &&
-      change.operationType !== 'replace'
+      operationType !== 'update' &&
+      operationType !== 'insert' &&
+      operationType !== 'replace'
     )
       console.log(`CHANGE : ${JSON.stringify(change).green}`);
 
     // if (change.operationType === 'insert') {
     //   const task = change.fullDocument;
     //   pusher.trigger(channel, 'inserted', {
-    //     id: task._id,
-    //     task: task.task,
+    //     // eslint-disable-next-line object-shorthand
+    //     task: task,
     //   });
     // } else if (change.operationType === 'delete') {
     //   pusher.trigger(channel, 'deleted', change.documentKey._id);

@@ -32,9 +32,10 @@ const generateUrlArrayList = async userId => {
     const projection = { _id: 0 };
     const dataFromDB = await List.findOne(query, projection).select('data');
 
+    // `https://cloud.iexapis.com/beta/stock/${item.symbol}/quote?token=${apiKey}`
     return dataFromDB.data.map(
       item =>
-        `https://cloud.iexapis.com/beta/stock/${item.symbol}/quote?token=${apiKey}`
+        `https://cloud.iexapis.com/v1/stock/${item.symbol}/quote?token=${apiKey}`
     );
   } catch (ex) {
     console.log(`generateUrlArrayList error: ${ex}`.red);

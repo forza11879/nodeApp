@@ -1,3 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable prettier/prettier */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable one-var */
+/* eslint-disable no-unneeded-ternary */
+/* eslint-disable prefer-const */
+/* eslint-disable no-use-before-define */
 document.addEventListener('DOMContentLoaded', getSymbolWebApi);
 const symbolValueCurValue = document.querySelector('#symbolValueCurValue');
 const symbolTagsChart = document.querySelector('#symbolTagsChart');
@@ -28,7 +37,7 @@ async function getSymbolWebApi() {
     const data = await response.json();
 
     // drawChart(data)
-    console.log(data);
+    // console.log(data);
     // split the data set into ohlc and volume
     var ohlc = [],
       volume = [],
@@ -126,3 +135,26 @@ async function getSymbolWebApi() {
     console.error('Error', error);
   }
 }
+
+// setInterval(async function() {
+//   // eslint-disable-next-line no-use-before-define
+//   await getSymbolWebApi();
+// }, 5000);
+
+
+// ////////////
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
+const pusher = new Pusher('c53cb9e621a72be43e96', {
+  cluster: 'us2',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('myChannel');
+channel.bind('updated', function(data) {
+  // console.log(JSON.stringify(`Data from Pusher: ${data}`));
+  console.log(`Data from Pusher: ${data}`);
+
+});
