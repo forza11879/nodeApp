@@ -200,10 +200,10 @@ db.once('open', () => {
     }));
 
     if (operationType === 'insert') {
-      // pusher.trigger(channel, 'inserted', {
-      //   // eslint-disable-next-line object-shorthand
-      //   chartData: logData,
-      // });
+      pusher.trigger(channel, 'inserted', {
+        // eslint-disable-next-line object-shorthand
+        chartData: logData,
+      });
       // console.log(
       //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
       // );
@@ -231,14 +231,14 @@ db.once('open', () => {
       // );
     }
     if (operationType === 'replace') {
-      // pusher.trigger(channel, 'replaced', {
-      //   // eslint-disable-next-line object-shorthand
-      //   chartData: logData,
-      // });
+      pusher.trigger(channel, 'replaced', {
+        // eslint-disable-next-line object-shorthand
+        chartData: logData,
+      });
 
-      console.log(
-        `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-      );
+      // console.log(
+      //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
+      // );
     }
     if (
       operationType !== 'update' &&

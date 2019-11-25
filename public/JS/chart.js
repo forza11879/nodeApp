@@ -153,8 +153,23 @@ const pusher = new Pusher('c53cb9e621a72be43e96', {
 });
 
 const channel = pusher.subscribe('myChannel');
-channel.bind('updated', function(data) {
-  // console.log(JSON.stringify(`Data from Pusher: ${data}`));
-  console.log(`Data from Pusher: ${data}`);
+
+channel.bind('inserted', function(data) {
+  console.log(JSON.stringify(`Data event - inserted from Pusher: ${data}`));
+  // console.log(`Data from Pusher: ${data}`);
 
 });
+
+channel.bind('updated', function(data) {
+  console.log(JSON.stringify(`Data event - updated from Pusher: ${data}`));
+  // console.log(`Data from Pusher: ${data}`);
+
+});
+
+channel.bind('replaced', function(data) {
+  console.log(JSON.stringify(`Data event - replaced from Pusher: ${data}`));
+  // console.log(`Data from Pusher: ${data}`);
+
+});
+
+
