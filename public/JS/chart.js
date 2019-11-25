@@ -154,22 +154,118 @@ const pusher = new Pusher('c53cb9e621a72be43e96', {
 
 const channel = pusher.subscribe('myChannel');
 
-channel.bind('inserted', function(data) {
-  console.log(JSON.stringify(`Data event - inserted from Pusher: ${data}`));
-  // console.log(`Data from Pusher: ${data}`);
+channel.bind('AnyEvent', function(data) {
+  // console.log(JSON.stringify(`Data event - AnyEvent from Pusher: ${data}`));
+ // drawChart(data)
+    // console.log(data);
+    // split the data set into ohlc and volume
+    var ohlc = [],
+      volume = [],
+      // dataLength = data.length,
+      // set the allowed units for data grouping
+      groupingUnits = [
+        [
+          'week', // unit name
+          [1] // allowed multiples
+        ],
+        ['month', [1, 2, 3, 4, 6]]
+      ],
+      i = 0;
 
+    data.chartData.map(item => {
+      ohlc.push([
+        item.date,
+        item.open,
+        item.high,
+        item.low,
+        item.close,
+        item.volume
+      ]);
+      volume.push([
+        item.date, // the date
+        item.volume // the volume
+      ]);
+    });
+
+    // create the chart
+    Highcharts.stockChart('container', {
+      rangeSelector: {
+        selected: 5
+      },
+
+      title: {
+        text: `Symbol Historical`
+        // text: `${curValueAjax.toUpperCase()} Symbol Historical`
+
+      },
+
+      yAxis: [
+        {
+          labels: {
+            align: 'right',
+            x: -3
+          },
+          title: {
+            text: 'OHLC'
+          },
+          height: '60%',
+          lineWidth: 2,
+          resize: {
+            enabled: true
+          }
+        },
+        {
+          labels: {
+            align: 'right',
+            x: -3
+          },
+          title: {
+            text: 'Volume'
+          },
+          top: '65%',
+          height: '35%',
+          offset: 0,
+          lineWidth: 2
+        }
+      ],
+
+      tooltip: {
+        split: true
+      },
+
+      series: [
+        {
+          type: 'candlestick',
+          // name: curValueAjax.toUpperCase(),
+          name: `Symbol`,
+          data: ohlc,
+          dataGrouping: {
+            units: groupingUnits
+          }
+        },
+        {
+          type: 'column',
+          name: 'Volume',
+          data: volume,
+          yAxis: 1,
+          dataGrouping: {
+            units: groupingUnits
+          }
+        }
+      ]
+    });
 });
 
-channel.bind('updated', function(data) {
-  console.log(JSON.stringify(`Data event - updated from Pusher: ${data}`));
-  // console.log(`Data from Pusher: ${data}`);
+// channel.bind('updated', function(data) {
+//   console.log(JSON.stringify(`Data event - updated from Pusher: ${data}`));
+//   // console.log(`Data from Pusher: ${data}`);
 
-});
+// });
 
-channel.bind('replaced', function(data) {
-  console.log(JSON.stringify(`Data event - replaced from Pusher: ${data}`));
-  // console.log(`Data from Pusher: ${data}`);
+// channel.bind('replaced', function(data) {
+//   console.log(JSON.stringify(`Data event - replaced from Pusher: ${data}`));
+//   // console.log(`Data from Pusher: ${data}`);
 
-});
+// });
 
 

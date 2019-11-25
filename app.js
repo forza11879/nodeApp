@@ -199,53 +199,58 @@ db.once('open', () => {
       volume: parseInt(item.volume),
     }));
 
-    if (operationType === 'insert') {
-      pusher.trigger(channel, 'inserted', {
-        // eslint-disable-next-line object-shorthand
-        chartData: logData,
-      });
-      // console.log(
-      //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
-      // );
-    }
-    if (operationType === 'update') {
-      // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
-      pusher.trigger(channel, 'updated', {
-        // eslint-disable-next-line object-shorthand
-        chartData: logData,
-      });
-      //   console.log(
-      //   `CHANGE Update lastElement : ${JSON.stringify(lastElement).green}`
-      // );
-      // console.log(
-      //   `CHANGE Update updatedFields : ${
-      //     JSON.stringify(
-      //       change.updateDescription.updatedFields.data[lastElement]
-      //     ).green
-      //   }`
-      // );
-      // console.log(
-      //   `CHANGE Update removedFields : ${
-      //     JSON.stringify(change.updateDescription.removedFields).green
-      //   }`
-      // );
-    }
-    if (operationType === 'replace') {
-      pusher.trigger(channel, 'replaced', {
-        // eslint-disable-next-line object-shorthand
-        chartData: logData,
-      });
+    pusher.trigger(channel, 'AnyEvent', {
+      // eslint-disable-next-line object-shorthand
+      chartData: logData,
+    });
 
-      // console.log(
-      //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-      // );
-    }
-    if (
-      operationType !== 'update' &&
-      operationType !== 'insert' &&
-      operationType !== 'replace'
-    )
-      console.log(`CHANGE : ${JSON.stringify(change).green}`);
+    // if (operationType === 'insert') {
+    //   pusher.trigger(channel, 'inserted', {
+    //     // eslint-disable-next-line object-shorthand
+    //     chartData: logData,
+    //   });
+    //   // console.log(
+    //   //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
+    //   // );
+    // }
+    // if (operationType === 'update') {
+    //   // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
+    //   pusher.trigger(channel, 'updated', {
+    //     // eslint-disable-next-line object-shorthand
+    //     chartData: logData,
+    //   });
+    //   //   console.log(
+    //   //   `CHANGE Update lastElement : ${JSON.stringify(lastElement).green}`
+    //   // );
+    //   // console.log(
+    //   //   `CHANGE Update updatedFields : ${
+    //   //     JSON.stringify(
+    //   //       change.updateDescription.updatedFields.data[lastElement]
+    //   //     ).green
+    //   //   }`
+    //   // );
+    //   // console.log(
+    //   //   `CHANGE Update removedFields : ${
+    //   //     JSON.stringify(change.updateDescription.removedFields).green
+    //   //   }`
+    //   // );
+    // }
+    // if (operationType === 'replace') {
+    //   pusher.trigger(channel, 'replaced', {
+    //     // eslint-disable-next-line object-shorthand
+    //     chartData: logData,
+    //   });
+
+    //   // console.log(
+    //   //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
+    //   // );
+    // }
+    // if (
+    //   operationType !== 'update' &&
+    //   operationType !== 'insert' &&
+    //   operationType !== 'replace'
+    // )
+    //   console.log(`CHANGE : ${JSON.stringify(change).green}`);
 
     // if (change.operationType === 'insert') {
     //   const task = change.fullDocument;
