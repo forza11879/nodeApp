@@ -1,60 +1,39 @@
+/* eslint-disable no-use-before-define */
 const path = require('path');
-// const fs = require('fs')
-// const https = require('https')
-const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const Pusher = require('pusher');
 const cors = require('cors');
+// const Pusher = require('pusher');
 const errorHandler = require('./middleware/error');
-// const stockModel = require('./db/models/Stock');
-// const { getWebApi } = require('./controllers/stock');
+// const { initDbConnection } = require('./startup/dbm');
+// const { getDb, initDb } = require('./startup/dbSS');
 
-// pusher
-const pusher = new Pusher({
-  appId: process.env.INSERT_APP_ID,
-  key: process.env.INSERT_APP_KEY,
-  secret: process.env.INSERT_APP_SECRET,
-  cluster: process.env.INSERT_APP_CLUSTER,
-  // encrypted: true,
-  useTLS: true,
-});
-// pusher
-const channel = 'myChannel';
-
-const app = express();
-
-app.use(cors());
-
-// // pusher
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept'
-//   );
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-//   next();
-// });
-
-// Dev logging middleware - ONLY in development
-app.use(morgan('dev'));
-
-// const User = require('../db/models/User');
-// const User = require('./db/models/User');
 const { User } = require('./db/models/User/User');
 
-// const helmet = require('helmet')
-// const compression = require('compression')
-// var morgan = require('morgan')
+// //////
+const app = express();
+// pusher
+// const pusher = new Pusher({
+//   appId: process.env.INSERT_APP_ID,
+//   key: process.env.INSERT_APP_KEY,
+//   secret: process.env.INSERT_APP_SECRET,
+//   cluster: process.env.INSERT_APP_CLUSTER,
+//   useTLS: true,
+// });
+// const channel = 'myChannel';
+// //////
+app.use(cors());
+// Dev logging middleware - ONLY in development
+app.use(morgan('dev'));
+// MongoDBStore session
 const store = new MongoDBStore({
   uri: process.env.MONGODB_URL,
   collection: 'sessions',
 });
-// const bodyParser = require('body-parser');
-// const exphbs = require('express-handlebars');
+// routes
 const authRoute = require('./routes/auth');
 const transactionRoute = require('./routes/transaction');
 const portfolioRoute = require('./routes/portfolio');
@@ -62,40 +41,17 @@ const stockRoute = require('./routes/stock');
 const listRoute = require('./routes/list');
 const mainRoute = require('./routes/main');
 const errorRoute = require('./routes/error');
-// const helpers = require('./helpers')
-
-// require('./startup/db')();
-const { connectDb } = require('./startup/db');
-
-const port = process.env.PORT;
-
-// app.use(express.cookieParser());
-
-// Takes the raw requests(like forms) and turns them into usable properties on req.body
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json()); //utilizes the body-parser package
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(express.json()); // Used to parse JSON bodies
-
-// // Handlebars Middleware - express-handlebars
-// app.engine(
-//   'hbs',
-//   exphbs({
-//     defaultLayout: 'main',
-//     extname: 'hbs'
-//   })
-// );
-// app.set('view engine', 'hbs');
-
+app.use(express.json()); // Used to parse JSON bodies.
+// //////
 app.set('view engine', 'ejs');
 // views tells EJS where to look for the file.
 // it sets by default if you do not mention it
 app.set('views', 'views');
-
 // serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
-
+// Session
 app.use(
   session({
     secret: process.env.MY_SECRET,
@@ -119,15 +75,6 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 });
-
-// app.use((req, res, next) => {
-//   res.locals.h = helpers;
-//   res.locals.flashes = req.flash();
-//   res.locals.user = req.user || null;
-//   res.locals.currentPath = req.path;
-//   next();
-// });
-
 // Mount Rout
 app.use('/auth', authRoute);
 app.use('/transaction', transactionRoute);
@@ -135,21 +82,41 @@ app.use('/portfolio', portfolioRoute);
 app.use('/stock', stockRoute);
 app.use('/list', listRoute);
 app.use('/', mainRoute);
+// app.use('/', exampleRoute);
+
 app.use('*', errorRoute);
-
 app.use(errorHandler);
+// //////
+const router = express.Router();
+router.use(
+  '/stock',
+  function(req, res, next) {
+    console.log(`Request URL App.js: ${req.originalUrl}`.red);
+    console.log(`Request Params App.js: ${req.params}`.red);
 
-// setInterval(function() {
-//   getWebApi();
-// }, 5000);
+    next();
+  },
+  function(req, res, next) {
+    console.log(`Request Type App.js: ${req.method}`.red);
+    next();
+  }
+);
 
-// need
-// require('./models/Stock')
-// HTTP request logger MORGAN middleware for node.js
-// const accessLogStream = fs.createWriteStream(
-//   path.join(__dirname, 'access.log'),
-//   { flags: 'a' }
-// )
+router.use(
+  '/stock',
+  function(req, res, next) {
+    console.log(`Request URL App.js: ${req.originalUrl}`.red);
+    console.log(`Request Params App.js: ${req.params}`.red);
+
+    next();
+  },
+  function(req, res, next) {
+    console.log(`Request Type App.js: ${req.method}`.red);
+    next();
+  }
+);
+
+const port = process.env.PORT;
 
 mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
 // Connect to our Database and handle any bad connections
@@ -163,7 +130,6 @@ mongoose.connect('mongodb://localhost:27017/myapp?replicaSet=rs0', {
   useCreateIndex: true,
 });
 
-// (node:571) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
 mongoose.set('useCreateIndex', true);
 
 const db = mongoose.connection;
@@ -172,113 +138,123 @@ db.on('error', err => {
   console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
 });
 
-// connectDb().then(async () => {
-//   app.listen(port, () => {
-//     console.log(`Server is up on port ${port}`);
-//   });
-// });
-
-// const db = connectDb();
-// pusher
 db.once('open', () => {
   app.listen(port, () => {
     console.log(`Server is up on port ${port}`);
   });
 
-  const taskCollection = db.collection('stocks');
-  const changeStream = taskCollection.watch({ fullDocument: 'updateLookup' });
-  changeStream.on('change', change => {
-    const { operationType, fullDocument } = change;
+  // const taskCollection = db.collection('stocks');
+  // // const pipeline = [
+  // //   {
+  // //     $match: { symbol: req.params.symbol },
+  // //   },
+  // // ];
+  // const changeStream = taskCollection.watch(
+  //   { fullDocument: 'updateLookup' }
+  //   // pipeline
+  // );
+  // changeStream.on('change', change => {
+  //   const { operationType, fullDocument } = change;
 
-    const logData = fullDocument.data.map(item => ({
-      date: parseFloat(item.date),
-      open: parseFloat(item.open),
-      high: parseFloat(item.high),
-      low: parseFloat(item.low),
-      close: parseFloat(item.close),
-      volume: parseInt(item.volume),
-    }));
+  //   // console.log(`CHANGE : ${JSON.stringify(change).green}`);
 
-    pusher.trigger(channel, 'AnyEvent', {
-      // eslint-disable-next-line object-shorthand
-      chartData: logData,
-    });
+  //   // const logData = fullDocument.data.map(item => ({
+  //   //   date: parseFloat(item.date),
+  //   //   open: parseFloat(item.open),
+  //   //   high: parseFloat(item.high),
+  //   //   low: parseFloat(item.low),
+  //   //   close: parseFloat(item.close),
+  //   //   volume: parseInt(item.volume),
+  //   // }));
 
-    // if (operationType === 'insert') {
-    //   pusher.trigger(channel, 'inserted', {
-    //     // eslint-disable-next-line object-shorthand
-    //     chartData: logData,
-    //   });
-    //   // console.log(
-    //   //   `CHANGE Insert : ${JSON.stringify(change.fullDocument.data[0]).green}`
-    //   // );
-    // }
-    // if (operationType === 'update') {
-    //   // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
-    //   pusher.trigger(channel, 'updated', {
-    //     // eslint-disable-next-line object-shorthand
-    //     chartData: logData,
-    //   });
-    //   //   console.log(
-    //   //   `CHANGE Update lastElement : ${JSON.stringify(lastElement).green}`
-    //   // );
-    //   // console.log(
-    //   //   `CHANGE Update updatedFields : ${
-    //   //     JSON.stringify(
-    //   //       change.updateDescription.updatedFields.data[lastElement]
-    //   //     ).green
-    //   //   }`
-    //   // );
-    //   // console.log(
-    //   //   `CHANGE Update removedFields : ${
-    //   //     JSON.stringify(change.updateDescription.removedFields).green
-    //   //   }`
-    //   // );
-    // }
-    // if (operationType === 'replace') {
-    //   pusher.trigger(channel, 'replaced', {
-    //     // eslint-disable-next-line object-shorthand
-    //     chartData: logData,
-    //   });
-
-    //   // console.log(
-    //   //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-    //   // );
-    // }
-    // if (
-    //   operationType !== 'update' &&
-    //   operationType !== 'insert' &&
-    //   operationType !== 'replace'
-    // )
-    //   console.log(`CHANGE : ${JSON.stringify(change).green}`);
-
-    // if (change.operationType === 'insert') {
-    //   const task = change.fullDocument;
-    //   pusher.trigger(channel, 'inserted', {
-    //     // eslint-disable-next-line object-shorthand
-    //     task: task,
-    //   });
-    // } else if (change.operationType === 'delete') {
-    //   pusher.trigger(channel, 'deleted', change.documentKey._id);
-    // }
-  });
+  //   // pusher.trigger(channel, 'AnyEvent', {
+  //   //   // eslint-disable-next-line object-shorthand
+  //   //   chartData: logData,
+  //   // });
+  // });
 });
 
-// app.listen(port, () => {
-//   console.log(`Server is up on port ${port}`);
+// app.use((req, res, next) => {
+//   req.resultMongo = result;
+//   next();
 // });
 
-// if you need to implement HTTPS mode
-// https.createServer({key: privateKey, cert: certificate}, app).listen(process.env.PORT || port, () => {
-//   console.log(`Server is up on port ${port}`)
-// })
+// initDbConnection().then(() => {
+//   app.listen(port, () => {
+//     console.log(`Server is up on port ${port}`);
+//   });
+// const db = mongoose.connection;
+// db.once('open', function() {
+//   console.log(`client MongoDB Connection ok!`.green);
 
-// //view engine setup
-// app.set('views', path.join(__dirname, 'views'))
-// //this is the folder where we keep our pug files
-// app.use('view engine', pug)
+//   const taskCollection = db.collection('stocks');
+//   const changeStream = taskCollection.watch({ fullDocument: 'updateLookup' });
 
-// // serves up static files from the public folder. anything in public/ will just served us as the file is
-// app.use(express.static(path.join(__dirname, 'public')))
+//   changeStream.on('change', change => {
+//     const { operationType, fullDocument } = change;
 
-// /////////////////
+//     console.log(`CHANGE : ${JSON.stringify(change).green}`);
+
+//     // const logData = fullDocument.data.map(item => ({
+//     //   date: parseFloat(item.date),
+//     //   open: parseFloat(item.open),
+//     //   high: parseFloat(item.high),
+//     //   low: parseFloat(item.low),
+//     //   close: parseFloat(item.close),
+//     //   volume: parseInt(item.volume),
+//     // }));
+
+//     // console.log(`CHANGE : ${JSON.stringify(change).green}`);
+
+//     // pusher.trigger(channel, 'AnyEvent', {
+//     //   // eslint-disable-next-line object-shorthand
+//     //   chartData: logData,
+//     //   symbol: fullDocument.symbol,
+//     // });
+//   });
+// });
+// });
+
+// initDb(function(err) {
+//   app.listen(port, function(err) {
+//     if (err) {
+//       throw err; //
+//     }
+//     console.log(`API Up and running on port: ${port}`);
+//   });
+// });
+
+// function exampleRoute(req, res) {
+//   const db = getDb();
+//   const results = db.once('open', function() {
+//     console.log(`client MongoDB Connection ok!`.red);
+
+//     const taskCollection = db.collection('stocks');
+//     const changeStream = taskCollection.watch({
+//       fullDocument: 'updateLookup',
+//     });
+
+//     return changeStream.on('change', change => {
+//       // const { operationType, fullDocument } = change;
+
+//       // const logData = fullDocument.data.map(item => ({
+//       //   date: parseFloat(item.date),
+//       //   open: parseFloat(item.open),
+//       //   high: parseFloat(item.high),
+//       //   low: parseFloat(item.low),
+//       //   close: parseFloat(item.close),
+//       //   volume: parseInt(item.volume),
+//       // }));
+
+//       console.log(`CHANGE : ${JSON.stringify(change).green}`);
+//       return change;
+
+//       // pusher.trigger(channel, 'AnyEvent', {
+//       //   // eslint-disable-next-line object-shorthand
+//       //   chartData: logData,
+//       //   symbol: fullDocument.symbol,
+//       // });
+//     });
+//   });
+//   res.json(results);
+// }

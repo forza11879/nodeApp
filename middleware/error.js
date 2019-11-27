@@ -39,7 +39,7 @@ const errorHandler = (err, req, res, next) => {
     success: false,
     statusCode: error.statusCode || 500,
     error: error.message || 'Server Error',
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
   });
   // res.status(error.statusCode || 500).json({
   //   success: false,

@@ -142,6 +142,8 @@ async function getSymbolWebApi() {
 // }, 5000);
 
 
+
+
 // ////////////
 
 // Enable pusher logging - don't include this in production
@@ -194,8 +196,10 @@ channel.bind('AnyEvent', function(data) {
       },
 
       title: {
-        text: `Symbol Historical`
+        // text: `Symbol Historical`
         // text: `${curValueAjax.toUpperCase()} Symbol Historical`
+        text: `${data.symbol} Historical`
+
 
       },
 
@@ -237,7 +241,9 @@ channel.bind('AnyEvent', function(data) {
         {
           type: 'candlestick',
           // name: curValueAjax.toUpperCase(),
-          name: `Symbol`,
+          // name: `Symbol`,
+          name: `${data.symbol}`,
+
           data: ohlc,
           dataGrouping: {
             units: groupingUnits
