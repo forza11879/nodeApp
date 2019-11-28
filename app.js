@@ -10,6 +10,7 @@ const cors = require('cors');
 const errorHandler = require('./middleware/error');
 // const { initDbConnection } = require('./startup/dbm');
 // const { getDb, initDb } = require('./startup/dbSS');
+const { connectDb } = require('./startup/db');
 
 const { User } = require('./db/models/User/User');
 
@@ -86,175 +87,19 @@ app.use('/', mainRoute);
 
 app.use('*', errorRoute);
 app.use(errorHandler);
-// //////
-const router = express.Router();
-router.use(
-  '/stock',
-  function(req, res, next) {
-    console.log(`Request URL App.js: ${req.originalUrl}`.red);
-    console.log(`Request Params App.js: ${req.params}`.red);
-
-    next();
-  },
-  function(req, res, next) {
-    console.log(`Request Type App.js: ${req.method}`.red);
-    next();
-  }
-);
-
-router.use(
-  '/stock',
-  function(req, res, next) {
-    console.log(`Request URL App.js: ${req.originalUrl}`.red);
-    console.log(`Request Params App.js: ${req.params}`.red);
-
-    next();
-  },
-  function(req, res, next) {
-    console.log(`Request Type App.js: ${req.method}`.red);
-    next();
-  }
-);
 
 const port = process.env.PORT;
 
-mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
-// Connect to our Database and handle any bad connections
-
-// await mongoose.connect(process.env.MONGODB_URL.REPLICASET.RS, {
-
-mongoose.connect('mongodb://localhost:27017/myapp?replicaSet=rs0', {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-});
-
-mongoose.set('useCreateIndex', true);
-
-const db = mongoose.connection;
-
-db.on('error', err => {
-  console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
-});
-
-db.once('open', () => {
-  app.listen(port, () => {
+app.on('ready', function() {
+  app.listen(3000, function() {
     console.log(`Server is up on port ${port}`);
   });
-
-  // const taskCollection = db.collection('stocks');
-  // // const pipeline = [
-  // //   {
-  // //     $match: { symbol: req.params.symbol },
-  // //   },
-  // // ];
-  // const changeStream = taskCollection.watch(
-  //   { fullDocument: 'updateLookup' }
-  //   // pipeline
-  // );
-  // changeStream.on('change', change => {
-  //   const { operationType, fullDocument } = change;
-
-  //   // console.log(`CHANGE : ${JSON.stringify(change).green}`);
-
-  //   // const logData = fullDocument.data.map(item => ({
-  //   //   date: parseFloat(item.date),
-  //   //   open: parseFloat(item.open),
-  //   //   high: parseFloat(item.high),
-  //   //   low: parseFloat(item.low),
-  //   //   close: parseFloat(item.close),
-  //   //   volume: parseInt(item.volume),
-  //   // }));
-
-  //   // pusher.trigger(channel, 'AnyEvent', {
-  //   //   // eslint-disable-next-line object-shorthand
-  //   //   chartData: logData,
-  //   // });
-  // });
 });
 
-// app.use((req, res, next) => {
-//   req.resultMongo = result;
-//   next();
-// });
-
-// initDbConnection().then(() => {
-//   app.listen(port, () => {
-//     console.log(`Server is up on port ${port}`);
-//   });
-// const db = mongoose.connection;
-// db.once('open', function() {
-//   console.log(`client MongoDB Connection ok!`.green);
-
-//   const taskCollection = db.collection('stocks');
-//   const changeStream = taskCollection.watch({ fullDocument: 'updateLookup' });
-
-//   changeStream.on('change', change => {
-//     const { operationType, fullDocument } = change;
-
-//     console.log(`CHANGE : ${JSON.stringify(change).green}`);
-
-//     // const logData = fullDocument.data.map(item => ({
-//     //   date: parseFloat(item.date),
-//     //   open: parseFloat(item.open),
-//     //   high: parseFloat(item.high),
-//     //   low: parseFloat(item.low),
-//     //   close: parseFloat(item.close),
-//     //   volume: parseInt(item.volume),
-//     // }));
-
-//     // console.log(`CHANGE : ${JSON.stringify(change).green}`);
-
-//     // pusher.trigger(channel, 'AnyEvent', {
-//     //   // eslint-disable-next-line object-shorthand
-//     //   chartData: logData,
-//     //   symbol: fullDocument.symbol,
-//     // });
-//   });
-// });
-// });
-
-// initDb(function(err) {
-//   app.listen(port, function(err) {
-//     if (err) {
-//       throw err; //
-//     }
-//     console.log(`API Up and running on port: ${port}`);
-//   });
-// });
-
-// function exampleRoute(req, res) {
-//   const db = getDb();
-//   const results = db.once('open', function() {
-//     console.log(`client MongoDB Connection ok!`.red);
-
-//     const taskCollection = db.collection('stocks');
-//     const changeStream = taskCollection.watch({
-//       fullDocument: 'updateLookup',
-//     });
-
-//     return changeStream.on('change', change => {
-//       // const { operationType, fullDocument } = change;
-
-//       // const logData = fullDocument.data.map(item => ({
-//       //   date: parseFloat(item.date),
-//       //   open: parseFloat(item.open),
-//       //   high: parseFloat(item.high),
-//       //   low: parseFloat(item.low),
-//       //   close: parseFloat(item.close),
-//       //   volume: parseInt(item.volume),
-//       // }));
-
-//       console.log(`CHANGE : ${JSON.stringify(change).green}`);
-//       return change;
-
-//       // pusher.trigger(channel, 'AnyEvent', {
-//       //   // eslint-disable-next-line object-shorthand
-//       //   chartData: logData,
-//       //   symbol: fullDocument.symbol,
-//       // });
-//     });
-//   });
-//   res.json(results);
-// }
+// once app is ready connect to DB
+connectDb();
+// once connected to DB emit app ready
+mongoose.connection.once('open', function() {
+  // All OK - fire (emit) a ready event.
+  app.emit('ready');
+});
