@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 const { postLogin, postLogout, postSignup } = require('../controllers/auth');

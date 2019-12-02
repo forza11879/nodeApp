@@ -19,39 +19,36 @@ const searchWebApi = async url => {
     console.log(`searchWebApi error: ${ex}`.red);
   }
 };
+// console.log(JSON.stringify(`fetchWebApiStock response data: ${item}`)),
+//   console.log(`typeof item: ${typeof item}`);
 
-const fetchWebApi = async url => {
+const fetchWebApiStock = async url => {
   try {
     const response = await axios.get(url);
-    // console.log(response);
-    return response.data.map(item => ({
+    const { data } = response;
+
+    const result = data.map(item => ({
       date: Date.parse(item.date),
       open: item.open,
       high: item.high,
       low: item.low,
       close: item.close,
       volume: item.volume,
-      // parseInt vs unary plus  +dateObj["5. volume"]
     }));
 
-    // return Object.entries(response.data['Time Series (Daily)']).map(
-    //   ([date, dateObj]) => ({
-    //     date: Date.parse(date),
-    //     open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
-    //     high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
-    //     low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
-    //     close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-    //     volume: parseInt(dateObj['5. volume']),
-    //     // parseInt vs unary plus  +dateObj["5. volume"]
-    //   })
-    // );
-  } catch (ex) {
-    console.log(`fetchWebApi error: ${ex}`.red);
+    // console.log('fetchWebApiStock result data:', result);
+
+    return result;
+  } catch (err) {
+    console.log('fetchWebApiStock error: ', err.red);
   }
 };
 
 const creatStock = async (symbol, webApiData) => {
   try {
+    // console.log('creatStock symbol', symbol.green);
+    // console.log('creatStock webApiData', JSON.stringify(webApiData));
+
     const webApiDataReversed = webApiData.reverse();
     const query = { symbol };
 
@@ -125,6 +122,31 @@ const dbSearchApi = async curValueDbSearch => {
   }
 };
 
+const generateUrlArrayStock = async () => {
+  try {
+    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+
+    const query = {};
+    const projection = { _id: 0, symbol: 1 };
+    const dataFromDB = await Stock.find(query, projection);
+
+    return dataFromDB.map(item => ({
+      url: `https://sandbox.iexapis.com/stable/stock/${item.symbol}/chart?token=${apiKey}`,
+      symbol: item.symbol,
+    }));
+
+    //   {
+    //   // if (!item.symbol === '[null]') return;
+    //   console.log(JSON.stringify(`list of symbols: ${item.symbol}`));
+    //   console.log(
+    //     JSON.stringify(`list of symbols typeof: ${typeof item.symbol}`)
+    //   );
+    // });
+  } catch (ex) {
+    console.log(`generateUrlArrayList error: ${ex}`.red);
+  }
+};
+
 // Stock.find(
 //   { $text: { $search: `"${curValueDbSearch}"` } },
 //   { score: { $meta: 'textScore' } }
@@ -134,9 +156,10 @@ const dbSearchApi = async curValueDbSearch => {
 //   })
 
 module.exports = {
-  fetchWebApi,
+  fetchWebApiStock,
   creatStock,
   fetchDb,
   dbSearchApi,
   searchWebApi,
+  generateUrlArrayStock,
 };

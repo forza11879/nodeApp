@@ -98,8 +98,13 @@ app.on('ready', function() {
 
 // once app is ready connect to DB
 connectDb();
+const db = mongoose.connection;
 // once connected to DB emit app ready
-mongoose.connection.once('open', function() {
+db.once('open', function() {
   // All OK - fire (emit) a ready event.
   app.emit('ready');
+});
+
+db.on('error', err => {
+  console.error('connection error:', err);
 });

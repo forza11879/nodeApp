@@ -1,18 +1,12 @@
-/* eslint-disable no-undef */
-/* eslint-disable prettier/prettier */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-var */
-/* eslint-disable vars-on-top */
-/* eslint-disable one-var */
-/* eslint-disable no-unneeded-ternary */
-/* eslint-disable prefer-const */
-/* eslint-disable no-use-before-define */
+// eslint-disable-next-line no-use-before-define
 document.addEventListener('DOMContentLoaded', getSymbolWebApi);
 const symbolValueCurValue = document.querySelector('#symbolValueCurValue');
 const symbolTagsChart = document.querySelector('#symbolTagsChart');
 const requestSymbolChart = document.querySelector('#requestSymbolChart');
 
+// eslint-disable-next-line no-use-before-define
 requestSymbolChart.addEventListener('click', getSymbolWebApi);
+// eslint-disable-next-line no-use-before-define
 symbolTagsChart.addEventListener('keyup', executeEnterKey);
 
 function executeEnterKey(event) {
@@ -22,13 +16,24 @@ function executeEnterKey(event) {
   }
 }
 
+async function updateDB() {
+  try {
+    await fetch('/stock/updatedb');
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+setInterval(async function() {
+  // eslint-disable-next-line no-use-before-define
+  await updateDB();
+}, 5000);
+
 async function getSymbolWebApi() {
   const symbolValueCurValueValue = symbolValueCurValue.value;
   const symbolTagsChartValue = symbolTagsChart.value;
 
-  let curValueAjax = symbolTagsChartValue
-    ? symbolTagsChartValue
-    : symbolValueCurValueValue;
+  const curValueAjax = symbolTagsChartValue || symbolValueCurValueValue;
 
   console.log(curValueAjax);
 
@@ -39,18 +44,20 @@ async function getSymbolWebApi() {
     // drawChart(data)
     // console.log(data);
     // split the data set into ohlc and volume
-    var ohlc = [],
-      volume = [],
-      // dataLength = data.length,
-      // set the allowed units for data grouping
-      groupingUnits = [
-        [
-          'week', // unit name
-          [1] // allowed multiples
-        ],
-        ['month', [1, 2, 3, 4, 6]]
+    const ohlc = [];
+    const volume = [];
+
+    // set the allowed units for data grouping
+
+    // eslint-disable-next-line no-undef
+    groupingUnits = [
+      [
+        'week', // unit name
+        [1], // allowed multiples
       ],
-      i = 0;
+      ['month', [1, 2, 3, 4, 6]],
+    ];
+    // i = 0;
 
     data.map(item => {
       ohlc.push([
@@ -59,56 +66,57 @@ async function getSymbolWebApi() {
         item.high,
         item.low,
         item.close,
-        item.volume
+        item.volume,
       ]);
       volume.push([
         item.date, // the date
-        item.volume // the volume
+        item.volume, // the volume
       ]);
     });
 
     // create the chart
+    // eslint-disable-next-line no-undef
     Highcharts.stockChart('container', {
       rangeSelector: {
-        selected: 5
+        selected: 5,
       },
 
       title: {
-        text: `${curValueAjax.toUpperCase()} Historical`
+        text: `${curValueAjax.toUpperCase()} Historical`,
       },
 
       yAxis: [
         {
           labels: {
             align: 'right',
-            x: -3
+            x: -3,
           },
           title: {
-            text: 'OHLC'
+            text: 'OHLC',
           },
           height: '60%',
           lineWidth: 2,
           resize: {
-            enabled: true
-          }
+            enabled: true,
+          },
         },
         {
           labels: {
             align: 'right',
-            x: -3
+            x: -3,
           },
           title: {
-            text: 'Volume'
+            text: 'Volume',
           },
           top: '65%',
           height: '35%',
           offset: 0,
-          lineWidth: 2
-        }
+          lineWidth: 2,
+        },
       ],
 
       tooltip: {
-        split: true
+        split: true,
       },
 
       series: [
@@ -117,8 +125,9 @@ async function getSymbolWebApi() {
           name: curValueAjax.toUpperCase(),
           data: ohlc,
           dataGrouping: {
-            units: groupingUnits
-          }
+            // eslint-disable-next-line no-undef
+            units: groupingUnits,
+          },
         },
         {
           type: 'column',
@@ -126,140 +135,134 @@ async function getSymbolWebApi() {
           data: volume,
           yAxis: 1,
           dataGrouping: {
-            units: groupingUnits
-          }
-        }
-      ]
+            // eslint-disable-next-line no-undef
+            units: groupingUnits,
+          },
+        },
+      ],
     });
   } catch (error) {
     console.error('Error', error);
   }
 }
 
-// setInterval(async function() {
-//   // eslint-disable-next-line no-use-before-define
-//   await getSymbolWebApi();
-// }, 5000);
-
-
-
-
 // ////////////
 
 // Enable pusher logging - don't include this in production
+// eslint-disable-next-line no-undef
 Pusher.logToConsole = true;
 
+// eslint-disable-next-line no-undef
 const pusher = new Pusher('c53cb9e621a72be43e96', {
   cluster: 'us2',
-  forceTLS: true
+  forceTLS: true,
 });
 
 const channel = pusher.subscribe('myChannel');
 
 channel.bind('AnyEvent', function(data) {
   // console.log(JSON.stringify(`Data event - AnyEvent from Pusher: ${data}`));
- // drawChart(data)
-    // console.log(data);
-    // split the data set into ohlc and volume
-    var ohlc = [],
-      volume = [],
-      // dataLength = data.length,
-      // set the allowed units for data grouping
-      groupingUnits = [
-        [
-          'week', // unit name
-          [1] // allowed multiples
-        ],
-        ['month', [1, 2, 3, 4, 6]]
-      ],
-      i = 0;
+  // drawChart(data)
+  // console.log(data);
+  // split the data set into ohlc and volume
+  const ohlc = [];
+  const volume = [];
 
-    data.chartData.map(item => {
-      ohlc.push([
-        item.date,
-        item.open,
-        item.high,
-        item.low,
-        item.close,
-        item.volume
-      ]);
-      volume.push([
-        item.date, // the date
-        item.volume // the volume
-      ]);
-    });
+  // set the allowed units for data grouping
 
-    // create the chart
-    Highcharts.stockChart('container', {
-      rangeSelector: {
-        selected: 5
-      },
+  // eslint-disable-next-line no-undef
+  groupingUnits = [
+    [
+      'week', // unit name
+      [1], // allowed multiples
+    ],
+    ['month', [1, 2, 3, 4, 6]],
+  ];
+  // i = 0;
 
-      title: {
-        // text: `Symbol Historical`
-        // text: `${curValueAjax.toUpperCase()} Symbol Historical`
-        text: `${data.symbol} Historical`
+  data.chartData.map(item => {
+    ohlc.push([
+      item.date,
+      item.open,
+      item.high,
+      item.low,
+      item.close,
+      item.volume,
+    ]);
+    volume.push([
+      item.date, // the date
+      item.volume, // the volume
+    ]);
+  });
 
-
-      },
-
-      yAxis: [
-        {
-          labels: {
-            align: 'right',
-            x: -3
-          },
-          title: {
-            text: 'OHLC'
-          },
-          height: '60%',
-          lineWidth: 2,
-          resize: {
-            enabled: true
-          }
+  // create the chart
+  // eslint-disable-next-line no-undef
+  Highcharts.stockChart('container', {
+    rangeSelector: {
+      selected: 5,
+    },
+    title: {
+      // text: `Symbol Historical`
+      // text: `${curValueAjax.toUpperCase()} Symbol Historical`
+      text: `${data.symbol} Historical`,
+    },
+    yAxis: [
+      {
+        labels: {
+          align: 'right',
+          x: -3,
         },
-        {
-          labels: {
-            align: 'right',
-            x: -3
-          },
-          title: {
-            text: 'Volume'
-          },
-          top: '65%',
-          height: '35%',
-          offset: 0,
-          lineWidth: 2
-        }
-      ],
-
-      tooltip: {
-        split: true
-      },
-
-      series: [
-        {
-          type: 'candlestick',
-          // name: curValueAjax.toUpperCase(),
-          // name: `Symbol`,
-          name: `${data.symbol}`,
-
-          data: ohlc,
-          dataGrouping: {
-            units: groupingUnits
-          }
+        title: {
+          text: 'OHLC',
         },
-        {
-          type: 'column',
-          name: 'Volume',
-          data: volume,
-          yAxis: 1,
-          dataGrouping: {
-            units: groupingUnits
-          }
-        }
-      ]
-    });
+        height: '60%',
+        lineWidth: 2,
+        resize: {
+          enabled: true,
+        },
+      },
+      {
+        labels: {
+          align: 'right',
+          x: -3,
+        },
+        title: {
+          text: 'Volume',
+        },
+        top: '65%',
+        height: '35%',
+        offset: 0,
+        lineWidth: 2,
+      },
+    ],
+
+    tooltip: {
+      split: true,
+    },
+    series: [
+      {
+        type: 'candlestick',
+        // name: curValueAjax.toUpperCase(),
+        // name: `Symbol`,
+        name: `${data.symbol}`,
+
+        data: ohlc,
+        dataGrouping: {
+          units: groupingUnits,
+        },
+      },
+      {
+        type: 'column',
+        name: 'Volume',
+        data: volume,
+        yAxis: 1,
+        dataGrouping: {
+          // eslint-disable-next-line no-undef
+          units: groupingUnits,
+        },
+      },
+    ],
+  });
 });
 
 // channel.bind('updated', function(data) {
@@ -273,5 +276,3 @@ channel.bind('AnyEvent', function(data) {
 //   // console.log(`Data from Pusher: ${data}`);
 
 // });
-
-

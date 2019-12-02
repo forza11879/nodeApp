@@ -2,9 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const Pusher = require('pusher');
-const mongoose = require('mongoose');
-// const { initDbConnection } = require('../startup/dbm');
-// const { getDb } = require('../startup/dbSS');
+// const mongoose = require('mongoose');
 
 const Db = require('../db/models/Stock');
 const { Stock } = require('../db/models/Stock/Stock');
@@ -52,37 +50,62 @@ exports.getWebApi = async (req, res) => {
   try {
     const { symbol } = req.params;
 
-    // console.log(`result mongo controller ${resultM}`);
-    // console.log(typeof resultM);
+    console.log(`req.parms symbol: ${symbol.green}`);
+    console.log(typeof symbol);
 
     // const apiKey = process.env.API_KEY;
-    // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
-    const apiKey = process.env.API_TOKEN_QUOTE;
+    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+    // const apiKey = process.env.API_TOKEN_QUOTE;
 
     // const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKey}`;
 
-    // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
+    const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
-    const urlCompact = `https://cloud.iexapis.com/beta/stock/${symbol}/chart?token=${apiKey}`;
+    // const urlCompact = `https://cloud.iexapis.com/beta/stock/${symbol}/chart?token=${apiKey}`;
 
-    const webApiData = await Db.fetchWebApi(urlCompact);
+    const webApiData = await Db.fetchWebApiStock(urlCompact);
     // console.log(`web api data: ${JSON.stringify(webApiData)}`.red);
     await Db.creatStock(symbol, webApiData);
 
-    const db = mongoose.connection;
-    const taskCollection = db.collection('stocks');
+    // const db = mongoose.connection;
+    // const taskCollection = db.collection('stocks');
+    // https://thecodebarbarian.com/stock-price-notifications-with-mongoose-and-mongodb-change-streams
 
     const pipeline = [
       // { fullDocument: 'updateLookup' },
-      { $match: { 'fullDocument.symbol': symbol } },
+      {
+        $match: {
+          'ns.db': 'myapp',
+          'ns.coll': 'stocks',
+          'fullDocument.symbol': symbol,
+        },
+      },
     ];
-    const changeStream = taskCollection.watch(
+    // const changeStream = taskCollection.watch(
+    //   // { fullDocument: 'updateLookup' },
+    //   pipeline
+    // );
+
+    const changeStream = Stock.watch(
       // { fullDocument: 'updateLookup' },
       pipeline
     );
+
     changeStream.on('change', change => {
-      console.log(`CHANGE route : ${JSON.stringify(change).green}`);
+      console.log('CHANGE JSON.stringify: ', JSON.stringify(change).green);
+      console.log('CHANGE console.log: ', change.green);
+
       const { operationType, fullDocument } = change;
+
+      // console.log(
+      //   `fullDocument.symbol : ${JSON.stringify(fullDocument.symbol).red}`
+      // );
+      // console.log(`fullDocument.symbol : ${typeof fullDocument.symbol}`);
+
+      // console.log(`symbol : ${JSON.stringify(symbol).red}`);
+      // console.log(`symbol : ${typeof symbol}`);
+
+      if (fullDocument.symbol !== symbol) return;
 
       const logData = fullDocument.data.map(item => ({
         date: parseFloat(item.date),
@@ -136,9 +159,41 @@ exports.getWebApi = async (req, res) => {
         console.log(`CHANGE : ${JSON.stringify(change).green}`);
     });
 
+    // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
+
     res.send(webApiData);
   } catch (ex) {
     console.log(`getWebApi error: ${ex}`.red);
+  }
+};
+
+exports.getWebApiStock = async (req, res) => {
+  try {
+    const urlArray = await Db.generateUrlArrayStock();
+    // console.log('getWebApiStock promisesResult: ', JSON.stringify(urlArray));
+
+    const promises = urlArray.map(async item => ({
+      symbol: item.symbol,
+      webApiData: await Db.fetchWebApiStock(item.url),
+    }));
+
+    // Since MAP always return promises (if you use await), you have to wait for the array of promises to get resolved. You can do this with await Promise.all
+
+    const promisesResult = await Promise.all(promises);
+
+    await Promise.all(
+      promisesResult.map(async item =>
+        Db.creatStock(item.symbol, item.webApiData)
+      )
+    );
+
+    res.sendStatus(200);
+    // .json({
+    //   success: true,
+    //   data: promisesResult,
+    // });
+  } catch (error) {
+    console.log('getWebApiStock error: ', error);
   }
 };
 
