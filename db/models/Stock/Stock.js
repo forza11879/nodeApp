@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Portfolio } = require('../Portfolio/Portfolio');
 
 const ChildSchemaData = new mongoose.Schema({
   _id: false,
@@ -22,6 +23,19 @@ const ParentSchemaSymbol = new mongoose.Schema({
   },
   // Array of subdocuments
   data: [ChildSchemaData],
+});
+
+// Add middleware to update the de-referenced `symbol`
+ParentSchemaSymbol.pre('save', async function() {
+  if (this.isModified('symbol')) {
+    await Portfolio.updateMany({ symbolId: this._id }, { symbol: this.symbol });
+  }
+});
+
+ParentSchemaSymbol.pre('save', async function() {
+  if (this.isModified('data')) {
+    await Portfolio.updateMany({ symbolId: this._id }, { symbol: this.data });
+  }
 });
 
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);
