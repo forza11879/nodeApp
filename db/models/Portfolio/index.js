@@ -35,7 +35,7 @@ const fetchPortfolioList = async userId => {
 
 const fetchPortfolioPosition = async arg => {
   try {
-    const { userId, symbolId, orderType } = arg;
+    const { userId, symbolId, orderType, symbol, data } = arg;
 
     // console.log(`fetchPortfolioPosition userId: ${typeof userId}`.green);
     // console.log(
@@ -57,6 +57,8 @@ const fetchPortfolioPosition = async arg => {
         avgPrice: price,
         userId: userId,
         symbolId: symbolId,
+        symbol: symbol,
+        data: data,
       });
     }
 
@@ -72,6 +74,7 @@ const fetchPortfolioPosition = async arg => {
     console.log(`Position already exist ${orderType} order`.green);
 
     position.qtyPortfolio = newQty;
+    position.data = data;
     await position.save();
   } catch (ex) {
     console.log(`fetchPortfolioPosition error: ${ex}`.red);

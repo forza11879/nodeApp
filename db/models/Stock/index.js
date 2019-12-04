@@ -10,11 +10,11 @@ const searchWebApi = async url => {
   try {
     const response = await axios.get(url);
 
-    const highLow = response.data.bestMatches.map(item => ({
+    const symbolData = response.data.bestMatches.map(item => ({
       symbol: item['1. symbol'],
     }));
-    console.log(highLow.green);
-    return highLow;
+    console.log(symbolData.green);
+    return symbolData;
   } catch (ex) {
     console.log(`searchWebApi error: ${ex}`.red);
   }
@@ -27,14 +27,26 @@ const fetchWebApiStock = async url => {
     const response = await axios.get(url);
     const { data } = response;
 
-    const result = data.map(item => ({
-      date: Date.parse(item.date),
-      open: item.open,
-      high: item.high,
-      low: item.low,
-      close: item.close,
-      volume: item.volume,
-    }));
+    const result = Object.entries(data['Time Series (Daily)']).map(
+      ([date, dateObj]) => ({
+        date: Date.parse(date),
+        open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
+        high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
+        low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
+        close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
+        volume: parseInt(dateObj['5. volume']),
+        // parseInt vs unary plus  +dateObj["5. volume"]
+      })
+    );
+
+    // const result = data.map(item => ({
+    //   date: Date.parse(item.date),
+    //   open: item.open,
+    //   high: item.high,
+    //   low: item.low,
+    //   close: item.close,
+    //   volume: item.volume,
+    // }));
 
     // console.log('fetchWebApiStock result data:', result);
 

@@ -134,107 +134,48 @@
 //         });
 //     });
 // };
+
 const result = async () => {
   const response = await fetch(
-    'https://cloud.iexapis.com/v1/stock/MSFT/chart?token=pk_0f5e9e6bca7548918adc6512bcb57ff4'
+    'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=aapl&outputsize=compact&apikey=6BUYSS9QR8Y9HH15'
   );
   const myJson = await response.json();
 
-  console.log('result data:', myJson);
+  console.log('result data one:', myJson['Time Series (Daily)']);
 
-  const dataWebApi = myJson.map(item => ({
-    date: Date.parse(item.date),
-    open: item.open,
-    high: item.high,
-    low: item.low,
-    close: item.close,
-    volume: item.volume,
-  }));
-  console.log('result data:', JSON.stringify(dataWebApi));
+  const dataWebApi = Object.entries(myJson['Time Series (Daily)']).map(
+    ([date, dateObj]) => ({
+      date: Date.parse(date),
+      open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
+      high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
+      low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
+      close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
+      volume: parseInt(dateObj['5. volume']),
+      // parseInt vs unary plus  +dateObj["5. volume"]
+    })
+  );
+  console.log('result final:', dataWebApi);
 };
-
 result();
 
-//     const arrayResult = [];
-// const objResult = {};
-// objResult["01"] = nieto.label;
-// objResult["02"] = nieto.value;
-// arrayResult.push(objResult);
-
-//   return async () => {
-//     for await (const item of myJson) {
-//       return {
-//         date: Date.parse(item.date),
-//         open: item.open,
-//         high: item.high,
-//         low: item.low,
-//         close: item.close,
-//         volume: item.volume
-//       };
-//     }
-//   };
-// };
-
-result().then(item => console.log('result data:', JSON.stringify(item)));
-
-// var res = result();
-// console.log('result data:' + JSON.stringify(res))
-
-// result().then(item => console.log('result data:', item));
-
-// const res = result();
-// console.log('result data:', res);
-
-// result().then(
-//   item => console.log(JSON.stringify(`result data: ${item}`))
-//   //   console.log(`result data: ${item}`)
+// return Object.entries(response.data['Time Series (Daily)']).map(
+//   ([date, dateObj]) => ({
+//     date: Date.parse(date),
+//     open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
+//     high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
+//     low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
+//     close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
+//     volume: parseInt(dateObj['5. volume']),
+//     // parseInt vs unary plus  +dateObj["5. volume"]
+//   })
 // );
 
-// result().then(item => console.log('result data:', item));
-
-// // const p = Promise.resolve(result());
-// // p.then(function(v) {
-// //   console.log('fetchWebApiStock result data: ', v);
-// // });
-
-// //   myJson.map(item => ({
-// //     date: Date.parse(item.date),
-// //     open: item.open,
-// //     high: item.high,
-// //     low: item.low,
-// //     close: item.close,
-// //     volume: item.volume,
-// //     // parseInt vs unary plus  +dateObj["5. volume"]
-// //   }));
-
-// //   return {
-// //     // date: Date.parse(myJson.date),
-// //     open: myJson.open,
-// //     high: myJson.high,
-// //     low: myJson.low,
-// //     close: myJson.close,
-// //     volume: myJson.volume,
-// //   };
-
-// // const res = result();
-// // console.log(JSON.stringify(`result data: ${res}`));
-
-// // console.log('result data:', res);
-// //
-// // console.log(JSON.stringify(`result data: ${getResult}`));
-// // console.log(`result data: ${getResult}`);
-
-// // const p = Promise.resolve(result());
-// // p.then(function(v) {
-// //   console.log(JSON.stringify(`fetchWebApiStock result data: ${v}`));
-// // });
-
-// //   const result = myJson.map(item => ({
-// //     date: Date.parse(item.date),
-// //     open: item.open,
-// //     high: item.high,
-// //     low: item.low,
-// //     close: item.close,
-// //     volume: item.volume,
-// //     // parseInt vs unary plus  +dateObj["5. volume"]
-// //   }));
+response.data['Time Series (Daily)'].map(([date, dateObj]) => ({
+  date: Date.parse(date),
+  open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
+  high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
+  low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
+  close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
+  volume: parseInt(dateObj['5. volume']),
+  // parseInt vs unary plus  +dateObj["5. volume"]
+}));

@@ -12,19 +12,19 @@ const { Stock } = require('../Stock/Stock');
 const ErrorResponse = require('../../../utils/errorResponse');
 const asyncHandler = require('../../../middleware/async');
 
-const addTransaction = async (arg, userId) => {
+const addTransaction = async (arg, userId, webApiDataReversed) => {
   try {
     const { price, qty, orderType, symbol } = arg;
-
-    // console.log('addTransaction symbol:' + typeof arg.symbol);
-    // console.log('addTransaction symbol:' + JSON.stringify(arg.symbol));
-
     const query = { symbol: symbol };
     const projection = { _id: 1 };
     const symbolId = await Stock.findOne(query, projection);
 
+    const lastIndex = webApiDataReversed.length - 1;
+
     arg.userId = userId;
     arg.symbolId = symbolId;
+    arg.symbol = symbol;
+    arg.data = webApiDataReversed[lastIndex];
 
     // error is catched by try/catch
     Transaction.create({

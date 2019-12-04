@@ -53,15 +53,12 @@ exports.getWebApi = async (req, res) => {
     console.log(`req.parms symbol: ${symbol.green}`);
     console.log(typeof symbol);
 
-    // const apiKey = process.env.API_KEY;
-    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
-    // const apiKey = process.env.API_TOKEN_QUOTE;
+    const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
+    // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
 
-    // const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKey}`;
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
 
-    const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
-
-    // const urlCompact = `https://cloud.iexapis.com/beta/stock/${symbol}/chart?token=${apiKey}`;
+    // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
     const webApiData = await Db.fetchWebApiStock(urlCompact);
     // console.log(`web api data: ${JSON.stringify(webApiData)}`.red);

@@ -40,8 +40,8 @@ exports.getBuySellTicket = async (req, res) => {
 
     console.log(`res.session.isLoggedIn: ${req.session.isLoggedIn}`);
 
-    const apiTokenQuote = process.env.API_TOKEN_QUOTE;
-    const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
+    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+    const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
     const data = await Db.fetchWebApiQuote(url);
     const userData = await User.findById({ _id: userId }).select(
@@ -62,8 +62,13 @@ exports.postBuySellTicket = async (req, res) => {
   try {
     const { symbol } = req.params;
     const userId = req.session.user._id;
-    const apiTokenQuote = process.env.API_TOKEN_QUOTE;
-    const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
+    console.log('postBuySellTicket symbol: ', symbol.red);
+
+    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+    const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
+
+    // const apiTokenQuote = process.env.API_TOKEN_QUOTE;
+    // const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
     const data = await Db.fetchWebApiQuote(url);
     const userData = await UserModal.fetchUserDataDB(userId);

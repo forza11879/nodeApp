@@ -1,9 +1,17 @@
+// eslint-disable-next-line no-unused-vars
+const colors = require('colors');
 const Db = require('../db/models/Transaction');
 const User = require('../db/models/User');
-const { Stock } = require('../db/models/Stock/Stock');
+const Stock = require('../db/models/Stock');
 
-async function addTransaction(arg, userId, next) {
-  await Db.addTransaction(arg, userId, next);
+async function addTransaction(arg, userId, urlCompact) {
+  const webApiData = await Stock.fetchWebApiStock(urlCompact);
+  // console.log('postAddTransaction webApiData: ', JSON.stringify(webApiData));
+
+  // console.log('postAddTransaction webApiData: ', webApiData);
+
+  const webApiDataReversed = webApiData.reverse();
+  await Db.addTransaction(arg, userId, webApiDataReversed);
 }
 
 async function updateCash(arg, userId) {
@@ -12,23 +20,36 @@ async function updateCash(arg, userId) {
   return User.updateCashDB(cash, userId);
 }
 
-function fetchData(url) {
+async function fetchData(url) {
   return Db.fetchWebApiQuote(url);
 }
 
-exports.postAddTransaction = async (req, res, next) => {
+exports.postAddTransaction = async (req, res) => {
   try {
     const { symbol } = req.body;
     const arg = req.body;
-    // console.log(`postAddTransaction req.body:${typeof req.body}`);
-    // console.log(`postAddTransaction req.body:${JSON.stringify(req.body)}`);
     const userId = req.session.user._id;
-    const apiTokenQuote = process.env.API_TOKEN_QUOTE;
 
-    const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
+    const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
+    // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
+
+    // console.log('urlCompact: ', urlCompact.green);
+
+    const webApiData = await Stock.fetchWebApiStock(urlCompact);
+    // console.log(
+    //   'postAddTransaction webApiData: ',
+    //   JSON.stringify(webApiData.green)
+    // );
+
+    // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
+
+    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+    const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
     const promises = [
-      addTransaction(arg, userId, next),
+      addTransaction(arg, userId, urlCompact),
       updateCash(arg, userId),
       fetchData(url),
     ];

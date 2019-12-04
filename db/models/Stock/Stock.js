@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+const colors = require('colors');
 const mongoose = require('mongoose');
 const { Portfolio } = require('../Portfolio/Portfolio');
 
@@ -34,7 +36,12 @@ ParentSchemaSymbol.pre('save', async function() {
 
 ParentSchemaSymbol.pre('save', async function() {
   if (this.isModified('data')) {
-    await Portfolio.updateMany({ symbolId: this._id }, { symbol: this.data });
+    const lastIndex = this.data.length - 1;
+    // console.log('last index', this.data.$[lastIndex].red);
+    await Portfolio.updateMany(
+      { symbolId: this._id },
+      { data: this.data.$[lastIndex] }
+    );
   }
 });
 
