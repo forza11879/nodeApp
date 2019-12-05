@@ -27,23 +27,47 @@ const ParentSchemaSymbol = new mongoose.Schema({
   data: [ChildSchemaData],
 });
 
+// https://thecodebarbarian.com/mongoose-schema-design-pattern-store-what-you-query-for
+
 // Add middleware to update the de-referenced `symbol`
-ParentSchemaSymbol.pre('save', async function() {
-  if (this.isModified('symbol')) {
-    await Portfolio.updateMany({ symbolId: this._id }, { symbol: this.symbol });
-  }
-});
+// ParentSchemaSymbol.pre('save', async function() {
+//   if (this.isModified('symbol')) {
+//     await Portfolio.updateMany({ symbolId: this._id }, { symbol: this.symbol });
+//   }
+// });
 
 ParentSchemaSymbol.pre('save', async function() {
-  if (this.isModified('data')) {
-    const lastIndex = this.data.length - 1;
-    // console.log('last index', this.data.$[lastIndex].red);
-    await Portfolio.updateMany(
-      { symbolId: this._id },
-      { data: this.data.$[lastIndex] }
-    );
-  }
+  console.log(`DATA length console - ${this.symbol}`);
+  // cloning array
+  const cloneData = [...this.data];
+  const lastIndex = cloneData.length - 1;
+  // console.log('cloneData: ', JSON.stringify(cloneData));
+  console.log('DATA length symbol: ', this.symbol);
+  // console.log('cloneData: ', JSON.stringify(cloneData));
+
+  console.log('last index: ', lastIndex);
+  console.log('last index data: ', cloneData[lastIndex]);
+  await Portfolio.updateMany(
+    { symbolId: this._id },
+    { data: cloneData[lastIndex] }
+  );
+
+  // if (this.isModified('data')) {
+  //   console.log('DATA length symbol: ', this.symbol);
+  //   // console.log('cloneData: ', JSON.stringify(cloneData));
+
+  //   console.log('last index: ', lastIndex);
+  //   console.log('last index data: ', cloneData[lastIndex]);
+  //   await Portfolio.updateMany(
+  //     { symbolId: this._id },
+  //     { data: cloneData[lastIndex] }
+  //   );
+  // }
 });
+// ParentSchemaSymbol.pre('findOneAndUpdate', async function() {
+//   const docToUpdate = await this.model.findOne(this.getQuery());
+//   console.log(docToUpdate); // The document that `findOneAndUpdate()` will modify
+// });
 
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);
 

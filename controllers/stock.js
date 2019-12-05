@@ -68,93 +68,93 @@ exports.getWebApi = async (req, res) => {
     // const taskCollection = db.collection('stocks');
     // https://thecodebarbarian.com/stock-price-notifications-with-mongoose-and-mongodb-change-streams
 
-    const pipeline = [
-      // { fullDocument: 'updateLookup' },
-      {
-        $match: {
-          'ns.db': 'myapp',
-          'ns.coll': 'stocks',
-          'fullDocument.symbol': symbol,
-        },
-      },
-    ];
+    // const pipeline = [
+    //   // { fullDocument: 'updateLookup' },
+    //   {
+    //     $match: {
+    //       'ns.db': 'myapp',
+    //       'ns.coll': 'stocks',
+    //       'fullDocument.symbol': symbol,
+    //     },
+    //   },
+    // ];
     // const changeStream = taskCollection.watch(
     //   // { fullDocument: 'updateLookup' },
     //   pipeline
     // );
 
-    const changeStream = Stock.watch(
-      // { fullDocument: 'updateLookup' },
-      pipeline
-    );
+    // const changeStream = Stock.watch(
+    //   // { fullDocument: 'updateLookup' },
+    //   pipeline
+    // );
 
-    changeStream.on('change', change => {
-      console.log('CHANGE JSON.stringify: ', JSON.stringify(change).green);
-      console.log('CHANGE console.log: ', change.green);
+    // changeStream.on('change', change => {
+    //   console.log('CHANGE JSON.stringify: ', JSON.stringify(change).green);
+    //   console.log('CHANGE console.log: ', change.green);
 
-      const { operationType, fullDocument } = change;
+    //   const { operationType, fullDocument } = change;
 
-      // console.log(
-      //   `fullDocument.symbol : ${JSON.stringify(fullDocument.symbol).red}`
-      // );
-      // console.log(`fullDocument.symbol : ${typeof fullDocument.symbol}`);
+    //   // console.log(
+    //   //   `fullDocument.symbol : ${JSON.stringify(fullDocument.symbol).red}`
+    //   // );
+    //   // console.log(`fullDocument.symbol : ${typeof fullDocument.symbol}`);
 
-      // console.log(`symbol : ${JSON.stringify(symbol).red}`);
-      // console.log(`symbol : ${typeof symbol}`);
+    //   // console.log(`symbol : ${JSON.stringify(symbol).red}`);
+    //   // console.log(`symbol : ${typeof symbol}`);
 
-      if (fullDocument.symbol !== symbol) return;
+    //   if (fullDocument.symbol !== symbol) return;
 
-      const logData = fullDocument.data.map(item => ({
-        date: parseFloat(item.date),
-        open: parseFloat(item.open),
-        high: parseFloat(item.high),
-        low: parseFloat(item.low),
-        close: parseFloat(item.close),
-        volume: parseInt(item.volume),
-      }));
+    //   const logData = fullDocument.data.map(item => ({
+    //     date: parseFloat(item.date),
+    //     open: parseFloat(item.open),
+    //     high: parseFloat(item.high),
+    //     low: parseFloat(item.low),
+    //     close: parseFloat(item.close),
+    //     volume: parseInt(item.volume),
+    //   }));
 
-      pusher.trigger(channel, 'AnyEvent', {
-        // eslint-disable-next-line object-shorthand
-        chartData: logData,
-        symbol: fullDocument.symbol,
-      });
+    //   pusher.trigger(channel, 'AnyEvent', {
+    //     // eslint-disable-next-line object-shorthand
+    //     chartData: logData,
+    //     symbol: fullDocument.symbol,
+    //   });
 
-      if (operationType === 'insert') {
-        // pusher.trigger(channel, 'inserted', {
-        //   // eslint-disable-next-line object-shorthand
-        //   chartData: logData,
-        //   symbol: fullDocument.symbol,
-        // });
-        console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
-      }
-      if (operationType === 'update') {
-        // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
-        // pusher.trigger(channel, 'updated', {
-        //   // eslint-disable-next-line object-shorthand
-        //   chartData: logData,
-        //   symbol: fullDocument.symbol,
-        // });
-        console.log(`CHANGE update : ${JSON.stringify(change).green}`);
-      }
-      if (operationType === 'replace') {
-        // pusher.trigger(channel, 'replaced', {
-        //   // eslint-disable-next-line object-shorthand
-        //   chartData: logData,
-        //   symbol: fullDocument.symbol,
-        // });
-        console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
+    //   if (operationType === 'insert') {
+    //     // pusher.trigger(channel, 'inserted', {
+    //     //   // eslint-disable-next-line object-shorthand
+    //     //   chartData: logData,
+    //     //   symbol: fullDocument.symbol,
+    //     // });
+    //     console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
+    //   }
+    //   if (operationType === 'update') {
+    //     // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
+    //     // pusher.trigger(channel, 'updated', {
+    //     //   // eslint-disable-next-line object-shorthand
+    //     //   chartData: logData,
+    //     //   symbol: fullDocument.symbol,
+    //     // });
+    //     console.log(`CHANGE update : ${JSON.stringify(change).green}`);
+    //   }
+    //   if (operationType === 'replace') {
+    //     // pusher.trigger(channel, 'replaced', {
+    //     //   // eslint-disable-next-line object-shorthand
+    //     //   chartData: logData,
+    //     //   symbol: fullDocument.symbol,
+    //     // });
+    //     console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
 
-        // console.log(
-        //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-        // );
-      }
-      if (
-        operationType !== 'update' &&
-        operationType !== 'insert' &&
-        operationType !== 'replace'
-      )
-        console.log(`CHANGE : ${JSON.stringify(change).green}`);
-    });
+    //     // console.log(
+    //     //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
+    //     // );
+    //   }
+    //   if (
+    //     operationType !== 'update' &&
+    //     operationType !== 'insert' &&
+    //     operationType !== 'replace'
+    //   )
+    //     console.log(`CHANGE : ${JSON.stringify(change).green}`);
+    // });
 
     // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
 

@@ -6,11 +6,8 @@ const Stock = require('../db/models/Stock');
 
 async function addTransaction(arg, userId, urlCompact) {
   const webApiData = await Stock.fetchWebApiStock(urlCompact);
-  // console.log('postAddTransaction webApiData: ', JSON.stringify(webApiData));
-
-  // console.log('postAddTransaction webApiData: ', webApiData);
-
   const webApiDataReversed = webApiData.reverse();
+
   await Db.addTransaction(arg, userId, webApiDataReversed);
 }
 
@@ -34,14 +31,6 @@ exports.postAddTransaction = async (req, res) => {
     // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
 
     const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
-
-    // console.log('urlCompact: ', urlCompact.green);
-
-    const webApiData = await Stock.fetchWebApiStock(urlCompact);
-    // console.log(
-    //   'postAddTransaction webApiData: ',
-    //   JSON.stringify(webApiData.green)
-    // );
 
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 

@@ -56,6 +56,30 @@ const fetchWebApiStock = async url => {
   }
 };
 
+// const creatStock = async (symbol, webApiData) => {
+//   try {
+//     // reversed array
+//     const webApiDataReversed = webApiData.reverse();
+
+//     const query = { symbol };
+//     const update = { $addToSet: { data: webApiDataReversed } };
+//     const options = { upsert: true, new: true };
+//     // create/update Stock
+//     const stockResult = await Stock.findOneAndUpdate(query, update, options);
+//     const lastElement = stockResult.data.length - 1;
+
+//     const updatePull = {
+//       $pull: { data: { date: stockResult.data[lastElement].date } },
+//     };
+//     // removes last date from data array
+//     await Stock.findOneAndUpdate(query, updatePull);
+//     // update Stock
+//     await Stock.findOneAndUpdate(query, update);
+//   } catch (ex) {
+//     console.log(`creatStock error: ${ex}`.red);
+//   }
+// };
+
 const creatStock = async (symbol, webApiData) => {
   try {
     // console.log('creatStock symbol', symbol.green);
@@ -94,6 +118,10 @@ const creatStock = async (symbol, webApiData) => {
         },
       },
     ]);
+
+    const positionTwo = await Stock.findOne(query);
+
+    await positionTwo.save();
   } catch (ex) {
     console.log(`creatStock error: ${ex}`.red);
   }
