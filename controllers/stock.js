@@ -166,8 +166,9 @@ exports.getWebApi = async (req, res) => {
 
 exports.getWebApiStock = async (req, res) => {
   try {
-    const urlArray = await Db.generateUrlArrayStock();
-    // console.log('getWebApiStock promisesResult: ', JSON.stringify(urlArray));
+    // const urlArray = await Db.generateUrlArrayStock();
+    const urlArray = await Db.generateUrlArrayStockChart();
+    // console.log('getWebApiStock urlArray: ', JSON.stringify(urlArray));
 
     const promises = urlArray.map(async item => ({
       symbol: item.symbol,

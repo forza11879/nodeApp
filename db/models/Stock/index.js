@@ -24,6 +24,8 @@ const searchWebApi = async url => {
 
 const fetchWebApiStock = async url => {
   try {
+    // console.log('fetchWebApiStock url:', url);
+
     const response = await axios.get(url);
     const { data } = response;
 
@@ -52,7 +54,7 @@ const fetchWebApiStock = async url => {
 
     return result;
   } catch (err) {
-    console.log('fetchWebApiStock error: ', err.red);
+    console.log('fetchWebApiStock error: ', err);
   }
 };
 
@@ -97,7 +99,7 @@ const creatStock = async (symbol, webApiData) => {
         data: webApiDataReversed,
       });
     }
-
+    const startTime = Date.now();
     await Stock.bulkWrite([
       {
         updateOne: {
@@ -122,6 +124,7 @@ const creatStock = async (symbol, webApiData) => {
     const positionTwo = await Stock.findOne(query);
 
     await positionTwo.save();
+    console.log('Executed QUEURY in', Date.now() - startTime, 'ms');
   } catch (ex) {
     console.log(`creatStock error: ${ex}`.red);
   }
@@ -187,6 +190,31 @@ const generateUrlArrayStock = async () => {
   }
 };
 
+const generateUrlArrayStockChart = async () => {
+  try {
+    const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
+
+    const query = {};
+    const projection = { _id: 0, symbol: 1 };
+    const dataFromDB = await Stock.find(query, projection);
+
+    return dataFromDB.map(item => ({
+      url: `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${item.symbol}&outputsize=compact&apikey=${apiKeyAlpha}`,
+      symbol: item.symbol,
+    }));
+
+    //   {
+    //   // if (!item.symbol === '[null]') return;
+    //   console.log(JSON.stringify(`list of symbols: ${item.symbol}`));
+    //   console.log(
+    //     JSON.stringify(`list of symbols typeof: ${typeof item.symbol}`)
+    //   );
+    // });
+  } catch (ex) {
+    console.log(`generateUrlArrayList error: ${ex}`.red);
+  }
+};
+
 // Stock.find(
 //   { $text: { $search: `"${curValueDbSearch}"` } },
 //   { score: { $meta: 'textScore' } }
@@ -202,4 +230,5 @@ module.exports = {
   dbSearchApi,
   searchWebApi,
   generateUrlArrayStock,
+  generateUrlArrayStockChart,
 };

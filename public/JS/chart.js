@@ -24,10 +24,10 @@ async function updateDB() {
   }
 }
 
-// setInterval(async function() {
-//   // eslint-disable-next-line no-use-before-define
-//   await updateDB();
-// }, 5000);
+setInterval(async function() {
+  // eslint-disable-next-line no-use-before-define
+  await updateDB();
+}, 60000);
 
 async function getSymbolWebApi() {
   const symbolValueCurValueValue = symbolValueCurValue.value;

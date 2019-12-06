@@ -3,6 +3,9 @@ const colors = require('colors');
 const mongoose = require('mongoose');
 const { Portfolio } = require('../Portfolio/Portfolio');
 
+// const startTime = Date.now();
+// console.log('Executed QUEURY SCHEMA in', Date.now() - startTime, 'ms');
+
 const ChildSchemaData = new mongoose.Schema({
   _id: false,
   date: { type: mongoose.Types.Decimal128 },
@@ -37,37 +40,15 @@ const ParentSchemaSymbol = new mongoose.Schema({
 // });
 
 ParentSchemaSymbol.pre('save', async function() {
-  console.log(`DATA length console - ${this.symbol}`);
   // cloning array
   const cloneData = [...this.data];
   const lastIndex = cloneData.length - 1;
-  // console.log('cloneData: ', JSON.stringify(cloneData));
-  console.log('DATA length symbol: ', this.symbol);
-  // console.log('cloneData: ', JSON.stringify(cloneData));
 
-  console.log('last index: ', lastIndex);
-  console.log('last index data: ', cloneData[lastIndex]);
   await Portfolio.updateMany(
     { symbolId: this._id },
     { data: cloneData[lastIndex] }
   );
-
-  // if (this.isModified('data')) {
-  //   console.log('DATA length symbol: ', this.symbol);
-  //   // console.log('cloneData: ', JSON.stringify(cloneData));
-
-  //   console.log('last index: ', lastIndex);
-  //   console.log('last index data: ', cloneData[lastIndex]);
-  //   await Portfolio.updateMany(
-  //     { symbolId: this._id },
-  //     { data: cloneData[lastIndex] }
-  //   );
-  // }
 });
-// ParentSchemaSymbol.pre('findOneAndUpdate', async function() {
-//   const docToUpdate = await this.model.findOne(this.getQuery());
-//   console.log(docToUpdate); // The document that `findOneAndUpdate()` will modify
-// });
 
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);
 
