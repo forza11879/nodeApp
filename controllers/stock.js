@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const Pusher = require('pusher');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const Db = require('../db/models/Stock');
 const { Stock } = require('../db/models/Stock/Stock');
@@ -41,6 +41,7 @@ exports.getSymbolId = async (req, res) => {
 
 exports.getChart = (req, res) => {
   const { symbol } = req.params;
+  // res.render('chart');
   res.render('chart', {
     symbol,
   });
@@ -48,113 +49,113 @@ exports.getChart = (req, res) => {
 
 exports.getWebApi = async (req, res) => {
   try {
-    const { symbol } = req.params;
+    // const { symbol } = req.params;
 
-    console.log(`req.parms symbol: ${symbol.green}`);
-    console.log(typeof symbol);
+    console.log('on entry req.parms.symbol: ', req.params.symbol.green);
+    console.log(typeof req.params.symbol);
 
     const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
     // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
 
-    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.params.symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
 
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
     const webApiData = await Db.fetchWebApiStock(urlCompact);
     // console.log(`web api data: ${JSON.stringify(webApiData)}`.red);
-    await Db.creatStock(symbol, webApiData);
+    await Db.creatStock(req.params.symbol, webApiData);
 
-    // const db = mongoose.connection;
-    // const taskCollection = db.collection('stocks');
+    const db = mongoose.connection;
+    const taskCollection = db.collection('stocks');
     // https://thecodebarbarian.com/stock-price-notifications-with-mongoose-and-mongodb-change-streams
 
-    // const pipeline = [
-    //   // { fullDocument: 'updateLookup' },
-    //   {
-    //     $match: {
-    //       'ns.db': 'myapp',
-    //       'ns.coll': 'stocks',
-    //       'fullDocument.symbol': symbol,
-    //     },
-    //   },
-    // ];
-    // const changeStream = taskCollection.watch(
-    //   // { fullDocument: 'updateLookup' },
-    //   pipeline
-    // );
+    const pipeline = [
+      // { fullDocument: 'updateLookup' },
+      {
+        $match: {
+          'ns.db': 'myapp',
+          'ns.coll': 'stocks',
+          'fullDocument.symbol': req.params.symbol,
+        },
+      },
+    ];
+    const changeStream = taskCollection.watch(
+      { fullDocument: 'updateLookup' }
+      // pipeline
+    );
 
     // const changeStream = Stock.watch(
     //   // { fullDocument: 'updateLookup' },
     //   pipeline
     // );
 
-    // changeStream.on('change', change => {
-    //   console.log('CHANGE JSON.stringify: ', JSON.stringify(change).green);
-    //   console.log('CHANGE console.log: ', change.green);
+    changeStream.on('change', change => {
+      // console.log('CHANGE JSON.stringify: ', JSON.stringify(change));
+      // console.log('CHANGE console.log: ', change);
+      console.log('req.params.symbol in change: ', req.params.symbol.green);
 
-    //   const { operationType, fullDocument } = change;
+      const { operationType, fullDocument } = change;
 
-    //   // console.log(
-    //   //   `fullDocument.symbol : ${JSON.stringify(fullDocument.symbol).red}`
-    //   // );
-    //   // console.log(`fullDocument.symbol : ${typeof fullDocument.symbol}`);
+      // console.log(
+      //   `fullDocument.symbol : ${JSON.stringify(fullDocument.symbol).red}`
+      // );
+      // console.log(`fullDocument.symbol : ${typeof fullDocument.symbol}`);
 
-    //   // console.log(`symbol : ${JSON.stringify(symbol).red}`);
-    //   // console.log(`symbol : ${typeof symbol}`);
+      // console.log(`symbol : ${JSON.stringify(symbol).red}`);
+      // console.log(`symbol : ${typeof symbol}`);
 
-    //   if (fullDocument.symbol !== symbol) return;
+      if (fullDocument.symbol !== req.params.symbol) return;
 
-    //   const logData = fullDocument.data.map(item => ({
-    //     date: parseFloat(item.date),
-    //     open: parseFloat(item.open),
-    //     high: parseFloat(item.high),
-    //     low: parseFloat(item.low),
-    //     close: parseFloat(item.close),
-    //     volume: parseInt(item.volume),
-    //   }));
+      const logData = fullDocument.data.map(item => ({
+        date: parseFloat(item.date),
+        open: parseFloat(item.open),
+        high: parseFloat(item.high),
+        low: parseFloat(item.low),
+        close: parseFloat(item.close),
+        volume: parseInt(item.volume),
+      }));
 
-    //   pusher.trigger(channel, 'AnyEvent', {
-    //     // eslint-disable-next-line object-shorthand
-    //     chartData: logData,
-    //     symbol: fullDocument.symbol,
-    //   });
+      pusher.trigger(channel, 'AnyEvent', {
+        // eslint-disable-next-line object-shorthand
+        chartData: logData,
+        symbol: fullDocument.symbol,
+      });
 
-    //   if (operationType === 'insert') {
-    //     // pusher.trigger(channel, 'inserted', {
-    //     //   // eslint-disable-next-line object-shorthand
-    //     //   chartData: logData,
-    //     //   symbol: fullDocument.symbol,
-    //     // });
-    //     console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
-    //   }
-    //   if (operationType === 'update') {
-    //     // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
-    //     // pusher.trigger(channel, 'updated', {
-    //     //   // eslint-disable-next-line object-shorthand
-    //     //   chartData: logData,
-    //     //   symbol: fullDocument.symbol,
-    //     // });
-    //     console.log(`CHANGE update : ${JSON.stringify(change).green}`);
-    //   }
-    //   if (operationType === 'replace') {
-    //     // pusher.trigger(channel, 'replaced', {
-    //     //   // eslint-disable-next-line object-shorthand
-    //     //   chartData: logData,
-    //     //   symbol: fullDocument.symbol,
-    //     // });
-    //     console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
-
-    //     // console.log(
-    //     //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-    //     // );
-    //   }
-    //   if (
-    //     operationType !== 'update' &&
-    //     operationType !== 'insert' &&
-    //     operationType !== 'replace'
-    //   )
-    //     console.log(`CHANGE : ${JSON.stringify(change).green}`);
-    // });
+      if (operationType === 'insert') {
+        // pusher.trigger(channel, 'inserted', {
+        //   // eslint-disable-next-line object-shorthand
+        //   chartData: logData,
+        //   symbol: fullDocument.symbol,
+        // });
+        // console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
+      }
+      if (operationType === 'update') {
+        // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
+        // pusher.trigger(channel, 'updated', {
+        //   // eslint-disable-next-line object-shorthand
+        //   chartData: logData,
+        //   symbol: fullDocument.symbol,
+        // });
+        // console.log(`CHANGE update : ${JSON.stringify(change).green}`);
+      }
+      if (operationType === 'replace') {
+        // pusher.trigger(channel, 'replaced', {
+        //   // eslint-disable-next-line object-shorthand
+        //   chartData: logData,
+        //   symbol: fullDocument.symbol,
+        // });
+        // console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
+        // console.log(
+        //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
+        // );
+      }
+      // if (
+      //   operationType !== 'update' &&
+      //   operationType !== 'insert' &&
+      //   operationType !== 'replace'
+      // )
+      //   console.log(`CHANGE : ${JSON.stringify(change).green}`);
+    });
 
     // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
 
@@ -233,6 +234,6 @@ exports.getSearchWebApi = async (req, res) => {
 
     res.send(webApiData);
   } catch (ex) {
-    console.log(`getSearchWebApi error: ${ex}`);
+    console.log('getSearchWebApi error: ', ex);
   }
 };

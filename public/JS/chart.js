@@ -1,11 +1,14 @@
 // eslint-disable-next-line no-use-before-define
-document.addEventListener('DOMContentLoaded', getSymbolWebApi);
+document.addEventListener('DOMContentLoaded', getSymbolWebApiLoad);
+// hidden input
 const symbolValueCurValue = document.querySelector('#symbolValueCurValue');
+// input
 const symbolTagsChart = document.querySelector('#symbolTagsChart');
+// button
 const requestSymbolChart = document.querySelector('#requestSymbolChart');
 
 // eslint-disable-next-line no-use-before-define
-requestSymbolChart.addEventListener('click', getSymbolWebApi);
+requestSymbolChart.addEventListener('click', getSymbolWebApiClick);
 // eslint-disable-next-line no-use-before-define
 symbolTagsChart.addEventListener('keyup', executeEnterKey);
 
@@ -29,11 +32,13 @@ setInterval(async function() {
   await updateDB();
 }, 60000);
 
-async function getSymbolWebApi() {
+async function getSymbolWebApiLoad() {
+  // hidden input value
   const symbolValueCurValueValue = symbolValueCurValue.value;
-  const symbolTagsChartValue = symbolTagsChart.value;
+  // input
+  // const symbolTagsChartValue = symbolTagsChart.value;
 
-  const curValueAjax = symbolTagsChartValue || symbolValueCurValueValue;
+  const curValueAjax = symbolValueCurValueValue;
 
   console.log(curValueAjax);
 
@@ -50,7 +55,126 @@ async function getSymbolWebApi() {
     // set the allowed units for data grouping
 
     // eslint-disable-next-line no-undef
-    groupingUnits = [
+    const groupingUnits = [
+      [
+        'week', // unit name
+        [1], // allowed multiples
+      ],
+      ['month', [1, 2, 3, 4, 6]],
+    ];
+    // i = 0;
+
+    data.map(item => {
+      ohlc.push([
+        item.date,
+        item.open,
+        item.high,
+        item.low,
+        item.close,
+        item.volume,
+      ]);
+      volume.push([
+        item.date, // the date
+        item.volume, // the volume
+      ]);
+    });
+
+    // create the chart
+    // eslint-disable-next-line no-undef
+    Highcharts.stockChart('container', {
+      rangeSelector: {
+        selected: 5,
+      },
+
+      title: {
+        text: `${curValueAjax.toUpperCase()} Historical`,
+      },
+
+      yAxis: [
+        {
+          labels: {
+            align: 'right',
+            x: -3,
+          },
+          title: {
+            text: 'OHLC',
+          },
+          height: '60%',
+          lineWidth: 2,
+          resize: {
+            enabled: true,
+          },
+        },
+        {
+          labels: {
+            align: 'right',
+            x: -3,
+          },
+          title: {
+            text: 'Volume',
+          },
+          top: '65%',
+          height: '35%',
+          offset: 0,
+          lineWidth: 2,
+        },
+      ],
+
+      tooltip: {
+        split: true,
+      },
+
+      series: [
+        {
+          type: 'candlestick',
+          name: curValueAjax.toUpperCase(),
+          data: ohlc,
+          dataGrouping: {
+            // eslint-disable-next-line no-undef
+            units: groupingUnits,
+          },
+        },
+        {
+          type: 'column',
+          name: 'Volume',
+          data: volume,
+          yAxis: 1,
+          dataGrouping: {
+            // eslint-disable-next-line no-undef
+            units: groupingUnits,
+          },
+        },
+      ],
+    });
+  } catch (error) {
+    console.error('Error', error);
+  }
+}
+
+async function getSymbolWebApiClick() {
+  // hidden input value
+  // const symbolValueCurValueValue = symbolValueCurValue.value;
+  // input
+  const symbolTagsChartValue = symbolTagsChart.value;
+
+  const curValueAjax = symbolTagsChartValue;
+
+  console.log(curValueAjax);
+
+  try {
+    const response = await fetch(`/stock/app/${curValueAjax}`);
+    const data = await response.json();
+
+    // drawChart(data)
+    // console.log(data);
+    // split the data set into ohlc and volume
+    const ohlc = [];
+    const volume = [];
+
+    // set the allowed units for data grouping
+
+    // eslint-disable-next-line no-undef
+    const groupingUnits = [
       [
         'week', // unit name
         [1], // allowed multiples
@@ -171,7 +295,7 @@ channel.bind('AnyEvent', function(data) {
   // set the allowed units for data grouping
 
   // eslint-disable-next-line no-undef
-  groupingUnits = [
+  const groupingUnits = [
     [
       'week', // unit name
       [1], // allowed multiples
