@@ -49,63 +49,29 @@ exports.getChart = (req, res) => {
 
 exports.getWebApi = async (req, res) => {
   try {
-    // const { symbol } = req.params;
+    const { symbol } = req.params;
+    const { changeStream } = req;
 
-    console.log('on entry req.parms.symbol: ', req.params.symbol.green);
-    console.log(typeof req.params.symbol);
+    console.log('on entry req.parms.symbol: ', symbol.green);
+    console.log(typeof symbol);
 
     const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
     // const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
 
-    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.params.symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
 
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
     const webApiData = await Db.fetchWebApiStock(urlCompact);
-    // console.log(`web api data: ${JSON.stringify(webApiData)}`.red);
-    await Db.creatStock(req.params.symbol, webApiData);
-
-    const db = mongoose.connection;
-    const taskCollection = db.collection('stocks');
-    // https://thecodebarbarian.com/stock-price-notifications-with-mongoose-and-mongodb-change-streams
-
-    const pipeline = [
-      // { fullDocument: 'updateLookup' },
-      {
-        $match: {
-          'ns.db': 'myapp',
-          'ns.coll': 'stocks',
-          'fullDocument.symbol': req.params.symbol,
-        },
-      },
-    ];
-    const changeStream = taskCollection.watch(
-      { fullDocument: 'updateLookup' }
-      // pipeline
-    );
-
-    // const changeStream = Stock.watch(
-    //   // { fullDocument: 'updateLookup' },
-    //   pipeline
-    // );
+    await Db.creatStock(symbol, webApiData);
 
     changeStream.on('change', change => {
       // console.log('CHANGE JSON.stringify: ', JSON.stringify(change));
       // console.log('CHANGE console.log: ', change);
-      console.log('req.params.symbol in change: ', req.params.symbol.green);
+      console.log('req.params.symbol in change: ', symbol.green);
 
       const { operationType, fullDocument } = change;
-
-      // console.log(
-      //   `fullDocument.symbol : ${JSON.stringify(fullDocument.symbol).red}`
-      // );
-      // console.log(`fullDocument.symbol : ${typeof fullDocument.symbol}`);
-
-      // console.log(`symbol : ${JSON.stringify(symbol).red}`);
-      // console.log(`symbol : ${typeof symbol}`);
-
-      if (fullDocument.symbol !== req.params.symbol) return;
-
+      console.log('operationType: ', operationType.green);
       const logData = fullDocument.data.map(item => ({
         date: parseFloat(item.date),
         open: parseFloat(item.open),
@@ -121,34 +87,91 @@ exports.getWebApi = async (req, res) => {
         symbol: fullDocument.symbol,
       });
 
-      if (operationType === 'insert') {
-        // pusher.trigger(channel, 'inserted', {
-        //   // eslint-disable-next-line object-shorthand
-        //   chartData: logData,
-        //   symbol: fullDocument.symbol,
-        // });
-        // console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
-      }
-      if (operationType === 'update') {
-        // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
-        // pusher.trigger(channel, 'updated', {
-        //   // eslint-disable-next-line object-shorthand
-        //   chartData: logData,
-        //   symbol: fullDocument.symbol,
-        // });
-        // console.log(`CHANGE update : ${JSON.stringify(change).green}`);
-      }
-      if (operationType === 'replace') {
-        // pusher.trigger(channel, 'replaced', {
-        //   // eslint-disable-next-line object-shorthand
-        //   chartData: logData,
-        //   symbol: fullDocument.symbol,
-        // });
-        // console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
-        // console.log(
-        //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-        // );
-      }
+      // if (operationType === 'update') {
+      // const logData = fullDocument.data.map(item => ({
+      //   date: parseFloat(item.date),
+      //   open: parseFloat(item.open),
+      //   high: parseFloat(item.high),
+      //   low: parseFloat(item.low),
+      //   close: parseFloat(item.close),
+      //   volume: parseInt(item.volume),
+      // }));
+
+      // pusher.trigger(channel, 'AnyEvent', {
+      //   // eslint-disable-next-line object-shorthand
+      //   chartData: logData,
+      //   symbol: fullDocument.symbol,
+      // });
+
+      // const resumeToken = change._id;
+      // console.log('changeStream: ', changeStream);
+
+      // changeStream.close();
+
+      // console.log('resumeToken: ', resumeToken);
+
+      // const optionsNew = {
+      //   resumeAfter: resumeToken,
+      //   fullDocument: 'updateLookup',
+      // };
+
+      // const newChangeStream = Stock.watch([], optionsNew);
+
+      // newChangeStream.on('change', next => {
+      //   console.log('req.params.symbol in change NEXT: ', symbol);
+
+      //   const operationTypeNext = next.operationType;
+      //   const fullDocumentNext = next.fullDocument;
+
+      //   console.log('operationType NEXT: ', operationTypeNext.green);
+
+      //   const logDataNext = fullDocumentNext.data.map(item => ({
+      //     date: parseFloat(item.date),
+      //     open: parseFloat(item.open),
+      //     high: parseFloat(item.high),
+      //     low: parseFloat(item.low),
+      //     close: parseFloat(item.close),
+      //     volume: parseInt(item.volume),
+      //   }));
+
+      //   pusher.trigger(channel, 'AnyEvent', {
+      //     // eslint-disable-next-line object-shorthand
+      //     chartData: logDataNext,
+      //     symbol: fullDocumentNext.symbol,
+      //   });
+
+      // newChangeStream.close();
+      // });
+      // }
+
+      // if (operationType === 'insert') {
+      //   // pusher.trigger(channel, 'inserted', {
+      //   //   // eslint-disable-next-line object-shorthand
+      //   //   chartData: logData,
+      //   //   symbol: fullDocument.symbol,
+      //   // });
+      //   // console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
+      // }
+      // if (operationType === 'update') {
+      //   // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
+      //   // pusher.trigger(channel, 'updated', {
+      //   //   // eslint-disable-next-line object-shorthand
+      //   //   chartData: logData,
+      //   //   symbol: fullDocument.symbol,
+      //   // });
+      //   // console.log(`CHANGE update : ${JSON.stringify(change).green}`);
+      // }
+      // if (operationType === 'replace') {
+      //   // pusher.trigger(channel, 'replaced', {
+      //   //   // eslint-disable-next-line object-shorthand
+      //   //   chartData: logData,
+      //   //   symbol: fullDocument.symbol,
+      //   // });
+      //   // console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
+      //   // console.log(
+      //   //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
+      //   // );
+      // }
       // if (
       //   operationType !== 'update' &&
       //   operationType !== 'insert' &&
@@ -157,9 +180,21 @@ exports.getWebApi = async (req, res) => {
       //   console.log(`CHANGE : ${JSON.stringify(change).green}`);
     });
 
-    // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
+    // changeStreamFunction();
+    // setTimeout(changeStreamFunction, 55000);
 
-    res.send(webApiData);
+    // setTimeout(function() {
+    //   setInterval(changeStreamFunction, 55000);
+    // }, 110000);
+
+    // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
+    console.log('symbol outside: ', symbol);
+
+    res.send({
+      webApiData: webApiData,
+      symbol: symbol,
+    });
+    // res.send(webApiData);
   } catch (ex) {
     console.log(`getWebApi error: ${ex}`.red);
   }

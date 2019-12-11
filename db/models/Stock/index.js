@@ -100,7 +100,7 @@ const creatStock = async (symbol, webApiData) => {
     ]);
 
     const positionTwo = await Stock.findOne(query);
-
+    // need this one to trigger pre('save') hooks
     await positionTwo.save();
   } catch (ex) {
     console.log(`creatStock error: ${ex}`.red);

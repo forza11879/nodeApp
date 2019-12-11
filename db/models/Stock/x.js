@@ -154,7 +154,20 @@ const result = async () => {
       // parseInt vs unary plus  +dateObj["5. volume"]
     })
   );
-  console.log('result final:', dataWebApi);
+
+  const dataWebApiW = Object.entries(myJson).map(
+    item => console.log(item)
+    // ([date, dateObj]) => ({
+    //   date: Date.parse(date),
+    //   open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
+    //   high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
+    //   low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
+    //   close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
+    //   volume: parseInt(dateObj['5. volume']),
+    //   // parseInt vs unary plus  +dateObj["5. volume"]
+    // })
+  );
+  console.log('result final:', dataWebApiW);
 };
 result();
 

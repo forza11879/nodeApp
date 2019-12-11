@@ -45,6 +45,8 @@ async function getSymbolWebApiLoad() {
   try {
     const response = await fetch(`/stock/app/${curValueAjax}`);
     const data = await response.json();
+    console.log('data webApiData from the back: ', data.webApiData);
+    console.log('data symbol from the back: ', data.symbol);
 
     // drawChart(data)
     // console.log(data);
@@ -64,7 +66,7 @@ async function getSymbolWebApiLoad() {
     ];
     // i = 0;
 
-    data.map(item => {
+    data.webApiData.map(item => {
       ohlc.push([
         item.date,
         item.open,
@@ -164,6 +166,8 @@ async function getSymbolWebApiClick() {
   try {
     const response = await fetch(`/stock/app/${curValueAjax}`);
     const data = await response.json();
+    console.log('data webApiData from the back: ', data.webApiData);
+    console.log('data symbol from the back: ', data.symbol);
 
     // drawChart(data)
     // console.log(data);
@@ -183,7 +187,7 @@ async function getSymbolWebApiClick() {
     ];
     // i = 0;
 
-    data.map(item => {
+    data.webApiData.map(item => {
       ohlc.push([
         item.date,
         item.open,
@@ -285,10 +289,17 @@ const pusher = new Pusher('c53cb9e621a72be43e96', {
 const channel = pusher.subscribe('myChannel');
 
 channel.bind('AnyEvent', function(data) {
-  // console.log(JSON.stringify(`Data event - AnyEvent from Pusher: ${data}`));
-  // drawChart(data)
-  // console.log(data);
+  const symbol = symbolValueCurValue.value;
+
+  // input
+  // const symbolTagsChartValue = symbolTagsChart.value;
+  const dataLengh = data.chartData.length;
+  console.log('data length: ', dataLengh);
+  console.log('data symbol: ', data.symbol);
+
+  if (symbol !== data.symbol) return;
   // split the data set into ohlc and volume
+
   const ohlc = [];
   const volume = [];
 

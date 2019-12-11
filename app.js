@@ -13,6 +13,7 @@ const errorHandler = require('./middleware/error');
 const { connectDb } = require('./startup/db');
 
 const { User } = require('./db/models/User/User');
+const { Stock } = require('./db/models/Stock/Stock');
 
 // //////
 const app = express();
@@ -64,7 +65,7 @@ app.use(
 
 app.use((req, res, next) => {
   const { user } = req.session;
-  // console.log(user);
+  // console.log('req.session: ', req.session);
   if (!user) {
     return next();
   }
@@ -75,6 +76,25 @@ app.use((req, res, next) => {
       next();
     })
     .catch(err => console.log(err));
+});
+
+app.use((req, res, next) => {
+  // change streams
+  const pipeline = [
+    {
+      $match: {
+        'ns.db': 'myapp',
+        'ns.coll': 'stocks',
+        // 'fullDocument.symbol': 'RY' || req.symbol,
+      },
+    },
+  ];
+
+  const options = { fullDocument: 'updateLookup' };
+  const changeStream = Stock.watch(pipeline, options);
+  req.changeStream = changeStream;
+  next();
+  // https://thecodebarbarian.com/stock-price-notifications-with-mongoose-and-mongodb-change-streams
 });
 // Mount Rout
 app.use('/auth', authRoute);
