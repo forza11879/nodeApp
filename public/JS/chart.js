@@ -293,12 +293,16 @@ channel.bind('AnyEvent', function(data) {
 
   // input
   // const symbolTagsChartValue = symbolTagsChart.value;
-  const dataLengh = data.chartData.length;
-  console.log('data length: ', dataLengh);
-  console.log('data symbol: ', data.symbol);
+  // const dataLengh = data.chartData.length;
+  // console.log('data length: ', dataLengh);
+  // console.log('data symbol: ', data.symbol);
+  console.log('chartData before: ', data.chartData);
+  console.log('data symbol before: ', data.symbol);
 
   if (symbol !== data.symbol) return;
   // split the data set into ohlc and volume
+  console.log('chartData after: ', data.chartData);
+  console.log('data symbol after: ', data.symbol);
 
   const ohlc = [];
   const volume = [];

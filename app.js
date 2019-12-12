@@ -1,4 +1,6 @@
 /* eslint-disable no-use-before-define */
+const { createServer } = require('https');
+const WebSocket = require('ws');
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
@@ -17,15 +19,6 @@ const { Stock } = require('./db/models/Stock/Stock');
 
 // //////
 const app = express();
-// pusher
-// const pusher = new Pusher({
-//   appId: process.env.INSERT_APP_ID,
-//   key: process.env.INSERT_APP_KEY,
-//   secret: process.env.INSERT_APP_SECRET,
-//   cluster: process.env.INSERT_APP_CLUSTER,
-//   useTLS: true,
-// });
-// const channel = 'myChannel';
 // //////
 app.use(cors());
 // Dev logging middleware - ONLY in development
@@ -109,6 +102,9 @@ app.use('*', errorRoute);
 app.use(errorHandler);
 
 const port = process.env.PORT;
+// websocket
+const server = createServer(app);
+const wss = new WebSocket.Server({ server });
 
 app.on('ready', function() {
   app.listen(3000, function() {

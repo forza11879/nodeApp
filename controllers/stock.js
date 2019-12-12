@@ -65,29 +65,19 @@ exports.getWebApi = async (req, res) => {
     const webApiData = await Db.fetchWebApiStock(urlCompact);
     await Db.creatStock(symbol, webApiData);
 
-    changeStream.on('change', change => {
+    changeStream.on('change', event => {
       // console.log('CHANGE JSON.stringify: ', JSON.stringify(change));
       // console.log('CHANGE console.log: ', change);
-      console.log('req.params.symbol in change: ', symbol.green);
+      // console.log('req.params.symbol in change: ', symbol.green);
 
-      const { operationType, fullDocument } = change;
+      const { operationType } = event;
+      const dataDb = event.fullDocument.data;
+      const symbolDb = event.fullDocument.symbol;
+
       console.log('operationType: ', operationType.green);
-      const logData = fullDocument.data.map(item => ({
-        date: parseFloat(item.date),
-        open: parseFloat(item.open),
-        high: parseFloat(item.high),
-        low: parseFloat(item.low),
-        close: parseFloat(item.close),
-        volume: parseInt(item.volume),
-      }));
+      console.log('data on server: ', dataDb);
+      console.log('symbol on server: ', symbolDb);
 
-      pusher.trigger(channel, 'AnyEvent', {
-        // eslint-disable-next-line object-shorthand
-        chartData: logData,
-        symbol: fullDocument.symbol,
-      });
-
-      // if (operationType === 'update') {
       // const logData = fullDocument.data.map(item => ({
       //   date: parseFloat(item.date),
       //   open: parseFloat(item.open),
@@ -97,35 +87,15 @@ exports.getWebApi = async (req, res) => {
       //   volume: parseInt(item.volume),
       // }));
 
-      // pusher.trigger(channel, 'AnyEvent', {
-      //   // eslint-disable-next-line object-shorthand
-      //   chartData: logData,
-      //   symbol: fullDocument.symbol,
-      // });
+      pusher.trigger(channel, 'AnyEvent', {
+        // eslint-disable-next-line object-shorthand
+        // chartData: logData,
+        chartData: dataDb,
+        symbol: symbolDb,
+      });
 
-      // const resumeToken = change._id;
-      // console.log('changeStream: ', changeStream);
-
-      // changeStream.close();
-
-      // console.log('resumeToken: ', resumeToken);
-
-      // const optionsNew = {
-      //   resumeAfter: resumeToken,
-      //   fullDocument: 'updateLookup',
-      // };
-
-      // const newChangeStream = Stock.watch([], optionsNew);
-
-      // newChangeStream.on('change', next => {
-      //   console.log('req.params.symbol in change NEXT: ', symbol);
-
-      //   const operationTypeNext = next.operationType;
-      //   const fullDocumentNext = next.fullDocument;
-
-      //   console.log('operationType NEXT: ', operationTypeNext.green);
-
-      //   const logDataNext = fullDocumentNext.data.map(item => ({
+      // if (operationType === 'update') {
+      //   const logData = fullDocument.data.map(item => ({
       //     date: parseFloat(item.date),
       //     open: parseFloat(item.open),
       //     high: parseFloat(item.high),
@@ -136,67 +106,26 @@ exports.getWebApi = async (req, res) => {
 
       //   pusher.trigger(channel, 'AnyEvent', {
       //     // eslint-disable-next-line object-shorthand
-      //     chartData: logDataNext,
-      //     symbol: fullDocumentNext.symbol,
+      //     chartData: logData,
+      //     symbol: fullDocument.symbol,
       //   });
-
-      // newChangeStream.close();
-      // });
       // }
-
-      // if (operationType === 'insert') {
-      //   // pusher.trigger(channel, 'inserted', {
-      //   //   // eslint-disable-next-line object-shorthand
-      //   //   chartData: logData,
-      //   //   symbol: fullDocument.symbol,
-      //   // });
-      //   // console.log(`CHANGE insert : ${JSON.stringify(change).green}`);
-      // }
-      // if (operationType === 'update') {
-      //   // console.log(`CHANGE Insert : ${JSON.stringify(fullDocument.data)}`);
-      //   // pusher.trigger(channel, 'updated', {
-      //   //   // eslint-disable-next-line object-shorthand
-      //   //   chartData: logData,
-      //   //   symbol: fullDocument.symbol,
-      //   // });
-      //   // console.log(`CHANGE update : ${JSON.stringify(change).green}`);
-      // }
-      // if (operationType === 'replace') {
-      //   // pusher.trigger(channel, 'replaced', {
-      //   //   // eslint-disable-next-line object-shorthand
-      //   //   chartData: logData,
-      //   //   symbol: fullDocument.symbol,
-      //   // });
-      //   // console.log(`CHANGE replace : ${JSON.stringify(change).green}`);
-      //   // console.log(
-      //   //   `CHANGE Replace : ${JSON.stringify(fullDocument.data[0]).green}`
-      //   // );
-      // }
-      // if (
-      //   operationType !== 'update' &&
-      //   operationType !== 'insert' &&
-      //   operationType !== 'replace'
-      // )
-      //   console.log(`CHANGE : ${JSON.stringify(change).green}`);
     });
 
-    // changeStreamFunction();
-    // setTimeout(changeStreamFunction, 55000);
-
-    // setTimeout(function() {
-    //   setInterval(changeStreamFunction, 55000);
-    // }, 110000);
-
+    // we need to handle the changeStream error separatley from try/catch to trap the errors
+    changeStream.on('error', err => {
+      console.log(err);
+      changeStream.close();
+      throw err;
+    });
     // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
-    console.log('symbol outside: ', symbol);
 
     res.send({
       webApiData: webApiData,
       symbol: symbol,
     });
-    // res.send(webApiData);
-  } catch (ex) {
-    console.log(`getWebApi error: ${ex}`.red);
+  } catch (err) {
+    console.log(`getWebApi error: ${err.stack}`.red);
   }
 };
 
