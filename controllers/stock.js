@@ -45,7 +45,7 @@ exports.getChart = (req, res) => {
 exports.getWebApi = async (req, res) => {
   try {
     const { symbol } = req.params;
-    const { changeStream } = req;
+    // const { changeStream } = req;
 
     console.log('on entry req.parms.symbol: ', symbol.green);
     console.log(typeof symbol);
@@ -60,6 +60,19 @@ exports.getWebApi = async (req, res) => {
     const webApiData = await Db.fetchWebApiStock(urlCompact);
     await Db.creatStock(symbol, webApiData);
 
+    const pipeline = [
+      {
+        $match: {
+          'ns.db': 'myapp',
+          'ns.coll': 'stocks',
+          // 'fullDocument.symbol': 'RY' || req.symbol,
+        },
+      },
+    ];
+
+    const options = { fullDocument: 'updateLookup' };
+    const changeStream = Stock.watch(pipeline, options);
+
     changeStream.on('change', event => {
       const { operationType, fullDocument } = event;
       const symbolDb = event.fullDocument.symbol;
@@ -69,14 +82,6 @@ exports.getWebApi = async (req, res) => {
       }
 
       // if (operationType === 'update') {
-      //   const logData = fullDocument.data.map(item => ({
-      //     date: parseFloat(item.date),
-      //     open: parseFloat(item.open),
-      //     high: parseFloat(item.high),
-      //     low: parseFloat(item.low),
-      //     close: parseFloat(item.close),
-      //     volume: parseInt(item.volume),
-      //   }));
       // }
     });
 

@@ -72,24 +72,7 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 });
-// change streams
-app.use((req, res, next) => {
-  const pipeline = [
-    {
-      $match: {
-        'ns.db': 'myapp',
-        'ns.coll': 'stocks',
-        // 'fullDocument.symbol': 'RY' || req.symbol,
-      },
-    },
-  ];
 
-  const options = { fullDocument: 'updateLookup' };
-  const changeStream = Stock.watch(pipeline, options);
-  req.changeStream = changeStream;
-  next();
-  // https://thecodebarbarian.com/stock-price-notifications-with-mongoose-and-mongodb-change-streams
-});
 // Mount Rout
 app.use('/auth', authRoute);
 app.use('/transaction', transactionRoute);
@@ -98,17 +81,11 @@ app.use('/stock', stockRoute);
 app.use('/list', listRoute);
 app.use('/', mainRoute);
 // app.use('/', exampleRoute);
-
 app.use('*', errorRoute);
 app.use(errorHandler);
 
 const port = process.env.PORT;
 
-// app.on('ready', function() {
-//   app.listen(port, function() {
-//     console.log(`Server is up on port ${port}`);
-//   });
-// });
 const server = createServer(app);
 server.listen(port, function() {
   console.log(`Server is up on port ${port}`);
@@ -116,6 +93,21 @@ server.listen(port, function() {
 
 // once app is ready connect to DB
 connectDb();
+
+// websocket
+const wss = new WebSocket.Server({ server });
+wss.on('connection', ws => {
+  console.info('Total connected clients:', wss.clients.size);
+  app.locals.clients = wss.clients;
+});
+
+// /////////////////
+// app.on('ready', function() {
+//   app.listen(port, function() {
+//     console.log(`Server is up on port ${port}`);
+//   });
+// });
+
 // const db = mongoose.connection;
 // once connected to DB emit app ready
 // db.once('open', function() {
@@ -125,39 +117,4 @@ connectDb();
 
 // db.on('error', err => {
 //   console.error('connection error:', err);
-// });
-
-// websocket
-// const server = createServer(app);
-const webSocketServer = new WebSocket.Server({ server });
-
-// app.use(function(req, res, next) {
-//   req.ws = webSocketServer;
-//   return next();
-// });
-webSocketServer.on('connection', webSocket => {
-  console.info('Total connected clients:', webSocketServer.clients.size);
-
-  app.locals.clients = webSocketServer.clients;
-});
-
-// server.on('connection', socket => {
-//   socket.on('message', message => {
-//     server.clients.forEach(client => {
-//       client.send(message);
-//     });
-//   });
-// });
-
-// // init Websocket ws and handle incoming connect requests
-// wss.on('connection', function connection(ws) {
-//   console.log('connection ...');
-
-//   // on connect message
-//   ws.on('message', function incoming(message) {
-//     console.log('received: %s', message);
-//     connectedUsers.push(message);
-//   });
-
-//   ws.send('something');
 // });

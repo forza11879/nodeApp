@@ -282,8 +282,7 @@ socket.addEventListener('message', event => {
   const obj = JSON.parse(event.data);
 
   if (symbol !== obj.symbol) return;
-  console.log('event.data.symbol:', obj.symbol);
-  // console.log('event.data:', obj);
+
   const objData = obj.data.map(item => ({
     date: parseFloat(item.date.$numberDecimal),
     open: parseFloat(item.open.$numberDecimal),
