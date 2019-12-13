@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-const { createServer } = require('https');
+const { createServer } = require('http');
 const WebSocket = require('ws');
 const path = require('path');
 const express = require('express');
@@ -38,7 +38,9 @@ const mainRoute = require('./routes/main');
 const errorRoute = require('./routes/error');
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(express.json()); // Used to parse JSON bodies.
+app.use(express.json({ extended: false })); // Used to parse JSON bodies.
+// app.use(express.json()); // Used to parse JSON bodies.
+
 // //////
 app.set('view engine', 'ejs');
 // views tells EJS where to look for the file.
@@ -70,9 +72,8 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 });
-
+// change streams
 app.use((req, res, next) => {
-  // change streams
   const pipeline = [
     {
       $match: {
@@ -102,25 +103,61 @@ app.use('*', errorRoute);
 app.use(errorHandler);
 
 const port = process.env.PORT;
-// websocket
-const server = createServer(app);
-const wss = new WebSocket.Server({ server });
 
-app.on('ready', function() {
-  app.listen(3000, function() {
-    console.log(`Server is up on port ${port}`);
-  });
+// app.on('ready', function() {
+//   app.listen(port, function() {
+//     console.log(`Server is up on port ${port}`);
+//   });
+// });
+const server = createServer(app);
+server.listen(port, function() {
+  console.log(`Server is up on port ${port}`);
 });
 
 // once app is ready connect to DB
 connectDb();
-const db = mongoose.connection;
+// const db = mongoose.connection;
 // once connected to DB emit app ready
-db.once('open', function() {
-  // All OK - fire (emit) a ready event.
-  app.emit('ready');
+// db.once('open', function() {
+//   // All OK - fire (emit) a ready event.
+//   app.emit('ready');
+// });
+
+// db.on('error', err => {
+//   console.error('connection error:', err);
+// });
+
+// websocket
+// const server = createServer(app);
+const webSocketServer = new WebSocket.Server({ server });
+
+// app.use(function(req, res, next) {
+//   req.ws = webSocketServer;
+//   return next();
+// });
+webSocketServer.on('connection', webSocket => {
+  console.info('Total connected clients:', webSocketServer.clients.size);
+
+  app.locals.clients = webSocketServer.clients;
 });
 
-db.on('error', err => {
-  console.error('connection error:', err);
-});
+// server.on('connection', socket => {
+//   socket.on('message', message => {
+//     server.clients.forEach(client => {
+//       client.send(message);
+//     });
+//   });
+// });
+
+// // init Websocket ws and handle incoming connect requests
+// wss.on('connection', function connection(ws) {
+//   console.log('connection ...');
+
+//   // on connect message
+//   ws.on('message', function incoming(message) {
+//     console.log('received: %s', message);
+//     connectedUsers.push(message);
+//   });
+
+//   ws.send('something');
+// });

@@ -1,23 +1,18 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-const Pusher = require('pusher');
-const mongoose = require('mongoose');
+const WebSocket = require('ws');
 
 const Db = require('../db/models/Stock');
 const { Stock } = require('../db/models/Stock/Stock');
 
-// pusher
-const pusher = new Pusher({
-  appId: process.env.INSERT_APP_ID,
-  key: process.env.INSERT_APP_KEY,
-  secret: process.env.INSERT_APP_SECRET,
-  cluster: process.env.INSERT_APP_CLUSTER,
-  // encrypted: true,
-  useTLS: true,
-});
-// pusher
-const channel = 'myChannel';
+const broadcast = (clients, message) => {
+  clients.forEach(client => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+};
 
 exports.getSymbolId = async (req, res) => {
   try {
@@ -66,33 +61,12 @@ exports.getWebApi = async (req, res) => {
     await Db.creatStock(symbol, webApiData);
 
     changeStream.on('change', event => {
-      // console.log('CHANGE JSON.stringify: ', JSON.stringify(change));
-      // console.log('CHANGE console.log: ', change);
-      // console.log('req.params.symbol in change: ', symbol.green);
-
-      const { operationType } = event;
-      const dataDb = event.fullDocument.data;
+      const { operationType, fullDocument } = event;
       const symbolDb = event.fullDocument.symbol;
 
-      console.log('operationType: ', operationType.green);
-      console.log('data on server: ', dataDb);
-      console.log('symbol on server: ', symbolDb);
-
-      // const logData = fullDocument.data.map(item => ({
-      //   date: parseFloat(item.date),
-      //   open: parseFloat(item.open),
-      //   high: parseFloat(item.high),
-      //   low: parseFloat(item.low),
-      //   close: parseFloat(item.close),
-      //   volume: parseInt(item.volume),
-      // }));
-
-      pusher.trigger(channel, 'AnyEvent', {
-        // eslint-disable-next-line object-shorthand
-        // chartData: logData,
-        chartData: dataDb,
-        symbol: symbolDb,
-      });
+      if (symbol === symbolDb) {
+        broadcast(req.app.locals.clients, JSON.stringify(fullDocument));
+      }
 
       // if (operationType === 'update') {
       //   const logData = fullDocument.data.map(item => ({
@@ -103,12 +77,6 @@ exports.getWebApi = async (req, res) => {
       //     close: parseFloat(item.close),
       //     volume: parseInt(item.volume),
       //   }));
-
-      //   pusher.trigger(channel, 'AnyEvent', {
-      //     // eslint-disable-next-line object-shorthand
-      //     chartData: logData,
-      //     symbol: fullDocument.symbol,
-      //   });
       // }
     });
 

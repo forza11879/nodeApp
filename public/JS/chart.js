@@ -40,7 +40,7 @@ async function getSymbolWebApiLoad() {
 
   const curValueAjax = symbolValueCurValueValue;
 
-  console.log(curValueAjax);
+  // console.log(curValueAjax);
 
   try {
     const response = await fetch(`/stock/app/${curValueAjax}`);
@@ -274,35 +274,25 @@ async function getSymbolWebApiClick() {
   }
 }
 
-// ////////////
+// web socket
+const socket = new WebSocket('ws://localhost:3000');
 
-// Enable pusher logging - don't include this in production
-// eslint-disable-next-line no-undef
-Pusher.logToConsole = true;
-
-// eslint-disable-next-line no-undef
-const pusher = new Pusher('c53cb9e621a72be43e96', {
-  cluster: 'us2',
-  forceTLS: true,
-});
-
-const channel = pusher.subscribe('myChannel');
-
-channel.bind('AnyEvent', function(data) {
+socket.addEventListener('message', event => {
   const symbol = symbolValueCurValue.value;
+  const obj = JSON.parse(event.data);
 
-  // input
-  // const symbolTagsChartValue = symbolTagsChart.value;
-  // const dataLengh = data.chartData.length;
-  // console.log('data length: ', dataLengh);
-  // console.log('data symbol: ', data.symbol);
-  console.log('chartData before: ', data.chartData);
-  console.log('data symbol before: ', data.symbol);
-
-  if (symbol !== data.symbol) return;
-  // split the data set into ohlc and volume
-  console.log('chartData after: ', data.chartData);
-  console.log('data symbol after: ', data.symbol);
+  if (symbol !== obj.symbol) return;
+  console.log('event.data.symbol:', obj.symbol);
+  // console.log('event.data:', obj);
+  const objData = obj.data.map(item => ({
+    date: parseFloat(item.date.$numberDecimal),
+    open: parseFloat(item.open.$numberDecimal),
+    high: parseFloat(item.high.$numberDecimal),
+    low: parseFloat(item.low.$numberDecimal),
+    close: parseFloat(item.close.$numberDecimal),
+    volume: parseInt(item.volume.$numberDecimal),
+  }));
+  console.log('Message from server:', objData);
 
   const ohlc = [];
   const volume = [];
@@ -318,8 +308,9 @@ channel.bind('AnyEvent', function(data) {
     ['month', [1, 2, 3, 4, 6]],
   ];
   // i = 0;
+  // data.chartData
 
-  data.chartData.map(item => {
+  objData.map(item => {
     ohlc.push([
       item.date,
       item.open,
@@ -343,7 +334,7 @@ channel.bind('AnyEvent', function(data) {
     title: {
       // text: `Symbol Historical`
       // text: `${curValueAjax.toUpperCase()} Symbol Historical`
-      text: `${data.symbol} Historical`,
+      text: `${obj.symbol} Historical`,
     },
     yAxis: [
       {
@@ -383,7 +374,7 @@ channel.bind('AnyEvent', function(data) {
         type: 'candlestick',
         // name: curValueAjax.toUpperCase(),
         // name: `Symbol`,
-        name: `${data.symbol}`,
+        name: `${obj.symbol}`,
 
         data: ohlc,
         dataGrouping: {
@@ -403,15 +394,3 @@ channel.bind('AnyEvent', function(data) {
     ],
   });
 });
-
-// channel.bind('updated', function(data) {
-//   console.log(JSON.stringify(`Data event - updated from Pusher: ${data}`));
-//   // console.log(`Data from Pusher: ${data}`);
-
-// });
-
-// channel.bind('replaced', function(data) {
-//   console.log(JSON.stringify(`Data event - replaced from Pusher: ${data}`));
-//   // console.log(`Data from Pusher: ${data}`);
-
-// });

@@ -1,52 +1,48 @@
-exports.getWebApi = async (req, res) => {
-  try {
-    const { symbol } = req.params;
+const SocketServer = require('ws').Server;
+let express = require('express');
 
-    console.log('on entry req.params.symbol: ', symbol);
-    console.log(typeof symbol);
+let connectedUsers = [];
 
-    const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
+// init Express
+let app = express();
 
-    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
+// init Express Router
+let router = express.Router();
+let port = process.env.PORT || 80;
 
-    const webApiData = await Db.fetchWebApiStock(urlCompact);
-    await Db.creatUpdateStock(symbol, webApiData);
+// REST route for GET /status
+router.get('/status', function(req, res) {
+  res.json({ status: 'App is running!' });
+});
 
-    const pipeline = [
-      {
-        $match: {
-          'ns.db': 'myapp',
-          'ns.coll': 'stocks',
-          'fullDocument.symbol': symbol,
-        },
-      },
-    ];
+// connect path to router
+app.use('/', router);
 
-    const options = { fullDocument: 'updateLookup' };
-    const changeStream = Stock.watch(pipeline, options);
+// add middleware for static content
+app.use(express.static('static'));
+let server = app.listen(port, function() {
+  console.log(
+    'node.js static, REST server and websockets listening on port: ' + port
+  );
+});
 
-    changeStream.on('change', change => {
-      console.log('req.params.symbol in change: ', symbol);
+// if serving static app from another server/port, send CORS headers in response
+// { headers: {
+// "Access-Control-Allow-Origin": "*",
+//    "Access-Control-Allow-Headers": "http://localhost:3000",
+//    "Access-Control-Allow-Methods": "PUT, GET, POST, DELETE, OPTIONS"
+// } }
+const wss = new SocketServer({ server });
 
-      const { fullDocument } = change;
+// init Websocket ws and handle incoming connect requests
+wss.on('connection', function connection(ws) {
+  console.log('connection ...');
 
-      const logData = fullDocument.data.map(item => ({
-        date: parseFloat(item.date),
-        open: parseFloat(item.open),
-        high: parseFloat(item.high),
-        low: parseFloat(item.low),
-        close: parseFloat(item.close),
-        volume: parseInt(item.volume),
-      }));
+  // on connect message
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+    connectedUsers.push(message);
+  });
 
-      // pusher.trigger(channel, 'AnyEvent', {
-      //   chartData: logData,
-      //   symbol: fullDocument.symbol,
-      // });
-    });
-
-    res.send(webApiData);
-  } catch (ex) {
-    console.log('getWebApi error:', ex);
-  }
-};
+  ws.send('something');
+});
