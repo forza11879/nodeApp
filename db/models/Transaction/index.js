@@ -15,6 +15,7 @@ const asyncHandler = require('../../../middleware/async');
 const addTransaction = async (arg, userId, webApiDataReversed) => {
   try {
     const { price, qty, orderType, symbol } = arg;
+
     const query = { symbol: symbol };
     const projection = { _id: 1 };
     const symbolId = await Stock.findOne(query, projection);
@@ -23,7 +24,6 @@ const addTransaction = async (arg, userId, webApiDataReversed) => {
 
     arg.userId = userId;
     arg.symbolId = symbolId;
-    arg.symbol = symbol;
     arg.data = webApiDataReversed[lastIndex];
 
     // error is catched by try/catch
@@ -35,7 +35,7 @@ const addTransaction = async (arg, userId, webApiDataReversed) => {
       symbolId: symbolId,
     });
 
-    await portfolio.fetchPortfolioPosition(arg);
+    await portfolio.createUpdatePortfolioPosition(arg);
   } catch (ex) {
     console.log(`addTransaction error: ${ex}`.red);
     // next(new ErrorResponse(`Error: ${ex}`, 404));

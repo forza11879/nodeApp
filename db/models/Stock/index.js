@@ -61,7 +61,7 @@ const fetchWebApiStock = async url => {
   }
 };
 
-const creatStock = async (symbol, webApiData) => {
+const createUpdateStock = async (symbol, webApiData) => {
   try {
     // console.log('creatStock symbol', symbol.green);
     // console.log('creatStock webApiData', JSON.stringify(webApiData));
@@ -202,7 +202,7 @@ const generateUrlArrayStockChart = async () => {
 
 module.exports = {
   fetchWebApiStock,
-  creatStock,
+  createUpdateStock,
   fetchDb,
   dbSearchApi,
   searchWebApi,

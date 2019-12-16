@@ -58,7 +58,7 @@ exports.getWebApi = async (req, res) => {
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
     const webApiData = await Db.fetchWebApiStock(urlCompact);
-    await Db.creatStock(symbol, webApiData);
+    await Db.createUpdateStock(symbol, webApiData);
 
     const pipeline = [
       {
@@ -119,7 +119,7 @@ exports.getWebApiStock = async (req, res) => {
 
     await Promise.all(
       promisesResult.map(async item =>
-        Db.creatStock(item.symbol, item.webApiData)
+        Db.createUpdateStock(item.symbol, item.webApiData)
       )
     );
 

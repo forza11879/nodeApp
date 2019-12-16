@@ -14,24 +14,22 @@ class UI {
   }
 
   showData(portfolio) {
-    console.log(portfolio);
+    // console.log(portfolio);
     this.show.innerHTML = portfolio
       .map(
-        // qtyPortfolio: 5,
-        // avgPrice: 81.74,
-        // userId: 5dcd68f14bf81b03339cf633,
-        // symbolId: { symbol: 'RY' },
         item =>
           `<tr>
-     <td>${item.symbolDb[0].symbol}</td>
-     <td>${item.symbolDb[0].data[0].close.$numberDecimal}</td>
-     <td>${item.qtyPortfolio}</td>
-     <td>${item.avgPrice.toFixed(2)}</td>
-     <td>${item.symbolDb[0].symbol}</td>
-  </tr>`
-
-        // console.log(`avgPrice: ${typeof item.avgPrice}`);
-        // console.log(`avgPrice: ${JSON.stringify(item.avgPrice)}`);
+       <td>${item.symbol}</td>
+       <td>${item.data[0].close.$numberDecimal}</td>
+       <td>${item.qtyPortfolio}</td>
+       <td>${item.avgPrice.toFixed(2)}</td>
+       <td>${item.symbol}</td>
+    </tr>`
+        // <td>${item.symbolDb[0].symbol}</td>
+        // <td>${item.symbolDb[0].data[0].close.$numberDecimal}</td>
+        // <td>${item.qtyPortfolio}</td>
+        // <td>${item.avgPrice.toFixed(2)}</td>
+        // <td>${item.symbolDb[0].symbol}</td>
       )
       .join('');
   }

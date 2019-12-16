@@ -39,16 +39,16 @@ const ParentSchemaSymbol = new mongoose.Schema({
 //   }
 // });
 
-// ParentSchemaSymbol.pre('save', async function() {
-//   // cloning array
-//   const cloneData = [...this.data];
-//   const lastIndex = cloneData.length - 1;
+ParentSchemaSymbol.pre('save', async function() {
+  // cloning array
+  const cloneData = [...this.data];
+  const lastIndex = cloneData.length - 1;
 
-//   await Portfolio.updateMany(
-//     { symbolId: this._id },
-//     { data: cloneData[lastIndex] }
-//   );
-// });
+  await Portfolio.updateMany(
+    { symbolId: this._id },
+    { data: cloneData[lastIndex] }
+  );
+});
 
 module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);
 

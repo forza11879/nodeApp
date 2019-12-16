@@ -12,20 +12,25 @@ const fetchPortfolioList = async userId => {
     // console.log(`fetchPortfolioList userId: ${userId}`);
     // console.log(`fetchPortfolioList userId: ${JSON.stringify(userId)}`);
 
-    const portfolioList = await Portfolio.aggregate([
-      { $match: { userId: userId } },
-      {
-        $lookup: {
-          from: 'stocks', // collection name in db
-          let: { symbolId: '$symbolId' },
-          pipeline: [
-            { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
-            { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
-          ],
-          as: 'symbolDb',
-        },
-      },
-    ]);
+    const query = { userId: userId };
+    const portfolioList = await Portfolio.find(query).select(
+      '-_id symbol data qtyPortfolio avgPrice '
+    );
+
+    // const portfolioList = await Portfolio.aggregate([
+    //   { $match: { userId: userId } },
+    //   {
+    //     $lookup: {
+    //       from: 'stocks', // collection name in db
+    //       let: { symbolId: '$symbolId' },
+    //       pipeline: [
+    //         { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
+    //         { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
+    //       ],
+    //       as: 'symbolDb',
+    //     },
+    //   },
+    // ]);
 
     return portfolioList;
   } catch (ex) {
@@ -33,7 +38,7 @@ const fetchPortfolioList = async userId => {
   }
 };
 
-const fetchPortfolioPosition = async arg => {
+const createUpdatePortfolioPosition = async arg => {
   try {
     const { userId, symbolId, orderType, symbol, data } = arg;
 
@@ -108,5 +113,5 @@ const fetchWebApiQuote = async url => {
 module.exports = {
   fetchPortfolioList,
   fetchWebApiQuote,
-  fetchPortfolioPosition,
+  createUpdatePortfolioPosition,
 };
