@@ -1,6 +1,6 @@
 const { User } = require('./User');
 
-const fetchNewCash = async (arg, userId) => {
+const updateCash = async (arg, userId) => {
   try {
     const { orderType } = arg;
     const qty = parseInt(arg.qty);
@@ -12,52 +12,31 @@ const fetchNewCash = async (arg, userId) => {
 
     const projection = { _id: 1 }; //	Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter. For details, see Projection.
 
-    const oldCash = await User.findOne(query, projection).select('cash'); // findOne() returns the Object{} without the Array vs find() Array[{}] of Objects
-    console.log(`old cash:${typeof oldCash}`);
-    console.log(`old cash:${JSON.stringify(oldCash)}`);
+    const user = await User.findOne(query);
+    // .select('cash');
+    // findOne() returns the Object{} without the Array vs find() Array[{}] of Objects
+    console.log(`old cash:${typeof user}`);
+    console.log(`old cash:${JSON.stringify(user)}`);
 
     if (orderType === 'Sell')
       transactionAmount = Math.abs(transactionAmount) * -1;
-    const { cash } = oldCash;
+    const { cash } = user;
 
     console.log(`destructor cash:${JSON.stringify(cash)}`);
-    return parseFloat(cash) - transactionAmount;
+    const newCash = parseFloat(cash) - transactionAmount;
+    user.cash = newCash;
+    await user.save();
+
+    return {
+      name: user.name,
+      cash: parseFloat(user.cash),
+      equity: parseFloat(user.equity),
+    };
   } catch (ex) {
     console.log(`fetchNewCash error: ${ex}`);
   }
 };
 
-const updateCashDB = async (cash, userId) => {
-  try {
-    console.log(`updateCashDB cash as the arg:${JSON.stringify(cash)}`);
-    const query = { _id: userId };
-
-    const update = {
-      cash,
-    };
-    // new: bool - if true, return the modified document rather than the original. defaults to false (changed in 4.0)
-    // upsert: bool - creates the object if it doesn't exist. defaults to false.
-    const options = { upsert: true, new: true };
-
-    const stockUserResult = await User.findOneAndUpdate(
-      query,
-      update,
-      options
-    ).select('name cash equity -_id');
-    console.log(
-      `stockUserResult in services:${JSON.stringify(stockUserResult)}`
-    );
-    return {
-      name: stockUserResult.name,
-      cash: parseFloat(stockUserResult.cash),
-      equity: parseFloat(stockUserResult.equity),
-    };
-  } catch (ex) {
-    console.log(`updateToUser error: ${ex}`);
-  }
-};
-
 module.exports = {
-  fetchNewCash,
-  updateCashDB,
+  updateCash,
 };
