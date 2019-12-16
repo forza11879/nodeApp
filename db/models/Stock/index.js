@@ -2,9 +2,9 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-const axios = require('axios');
 
-const { Stock } = require('../Stock/Stock');
+const axios = require('axios');
+const { Stock } = require('./Stock');
 
 // const startTime = Date.now();
 // console.log('Executed QUEURY in', Date.now() - startTime, 'ms');
@@ -22,9 +22,13 @@ const searchWebApi = async url => {
     console.log(`searchWebApi error: ${ex}`.red);
   }
 };
+// console.log(JSON.stringify(`fetchWebApiStock response data: ${item}`)),
+//   console.log(`typeof item: ${typeof item}`);
 
 const fetchWebApiStock = async url => {
   try {
+    // console.log('fetchWebApiStock url:', url);
+
     const response = await axios.get(url);
     const { data } = response;
 
@@ -108,9 +112,7 @@ const fetchDb = async symbol => {
     const query = { symbol: symbol };
     const projection = { _id: 0, data: 1 };
 
-    const chartData = await Stock.findOne(query, projection).sort({
-      date: -1,
-    });
+    const chartData = await Stock.findOne(query, projection).sort({ date: -1 });
     // console.log(`chartData in services:${JSON.stringify(chartData)}`.green);
     return chartData.data.map(item => ({
       date: parseFloat(item.date),
@@ -152,6 +154,14 @@ const generateUrlArrayStock = async () => {
       url: `https://sandbox.iexapis.com/stable/stock/${item.symbol}/chart?token=${apiKey}`,
       symbol: item.symbol,
     }));
+
+    //   {
+    //   // if (!item.symbol === '[null]') return;
+    //   console.log(JSON.stringify(`list of symbols: ${item.symbol}`));
+    //   console.log(
+    //     JSON.stringify(`list of symbols typeof: ${typeof item.symbol}`)
+    //   );
+    // });
   } catch (ex) {
     console.log(`generateUrlArrayList error: ${ex}`.red);
   }

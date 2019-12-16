@@ -1,14 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 
-const List = require('../db/models/List');
+const Db = require('../db/models/List');
 
 exports.getList = (req, res) => {
-  // console.log(`User session: ${JSON.stringify(req.session)}`);
+  console.log(`User session: ${JSON.stringify(req.session)}`);
   // console.log(req.session.isLoggedIn);
-  // console.log(`User session user ID: ${JSON.stringify(req.session.user._id)}`);
-  // console.log(`User session: ${JSON.stringify(req.session.user)}`);
-  // console.log(`User session: ${JSON.stringify(req.session)}`);
+  console.log(`User session user ID: ${JSON.stringify(req.session.user._id)}`);
+  console.log(`User session: ${JSON.stringify(req.session.user)}`);
+  console.log(`User session: ${JSON.stringify(req.session)}`);
   // console.log(req.session.user.name);
   // console.log(req.session.user.cash);
   // console.log(req.session.user._id);
@@ -33,13 +33,13 @@ exports.getWebApiList = async (req, res) => {
     const userId = req.session.user._id;
     const { symbol } = req.params;
 
-    await List.saveToDbList(symbol, userId);
+    await Db.saveToDbList(symbol, userId);
 
-    const urlArray = await List.generateUrlArrayList(userId);
+    const urlArray = await Db.generateUrlArrayList(userId);
     // console.log(`urlArray list: ${urlArray}`.green);
 
     // Promise.all(urlArray.map(async url => await Db.fetchWebApiList(url)))
-    Promise.all(urlArray.map(async url => List.fetchWebApiList(url)))
+    Promise.all(urlArray.map(async url => Db.fetchWebApiList(url)))
       // Inside an async function, return await is seldom useful
       .then(item => {
         // console.log(`getWebApiList item: ${JSON.stringify(item)}`.green);

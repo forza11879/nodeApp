@@ -2,12 +2,9 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const WebSocket = require('ws');
-const mongoose = require('mongoose');
 
-const Stock = require('../db/models/Stock');
-// const { Stock } = require('../db/models/Stock/Stock');
-
-const model = mongoose.models;
+const Db = require('../db/models/Stock');
+const { Stock } = require('../db/models/Stock/Stock');
 
 const broadcast = (clients, message) => {
   clients.forEach(client => {
@@ -26,7 +23,7 @@ exports.getSymbolId = async (req, res) => {
 
     const query = { symbol };
     const projection = { _id: 1 };
-    const symbolId = await model.Stock.findOne(query, projection);
+    const symbolId = await Stock.findOne(query, projection);
 
     console.log(`getSymbolId symbol: ${typeof symbolId._id}`.green);
     console.log(`getSymbolId symbol: ${JSON.stringify(symbolId._id)}`.green);
@@ -60,8 +57,8 @@ exports.getWebApi = async (req, res) => {
 
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
-    const webApiData = await Stock.fetchWebApiStock(urlCompact);
-    await Stock.creatStock(symbol, webApiData);
+    const webApiData = await Db.fetchWebApiStock(urlCompact);
+    await Db.creatStock(symbol, webApiData);
 
     const pipeline = [
       {
@@ -74,7 +71,7 @@ exports.getWebApi = async (req, res) => {
     ];
 
     const options = { fullDocument: 'updateLookup' };
-    const changeStream = model.Stock.watch(pipeline, options);
+    const changeStream = Stock.watch(pipeline, options);
 
     changeStream.on('change', event => {
       const { operationType, fullDocument } = event;
@@ -108,12 +105,12 @@ exports.getWebApi = async (req, res) => {
 exports.getWebApiStock = async (req, res) => {
   try {
     // const urlArray = await Db.generateUrlArrayStock();
-    const urlArray = await Stock.generateUrlArrayStockChart();
+    const urlArray = await Db.generateUrlArrayStockChart();
     // console.log('getWebApiStock urlArray: ', JSON.stringify(urlArray));
 
     const promises = urlArray.map(async item => ({
       symbol: item.symbol,
-      webApiData: await Stock.fetchWebApiStock(item.url),
+      webApiData: await Db.fetchWebApiStock(item.url),
     }));
 
     // Since MAP always return promises (if you use await), you have to wait for the array of promises to get resolved. You can do this with await Promise.all
@@ -122,7 +119,7 @@ exports.getWebApiStock = async (req, res) => {
 
     await Promise.all(
       promisesResult.map(async item =>
-        Stock.creatStock(item.symbol, item.webApiData)
+        Db.creatStock(item.symbol, item.webApiData)
       )
     );
 
@@ -141,7 +138,7 @@ exports.getDbFetch = async (req, res) => {
     const { symbol } = req.params;
     console.log(symbol.green);
 
-    const chartData = await Stock.fetchDb(symbol);
+    const chartData = await Db.fetchDb(symbol);
     res.send(chartData);
   } catch (ex) {
     console.log(`getDbFetch error: ${ex}`.red);
@@ -152,7 +149,7 @@ exports.getDbSearchApi = async (req, res) => {
   try {
     const { symbol } = req.params;
 
-    const dbSearchApiData = await Stock.dbSearchApi(symbol);
+    const dbSearchApiData = await Db.dbSearchApi(symbol);
 
     res.send(dbSearchApiData);
   } catch (ex) {
@@ -170,7 +167,7 @@ exports.getSearchWebApi = async (req, res) => {
     // console.log(`reqBody:${JSON.stringify(req.body)}`.green);
     // console.log(`reqParamsSymbol:${symbol}`.green);
 
-    const webApiData = await Stock.searchWebApi(url);
+    const webApiData = await Db.searchWebApi(url);
 
     res.send(webApiData);
   } catch (ex) {

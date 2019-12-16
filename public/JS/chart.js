@@ -40,12 +40,16 @@ async function getSymbolWebApiLoad() {
 
   const curValueAjax = symbolValueCurValueValue;
 
+  // console.log(curValueAjax);
+
   try {
     const response = await fetch(`/stock/app/${curValueAjax}`);
     const data = await response.json();
-    // console.log('data webApiData from the back: ', data.webApiData);
-    // console.log('data symbol from the back: ', data.symbol);
+    console.log('data webApiData from the back: ', data.webApiData);
+    console.log('data symbol from the back: ', data.symbol);
 
+    // drawChart(data)
+    // console.log(data);
     // split the data set into ohlc and volume
     const ohlc = [];
     const volume = [];
@@ -271,32 +275,9 @@ async function getSymbolWebApiClick() {
 }
 
 // web socket
-const ws = new WebSocket('ws://localhost:3000');
+const socket = new WebSocket('ws://localhost:3000');
 
-// ws.addEventListener('message', event => {
-// we can use this as well
-// });
-
-// Events you can act on:
-// ws.addEventListener('open', doSomething);
-// ws.addEventListener('error', doSomething);
-// ws.addEventListener('message', doSomething);
-// ws.addEventListener('close', doSomething);
-// ws.send('Hello server!');
-// ws.close();
-
-// socket.addEventListener('message', function(event) {
-//   let d = JSON.parse(event.data);
-//   let context = {
-//     deviceId: d.DeviceID,
-//     state: d.State,
-//     temp: d.Temperature,
-//   };
-//   let html = templateScript(context);
-//   $('#entry').html(html);
-// });
-
-ws.onmessage = function(event) {
+socket.addEventListener('message', event => {
   const symbol = symbolValueCurValue.value;
   const obj = JSON.parse(event.data);
 
@@ -411,4 +392,4 @@ ws.onmessage = function(event) {
       },
     ],
   });
-};
+});

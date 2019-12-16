@@ -1,11 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-const mongoose = require('mongoose');
 
-const Portfolio = require('../db/models/Portfolio');
-const User = require('../db/models/User');
-
-const model = mongoose.models;
+const Db = require('../db/models/Portfolio');
+const UserModal = require('../db/models/User');
+const { User } = require('../db/models/User/User');
+// const Transaction = require('../db/models/Transaction');
 
 exports.getPortfolio = async (req, res) => {
   try {
@@ -20,7 +19,11 @@ exports.getPortfolio = async (req, res) => {
 exports.getPortfolioList = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    const portfolioList = await Portfolio.fetchPortfolioList(userId);
+    // console.log(`getPortfolioList userId: ${userId}`);
+    const portfolioList = await Db.fetchPortfolioList(userId);
+
+    // console.log(`getPortfolioList Portfolio List: ${portfolioList}`);
+
     res.send(portfolioList);
   } catch (ex) {
     console.log(`getPortfolioList error${ex}`.red);
@@ -33,19 +36,15 @@ exports.getBuySellTicket = async (req, res) => {
     const userId = req.session.user._id;
 
     console.log('Authenticated User'.green);
-    console.log('userId :', JSON.stringify(userId).green);
+    console.log(`userId : ${JSON.stringify(userId)}`.green);
 
-    console.log('res.session.isLoggedIn: ', req.session.isLoggedIn);
+    console.log(`res.session.isLoggedIn: ${req.session.isLoggedIn}`);
 
     const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
     const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
-    const data = await Portfolio.fetchWebApiQuote(url);
-    // const userData = await UserModal.findById({ _id: userId }).select(
-    //   '_id name cash equity'
-    // );
-
-    const userData = await model.User.findById({ _id: userId }).select(
+    const data = await Db.fetchWebApiQuote(url);
+    const userData = await User.findById({ _id: userId }).select(
       '_id name cash equity'
     );
 
@@ -71,8 +70,8 @@ exports.postBuySellTicket = async (req, res) => {
     // const apiTokenQuote = process.env.API_TOKEN_QUOTE;
     // const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
-    const data = await Portfolio.fetchWebApiQuote(url);
-    const userData = await User.fetchUserDataDB(userId);
+    const data = await Db.fetchWebApiQuote(url);
+    const userData = await UserModal.fetchUserDataDB(userId);
 
     res.render('buysell', {
       data,
