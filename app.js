@@ -8,15 +8,10 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const cors = require('cors');
-// const Pusher = require('pusher');
 const errorHandler = require('./middleware/error');
-// const { initDbConnection } = require('./startup/dbm');
-// const { getDb, initDb } = require('./startup/dbSS');
 const { connectDb } = require('./startup/db');
-
 const { User } = require('./db/models/User/User');
-const { Stock } = require('./db/models/Stock/Stock');
-
+// const model = mongoose.models;
 // //////
 const app = express();
 // //////
@@ -87,6 +82,7 @@ app.use(errorHandler);
 const port = process.env.PORT;
 
 const server = createServer(app);
+
 server.listen(port, function() {
   console.log(`Server is up on port ${port}`);
 });
@@ -100,21 +96,3 @@ wss.on('connection', ws => {
   console.info('Total connected clients:', wss.clients.size);
   app.locals.clients = wss.clients;
 });
-
-// /////////////////
-// app.on('ready', function() {
-//   app.listen(port, function() {
-//     console.log(`Server is up on port ${port}`);
-//   });
-// });
-
-// const db = mongoose.connection;
-// once connected to DB emit app ready
-// db.once('open', function() {
-//   // All OK - fire (emit) a ready event.
-//   app.emit('ready');
-// });
-
-// db.on('error', err => {
-//   console.error('connection error:', err);
-// });

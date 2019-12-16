@@ -1,11 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 
-const UserModal = require('../db/models/User');
-const { User } = require('../db/models/User/User');
 const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
+
+const model = mongoose.models;
 
 // @desc      Post Login
 // @route     POST /auth/login
@@ -21,7 +22,7 @@ exports.postLogin = asyncHandler(async (req, res, next) => {
       );
       // return res.redirect('/');
     }
-    const user = await User.findOne({ email }).select('+password');
+    const user = await model.User.findOne({ email }).select('+password');
 
     if (!user) {
       return next(new ErrorResponse('Invalid credentials', 401));
@@ -30,11 +31,9 @@ exports.postLogin = asyncHandler(async (req, res, next) => {
     const doMatch = await bcrypt.compare(password, user.password);
 
     if (!doMatch) {
-      console.log('password !doMatch');
       return next(new ErrorResponse('Invalid credentials', 401));
       // res.redirect('/');
     }
-    console.log('password doMatch');
     req.session.isLoggedIn = true;
     req.session.user = user;
     return req.session.save(err => {
@@ -58,14 +57,11 @@ exports.postLogout = (req, res) => {
 exports.postSignup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    // const {confirmPassword} = req.body;
-    console.log(email, name, password);
-    const userDoc = await User.findOne({ email });
+    const userDoc = await model.User.findOne({ email });
     if (userDoc) {
-      console.log('User already in DB');
       return res.redirect('/');
     }
-    await User.create({ name, email, password });
+    await model.User.create({ name, email, password });
     res.redirect('/');
   } catch (ex) {
     console.log(`postSignup error: ${ex}`);

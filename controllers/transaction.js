@@ -1,25 +1,19 @@
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-const Db = require('../db/models/Transaction');
+const Transaction = require('../db/models/Transaction');
 const User = require('../db/models/User');
 const Stock = require('../db/models/Stock');
 
-async function addTransaction(arg, userId, urlCompact) {
+const addTransaction = async (arg, userId, urlCompact) => {
   const webApiData = await Stock.fetchWebApiStock(urlCompact);
   const webApiDataReversed = webApiData.reverse();
 
-  await Db.addTransaction(arg, userId, webApiDataReversed);
-}
+  await Transaction.addTransaction(arg, userId, webApiDataReversed);
+};
 
-async function updateCash(arg, userId) {
-  const cash = await User.fetchNewCash(arg, userId);
+const updateCash = async (arg, userId) => User.updateCash(arg, userId);
 
-  return User.updateCashDB(cash, userId);
-}
-
-async function fetchData(url) {
-  return Db.fetchWebApiQuote(url);
-}
+const fetchData = async url => Transaction.fetchWebApiQuote(url);
 
 exports.postAddTransaction = async (req, res) => {
   try {

@@ -3,29 +3,34 @@
 const colors = require('colors');
 const axios = require('axios');
 const moment = require('moment');
+
 // model
-const { Portfolio } = require('./Portfolio');
-const { Stock } = require('../Stock/Stock.js');
+const { Portfolio } = require('../Portfolio/Portfolio');
 
 const fetchPortfolioList = async userId => {
   try {
-    // console.log(`fetchPortfolioList userId: ${userId}`);
-    // console.log(`fetchPortfolioList userId: ${JSON.stringify(userId)}`);
+    const portfolioList = await Portfolio.find({ userId: userId }).select(
+      '-_id symbol data qtyPortfolio avgPrice'
+    );
 
-    const portfolioList = await Portfolio.aggregate([
-      { $match: { userId: userId } },
-      {
-        $lookup: {
-          from: 'stocks', // collection name in db
-          let: { symbolId: '$symbolId' },
-          pipeline: [
-            { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
-            { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
-          ],
-          as: 'symbolDb',
-        },
-      },
-    ]);
+    // .explain('allPlansExecution');
+
+    console.log('portfolioData: ', JSON.stringify(portfolioList));
+
+    // const portfolioList = await Portfolio.aggregate([
+    //   { $match: { userId: userId } },
+    //   {
+    //     $lookup: {
+    //       from: 'stocks', // collection name in db
+    //       let: { symbolId: '$symbolId' },
+    //       pipeline: [
+    //         { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
+    //         { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
+    //       ],
+    //       as: 'symbolDb',
+    //     },
+    //   },
+    // ]);
 
     return portfolioList;
   } catch (ex) {
@@ -33,14 +38,9 @@ const fetchPortfolioList = async userId => {
   }
 };
 
-const fetchPortfolioPosition = async arg => {
+const updatePortfolioPosition = async arg => {
   try {
     const { userId, symbolId, orderType, symbol, data } = arg;
-
-    // console.log(`fetchPortfolioPosition userId: ${typeof userId}`.green);
-    // console.log(
-    //   `fetchPortfolioPosition userId: ${JSON.stringify(userId)}`.green
-    // );
 
     let qty = parseInt(arg.qty);
     const price = parseFloat(arg.price);
@@ -108,5 +108,5 @@ const fetchWebApiQuote = async url => {
 module.exports = {
   fetchPortfolioList,
   fetchWebApiQuote,
-  fetchPortfolioPosition,
+  updatePortfolioPosition,
 };

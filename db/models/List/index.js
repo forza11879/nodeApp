@@ -1,15 +1,16 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
+const mongoose = require('mongoose');
 const axios = require('axios');
 const moment = require('moment');
+
 const { List } = require('./List');
+
+const model = mongoose.models;
 
 const saveToDbList = async (symbol, userId) => {
   try {
-    // console.log(`saveToDbList symbol: ${typeof symbol}`);
-    // console.log(`saveToDbList symbol: ${symbol}`);
-
     const stockList = new List({
       data: { symbol }, // subDocuments accept objects I think so!!!
       userId: userId,
@@ -18,7 +19,8 @@ const saveToDbList = async (symbol, userId) => {
     const query = { userId: stockList.userId };
     const update = { $addToSet: { data: stockList.data } };
     const options = { upsert: true, new: true };
-    await List.findOneAndUpdate(query, update, options);
+
+    await model.List.findOneAndUpdate(query, update, options);
   } catch (ex) {
     console.log(`saveToDbList error: ${ex}`.red);
   }
@@ -30,7 +32,9 @@ const generateUrlArrayList = async userId => {
 
     const query = { userId: userId };
     const projection = { _id: 0 };
-    const dataFromDB = await List.findOne(query, projection).select('data');
+    const dataFromDB = await model.List.findOne(query, projection).select(
+      'data'
+    );
 
     return dataFromDB.data.map(
       item =>
@@ -43,7 +47,7 @@ const generateUrlArrayList = async userId => {
 
 const fetchDataFromDbList = async (query, projection) => {
   try {
-    const dataDb = await List.find(query, projection);
+    const dataDb = await model.List.find(query, projection);
 
     return dataDb.map(item => ({
       symbol: item.symbol, // symbol

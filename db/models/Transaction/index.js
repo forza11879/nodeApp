@@ -1,23 +1,24 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-
+const mongoose = require('mongoose');
 const axios = require('axios');
 const moment = require('moment');
 // services
-const portfolio = require('../Portfolio');
-// models
-const { Transaction } = require('./Transaction');
-const { Stock } = require('../Stock/Stock');
+const Portfolio = require('../Portfolio');
+// model
+const { Transaction } = require('../Transaction/Transaction');
 const ErrorResponse = require('../../../utils/errorResponse');
 const asyncHandler = require('../../../middleware/async');
+
+const model = mongoose.models;
 
 const addTransaction = async (arg, userId, webApiDataReversed) => {
   try {
     const { price, qty, orderType, symbol } = arg;
     const query = { symbol: symbol };
     const projection = { _id: 1 };
-    const symbolId = await Stock.findOne(query, projection);
+    const symbolId = await model.Stock.findOne(query, projection);
 
     const lastIndex = webApiDataReversed.length - 1;
 
@@ -35,7 +36,7 @@ const addTransaction = async (arg, userId, webApiDataReversed) => {
       symbolId: symbolId,
     });
 
-    await portfolio.fetchPortfolioPosition(arg);
+    await Portfolio.updatePortfolioPosition(arg);
   } catch (ex) {
     console.log(`addTransaction error: ${ex}`.red);
     // next(new ErrorResponse(`Error: ${ex}`, 404));
