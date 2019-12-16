@@ -110,8 +110,36 @@ const fetchWebApiQuote = async url => {
   }
 };
 
+const calculateTotalValueOfStock = async userId => {
+  const portfolioList = await Portfolio.aggregate([
+    { $match: { userId: userId } },
+    {
+      $group: {
+        _id: userId,
+        totalAmount: { $sum: { $multiply: ['$avgPrice', '$qtyPortfolio'] } },
+        // count: { $sum: 1 }
+      },
+    },
+    // { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
+    // {
+    //   $lookup: {
+    //     from: 'stocks', // collection name in db
+    //     let: { symbolId: '$symbolId' },
+    //     pipeline: [
+    //       { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
+    //       { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
+    //     ],
+    //     as: 'symbolDb',
+    //   },
+    // },
+  ]);
+
+  console.log('portfolioList: ', portfolioList);
+};
+
 module.exports = {
   fetchPortfolioList,
   fetchWebApiQuote,
   createUpdatePortfolioPosition,
+  calculateTotalValueOfStock,
 };

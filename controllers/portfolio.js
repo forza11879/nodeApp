@@ -1,9 +1,11 @@
+/* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 
 const Db = require('../db/models/Portfolio');
 const UserModal = require('../db/models/User');
 const { User } = require('../db/models/User/User');
+const { Portfolio } = require('../db/models/Portfolio/Portfolio');
 // const Transaction = require('../db/models/Transaction');
 
 exports.getPortfolio = async (req, res) => {
@@ -47,6 +49,8 @@ exports.getBuySellTicket = async (req, res) => {
     const userData = await User.findById({ _id: userId }).select(
       '_id name cash equity'
     );
+
+    await Db.calculateTotalValueOfStock(userId);
 
     res.render('buysell', {
       data,
