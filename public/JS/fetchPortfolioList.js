@@ -14,13 +14,15 @@ class UI {
   }
 
   showData(portfolio) {
-    // console.log(portfolio);
+    console.log('portfolio: ', portfolio);
+    console.log(typeof portfolio);
+
     this.show.innerHTML = portfolio
       .map(
         item =>
           `<tr>
        <td>${item.symbol}</td>
-       <td>${item.data[0].close.$numberDecimal}</td>
+       <td>${item.data.close}</td>
        <td>${item.qtyPortfolio}</td>
        <td>${item.avgPrice.toFixed(2)}</td>
        <td>${item.symbol}</td>

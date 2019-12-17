@@ -46,11 +46,28 @@ exports.getBuySellTicket = async (req, res) => {
     const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
     const data = await Db.fetchWebApiQuote(url);
-    const userData = await User.findById({ _id: userId }).select(
-      '_id name cash equity'
-    );
+    const userData = await User.findById({ _id: userId }).select('_id cash');
 
-    await Db.calculateTotalValueOfStock(userId);
+    const { cash } = userData;
+
+    const stockValue = await Db.calculateTotalValueOfStock(userId);
+    console.log('stockValue: ', stockValue);
+
+    if (Array.isArray(stockValue) && stockValue.length) {
+      const valueOfStock = stockValue[0].totalValueOfStock;
+      // console.log('stockValue: ', valueOfStock);
+      // console.log('cash: ', cash);
+      // console.log('typeof cash: ', typeof cash);
+
+      const totalEquity = cash + valueOfStock;
+
+      console.log('totalEquity : ', totalEquity);
+      // console.log('typeof totalEquity: ', typeof totalEquity);
+
+      userData.equity = totalEquity;
+
+      userData.save();
+    }
 
     res.render('buysell', {
       data,

@@ -24,17 +24,18 @@ const ParentSchema = new mongoose.Schema({
   resetToken: String,
   resetTokenExperation: Date,
   cash: {
-    type: mongoose.Types.Decimal128,
+    type: Number,
     default: 50000.0,
   },
   equity: {
-    type: mongoose.Types.Decimal128,
+    type: Number,
+    default: 50000.0,
   },
 });
 
 // Encrypt password using bcrypt. Auto-gen a salt and hash - async
-ParentSchema.pre('save', async function(next) {
-  this.password = await bcrypt.hash(this.password, 12);
-});
+// ParentSchema.pre('save', async function(next) {
+//   this.password = await bcrypt.hash(this.password, 12);
+// });
 
 module.exports.User = mongoose.model('User', ParentSchema);

@@ -6,12 +6,13 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const ChildSchemaData = new mongoose.Schema({
   _id: false,
-  date: { type: mongoose.Types.Decimal128 },
-  open: { type: mongoose.Types.Decimal128 },
-  high: { type: mongoose.Types.Decimal128 },
-  low: { type: mongoose.Types.Decimal128 },
-  close: { type: mongoose.Types.Decimal128 },
-  volume: { type: mongoose.Types.Decimal128 },
+  // date: { type: mongoose.Types.Decimal128 },
+  date: { type: Number },
+  open: { type: Number },
+  high: { type: Number },
+  low: { type: Number },
+  close: { type: Number },
+  volume: { type: Number },
 });
 
 const ParentSchema = new mongoose.Schema({
@@ -27,7 +28,7 @@ const ParentSchema = new mongoose.Schema({
   userId: { type: ObjectId, ref: 'User', required: true },
   symbolId: { type: ObjectId, ref: 'Stock', required: true },
   symbol: { type: String, required: true },
-  data: [ChildSchemaData],
+  data: ChildSchemaData,
 });
 
 ParentSchema.index({ userId: 1, symbolId: 1 }, { unique: true });

@@ -110,16 +110,21 @@ const fetchWebApiQuote = async url => {
   }
 };
 
-const calculateTotalValueOfStock = async userId => {
-  const portfolioList = await Portfolio.aggregate([
+const calculateTotalValueOfStock = async userId =>
+  Portfolio.aggregate([
     { $match: { userId: userId } },
     {
       $group: {
         _id: userId,
-        totalAmount: { $sum: { $multiply: ['$avgPrice', '$qtyPortfolio'] } },
+        totalValueOfStock: {
+          $sum: { $multiply: ['$data.close', '$qtyPortfolio'] },
+        },
+
         // count: { $sum: 1 }
       },
     },
+    { $project: { _id: 0, totalValueOfStock: 1 } },
+
     // { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
     // {
     //   $lookup: {
@@ -133,9 +138,6 @@ const calculateTotalValueOfStock = async userId => {
     //   },
     // },
   ]);
-
-  console.log('portfolioList: ', portfolioList);
-};
 
 module.exports = {
   fetchPortfolioList,

@@ -27,9 +27,17 @@ exports.postLogin = asyncHandler(async (req, res, next) => {
       return next(new ErrorResponse('Invalid credentials', 401));
       // return res.redirect('/');
     }
-    const doMatch = await bcrypt.compare(password, user.password);
+    // const doMatch = await bcrypt.compare(password, user.password);
 
-    if (!doMatch) {
+    // if (!doMatch) {
+    //   console.log('password !doMatch');
+    //   return next(new ErrorResponse('Invalid credentials', 401));
+    //   // res.redirect('/');
+    // }
+    console.log('password: ', password);
+    console.log('user.password: ', user.password);
+
+    if (password !== user.password) {
       console.log('password !doMatch');
       return next(new ErrorResponse('Invalid credentials', 401));
       // res.redirect('/');

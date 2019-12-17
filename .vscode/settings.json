@@ -24,7 +24,8 @@
   // tell the ESLint plugin to run on save
   "eslint.autoFixOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": true
+    "source.fixAll.tslint": true,
+    "source.fixAll.eslint": true
   },
   // These are all my auto-save configs
   // turn it off for JS and JSX, we will do this via eslint
