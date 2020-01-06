@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -24,4 +24,4 @@ const ParentSchema = new mongoose.Schema({
 
 ParentSchema.index({ userId: 1 }, { unique: true });
 
-module.exports.List = mongoose.model('List', ParentSchema);
+export const List = mongoose.model('List', ParentSchema);

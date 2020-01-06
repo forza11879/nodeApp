@@ -1,21 +1,30 @@
+/* eslint-disable import/first */
 /* eslint-disable no-use-before-define */
-const { createServer } = require('http');
-const WebSocket = require('ws');
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
-const cors = require('cors');
-// const Pusher = require('pusher');
-const errorHandler = require('./middleware/error');
-// const { initDbConnection } = require('./startup/dbm');
-// const { getDb, initDb } = require('./startup/dbSS');
-const { connectDb } = require('./startup/db');
+import { createServer } from 'http';
+import WebSocket from 'ws';
+import path from 'path';
+import express from 'express';
+import morgan from 'morgan';
+import session from 'express-session';
+import storeFabric from 'connect-mongodb-session';
+import cors from 'cors';
 
-const { User } = require('./db/models/User/User');
-const { Stock } = require('./db/models/Stock/Stock');
+// routes
+import authRoute from './routes/auth.js';
+import transactionRoute from './routes/transaction.js';
+import portfolioRoute from './routes/portfolio.js';
+import stockRoute from './routes/stock.js';
+import listRoute from './routes/list.js';
+import mainRoute from './routes/main.js';
+import errorRoute from './routes/error.js';
+
+const __dirname = path.resolve();
+
+// import errorHandler from './middleware/error';????
+// const errorHandler = require('./middleware/error');
+
+import { connectDb } from './startup/db.js';
+import { User } from './db/models/User/User.js';
 
 // //////
 const app = express();
@@ -24,18 +33,12 @@ app.use(cors());
 // Dev logging middleware - ONLY in development
 app.use(morgan('dev'));
 // MongoDBStore session
+const MongoDBStore = storeFabric(session);
 const store = new MongoDBStore({
   uri: process.env.MONGODB_URL,
   collection: 'sessions',
 });
-// routes
-const authRoute = require('./routes/auth');
-const transactionRoute = require('./routes/transaction');
-const portfolioRoute = require('./routes/portfolio');
-const stockRoute = require('./routes/stock');
-const listRoute = require('./routes/list');
-const mainRoute = require('./routes/main');
-const errorRoute = require('./routes/error');
+
 // Takes the raw requests(like forms) and turns them into usable properties on req.body
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.json({ extended: false })); // Used to parse JSON bodies.
@@ -82,7 +85,7 @@ app.use('/list', listRoute);
 app.use('/', mainRoute);
 // app.use('/', exampleRoute);
 app.use('*', errorRoute);
-app.use(errorHandler);
+// app.use(errorHandler);
 
 const port = process.env.PORT;
 
@@ -96,6 +99,7 @@ connectDb();
 
 // websocket
 const wss = new WebSocket.Server({ server });
+// eslint-disable-next-line no-unused-vars
 wss.on('connection', ws => {
   console.info('Total connected clients:', wss.clients.size);
   app.locals.clients = wss.clients;

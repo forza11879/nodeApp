@@ -1,16 +1,18 @@
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const bcrypt = require('bcryptjs');
+import colors from 'colors';
+// import bcrypt from 'bcryptjs';
 
-const UserModal = require('../db/models/User');
-const { User } = require('../db/models/User/User');
-const asyncHandler = require('../middleware/async');
-const ErrorResponse = require('../utils/errorResponse');
+// import UserModal from '../db/models/User';
+import { User } from '../db/models/User/User.js';
+import { asyncHandler } from '../middleware/async.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
 
 // @desc      Post Login
 // @route     POST /auth/login
 // @access    Public
-exports.postLogin = asyncHandler(async (req, res, next) => {
+// exports.postLogin = asyncHandler(async (req, res, next) => {
+
+export const postLogin = asyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -55,7 +57,7 @@ exports.postLogin = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.postLogout = (req, res) => {
+export const postLogout = (req, res) => {
   console.log('logged out');
   req.session.destroy(err => {
     console.log(err);
@@ -63,7 +65,7 @@ exports.postLogout = (req, res) => {
   });
 };
 
-exports.postSignup = async (req, res) => {
+export const postSignup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     // const {confirmPassword} = req.body;

@@ -1,9 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { postAddTransaction } from '../controllers/transaction.js';
 
 const router = express.Router({ mergeParams: true });
 
-const { postAddTransaction } = require('../controllers/transaction');
-
 router.post('/', postAddTransaction);
 
-module.exports = router;
+export default router;

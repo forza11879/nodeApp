@@ -1,10 +1,10 @@
 /* eslint-disable dot-notation */
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
+import colors from 'colors';
 
-const axios = require('axios');
-const { Stock } = require('./Stock');
+import axios from 'axios';
+import { Stock } from './Stock.js';
 
 // const startTime = Date.now();
 // console.log('Executed QUEURY in', Date.now() - startTime, 'ms');
@@ -102,6 +102,7 @@ const createUpdateStock = async (symbol, webApiData) => {
     const positionTwo = await Stock.findOne(query);
     // need this one to trigger pre('save') hooks
     await positionTwo.save();
+    // await position.save();
   } catch (ex) {
     console.log(`creatStock error: ${ex}`.red);
   }
@@ -200,7 +201,7 @@ const generateUrlArrayStockChart = async () => {
 //     score: { $meta: 'textScore' }
 //   })
 
-module.exports = {
+export {
   fetchWebApiStock,
   createUpdateStock,
   fetchDb,

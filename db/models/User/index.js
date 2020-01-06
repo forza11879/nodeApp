@@ -1,4 +1,6 @@
-const { User } = require('./User');
+// eslint-disable-next-line no-unused-vars
+import colors from 'colors';
+import { User } from './User.js';
 
 const updateCash = async (arg, userId) => {
   try {
@@ -20,6 +22,9 @@ const updateCash = async (arg, userId) => {
     user.cash = newCash;
     await user.save();
 
+    console.log('cash: ', parseFloat(user.cash));
+    console.log('totalEquity: ', parseFloat(user.equity));
+
     return {
       name: user.name,
       cash: parseFloat(user.cash),
@@ -30,6 +35,4 @@ const updateCash = async (arg, userId) => {
   }
 };
 
-module.exports = {
-  updateCash,
-};
+export { updateCash };

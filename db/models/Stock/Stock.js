@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const mongoose = require('mongoose');
-const { Portfolio } = require('../Portfolio/Portfolio');
+import colors from 'colors';
+import mongoose from 'mongoose';
+import { Portfolio } from '../Portfolio/Portfolio.js';
 
 // const startTime = Date.now();
 // console.log('Executed QUEURY SCHEMA in', Date.now() - startTime, 'ms');
@@ -50,7 +50,7 @@ ParentSchemaSymbol.pre('save', async function() {
   );
 });
 
-module.exports.Stock = mongoose.model('Stock', ParentSchemaSymbol);
+export const Stock = mongoose.model('Stock', ParentSchemaSymbol);
 
 // Mongoose assigns each of your schemas an _id field by default if one is not passed into the Schema constructor. The type assigned is an ObjectId to coincide with MongoDB's default behavior. If you don't want an _id added to your schema at all, you may disable it using this option.
 

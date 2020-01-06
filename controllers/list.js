@@ -1,9 +1,8 @@
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
+import colors from 'colors';
+import * as Db from '../db/models/List/index.js';
 
-const Db = require('../db/models/List');
-
-exports.getList = (req, res) => {
+export const getList = (req, res) => {
   console.log(`User session: ${JSON.stringify(req.session)}`);
   // console.log(req.session.isLoggedIn);
   console.log(`User session user ID: ${JSON.stringify(req.session.user._id)}`);
@@ -28,7 +27,7 @@ exports.getList = (req, res) => {
   });
 };
 
-exports.getWebApiList = async (req, res) => {
+export const getWebApiList = async (req, res) => {
   try {
     const userId = req.session.user._id;
     const { symbol } = req.params;

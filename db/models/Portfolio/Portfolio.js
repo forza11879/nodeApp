@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const mongoose = require('mongoose');
+import colors from 'colors';
+import mongoose from 'mongoose';
 
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -62,4 +62,4 @@ ParentSchema.pre('save', function() {
   );
 });
 
-module.exports.Portfolio = mongoose.model('Portfolio', ParentSchema);
+export const Portfolio = mongoose.model('Portfolio', ParentSchema);

@@ -1,11 +1,11 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const axios = require('axios');
-const moment = require('moment');
+import colors from 'colors';
+import axios from 'axios';
+import moment from 'moment';
 // model
-const { Portfolio } = require('./Portfolio');
-const { Stock } = require('../Stock/Stock.js');
+import { Portfolio } from './Portfolio.js';
+import { Stock } from '../Stock/Stock.js';
 
 const fetchPortfolioList = async userId => {
   try {
@@ -139,7 +139,7 @@ const calculateTotalValueOfStock = async userId =>
     // },
   ]);
 
-module.exports = {
+export {
   fetchPortfolioList,
   fetchWebApiQuote,
   createUpdatePortfolioPosition,

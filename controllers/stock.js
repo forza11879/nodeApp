@@ -1,10 +1,10 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const WebSocket = require('ws');
+import colors from 'colors';
+import WebSocket from 'ws';
 
-const Db = require('../db/models/Stock');
-const { Stock } = require('../db/models/Stock/Stock');
+import * as Db from '../db/models/Stock/index.js';
+import { Stock } from '../db/models/Stock/Stock.js';
 
 const broadcast = (clients, message) => {
   clients.forEach(client => {
@@ -14,7 +14,8 @@ const broadcast = (clients, message) => {
   });
 };
 
-exports.getSymbolId = async (req, res) => {
+// exports.getSymbolId = async (req, res) => {
+export const getSymbolId = async (req, res) => {
   try {
     const { symbol } = req.params;
 
@@ -34,7 +35,7 @@ exports.getSymbolId = async (req, res) => {
   }
 };
 
-exports.getChart = (req, res) => {
+export const getChart = (req, res) => {
   const { symbol } = req.params;
   // res.render('chart');
   res.render('chart', {
@@ -42,7 +43,7 @@ exports.getChart = (req, res) => {
   });
 };
 
-exports.getWebApi = async (req, res) => {
+export const getWebApi = async (req, res) => {
   try {
     const { symbol } = req.params;
     // const { changeStream } = req;
@@ -102,7 +103,7 @@ exports.getWebApi = async (req, res) => {
   }
 };
 
-exports.getWebApiStock = async (req, res) => {
+export const getWebApiStock = async (req, res) => {
   try {
     // const urlArray = await Db.generateUrlArrayStock();
     const urlArray = await Db.generateUrlArrayStockChart();
@@ -133,7 +134,7 @@ exports.getWebApiStock = async (req, res) => {
   }
 };
 
-exports.getDbFetch = async (req, res) => {
+export const getDbFetch = async (req, res) => {
   try {
     const { symbol } = req.params;
     console.log(symbol.green);
@@ -145,7 +146,7 @@ exports.getDbFetch = async (req, res) => {
   }
 };
 
-exports.getDbSearchApi = async (req, res) => {
+export const getDbSearchApi = async (req, res) => {
   try {
     const { symbol } = req.params;
 
@@ -157,7 +158,7 @@ exports.getDbSearchApi = async (req, res) => {
   }
 };
 
-exports.getSearchWebApi = async (req, res) => {
+export const getSearchWebApi = async (req, res) => {
   try {
     const { symbol } = req.params;
 

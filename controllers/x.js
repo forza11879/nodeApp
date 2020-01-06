@@ -1,14 +1,14 @@
 const SocketServer = require('ws').Server;
-let express = require('express');
+const express = require('express');
 
-let connectedUsers = [];
+const connectedUsers = [];
 
 // init Express
-let app = express();
+const app = express();
 
 // init Express Router
-let router = express.Router();
-let port = process.env.PORT || 80;
+const router = express.Router();
+const port = process.env.PORT || 80;
 
 // REST route for GET /status
 router.get('/status', function(req, res) {
@@ -20,9 +20,9 @@ app.use('/', router);
 
 // add middleware for static content
 app.use(express.static('static'));
-let server = app.listen(port, function() {
+const server = app.listen(port, function() {
   console.log(
-    'node.js static, REST server and websockets listening on port: ' + port
+    `node.js static, REST server and websockets listening on port: ${port}`
   );
 });
 

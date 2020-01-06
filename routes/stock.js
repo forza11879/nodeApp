@@ -1,8 +1,9 @@
-const colors = require('colors');
+// eslint-disable-next-line no-unused-vars
+import colors from 'colors';
 
-const express = require('express');
+import express from 'express';
 
-const {
+import {
   getSearchWebApi,
   getWebApi,
   getDbSearchApi,
@@ -10,10 +11,10 @@ const {
   getChart,
   getSymbolId,
   getWebApiStock,
-} = require('../controllers/stock');
+} from '../controllers/stock.js';
 
 // Include other resource routers
-const transactionRouter = require('./transaction');
+import transactionRouter from './transaction.js';
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.get('/app/:symbol', getWebApi);
 router.get('/chart/:symbol', getChart);
 router.get('/:symbol', getSymbolId);
 
-module.exports = router;
+export default router;
 
 // // middleware
 // router.use(

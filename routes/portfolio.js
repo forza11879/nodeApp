@@ -1,12 +1,12 @@
-const express = require('express');
-const isAuth = require('../middleware/is-auth');
-const {
+import express from 'express';
+import isAuth from '../middleware/is-auth.js';
+import {
   getPortfolio,
   getPortfolioList,
   getBuySellTicket,
   postBuySellTicket,
   notFoundPage,
-} = require('../controllers/portfolio');
+} from '../controllers/portfolio.js';
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.post('/buysell', isAuth, postBuySellTicket);
 // sub route error handling
 router.get('/*', notFoundPage);
 
-module.exports = router;
+export default router;

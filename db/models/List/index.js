@@ -1,9 +1,9 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const axios = require('axios');
-const moment = require('moment');
-const { List } = require('./List');
+import colors from 'colors';
+import axios from 'axios';
+import moment from 'moment';
+import { List } from './List.js';
 
 const saveToDbList = async (symbol, userId) => {
   try {
@@ -93,7 +93,7 @@ const fetchWebApiList = async url => {
   }
 };
 
-module.exports = {
+export {
   saveToDbList,
   fetchDataFromDbList,
   generateUrlArrayList,

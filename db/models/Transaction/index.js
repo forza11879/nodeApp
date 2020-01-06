@@ -1,16 +1,16 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
+import colors from 'colors';
 
-const axios = require('axios');
-const moment = require('moment');
+import axios from 'axios';
+import moment from 'moment';
 // services
-const portfolio = require('../Portfolio');
+import * as portfolio from '../Portfolio/index.js';
 // models
-const { Transaction } = require('./Transaction');
-const { Stock } = require('../Stock/Stock');
-const ErrorResponse = require('../../../utils/errorResponse');
-const asyncHandler = require('../../../middleware/async');
+import { Transaction } from './Transaction.js';
+import { Stock } from '../Stock/Stock.js';
+import { ErrorResponse } from '../../../utils/errorResponse.js';
+import { asyncHandler } from '../../../middleware/async.js';
 
 const addTransaction = async (arg, userId, webApiDataReversed) => {
   try {
@@ -67,7 +67,4 @@ const fetchWebApiQuote = async url => {
   }
 };
 
-module.exports = {
-  addTransaction,
-  fetchWebApiQuote,
-};
+export { addTransaction, fetchWebApiQuote };

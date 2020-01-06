@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
-const Db = require('../db/models/Transaction');
-const User = require('../db/models/User');
-const Stock = require('../db/models/Stock');
+import colors from 'colors';
+import * as Db from '../db/models/Transaction/index.js';
+import * as User from '../db/models/User/index.js';
+import * as Stock from '../db/models/Stock/index.js';
 
 const addTransaction = async (arg, userId, urlCompact) => {
   const webApiData = await Stock.fetchWebApiStock(urlCompact);
@@ -15,7 +15,9 @@ const updateCash = async (arg, userId) => User.updateCash(arg, userId);
 
 const fetchData = async url => Db.fetchWebApiQuote(url);
 
-exports.postAddTransaction = async (req, res) => {
+// exports.postAddTransaction = async (req, res) => {
+
+export const postAddTransaction = async (req, res) => {
   try {
     const { symbol } = req.body;
     const arg = req.body;

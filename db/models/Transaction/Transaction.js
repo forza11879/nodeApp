@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -25,4 +25,4 @@ const ParentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports.Transaction = mongoose.model('Transaction', ParentSchema);
+export const Transaction = mongoose.model('Transaction', ParentSchema);

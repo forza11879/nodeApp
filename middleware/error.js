@@ -1,7 +1,7 @@
-const colors = require('colors');
-const ErrorResponse = require('../utils/errorResponse');
+import colors from 'colors';
+import ErrorResponse from '../utils/errorResponse.js';
 
-const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, next) => {
   let error = { ...err };
 
   error.message = err.message;
@@ -46,5 +46,3 @@ const errorHandler = (err, req, res, next) => {
   //   error: error.message || 'Server Error'
   // });
 };
-
-module.exports = errorHandler;

@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // VERIFY async/await
-module.exports.connectDb = async () => {
+export const connectDb = async () => {
   try {
     // const uri = 'mongodb://localhost:27017/myapp?replicaSet=rs0';
     const uri = process.env.MONGODB_URL;

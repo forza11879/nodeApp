@@ -1,9 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { notFoundPage } from '../controllers/notFound.js';
 
 const router = express.Router();
 
-const { notFoundPage } = require('../controllers/notFound');
-
 router.use('*', notFoundPage);
 
-module.exports = router;
+export default router;

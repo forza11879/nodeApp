@@ -1,8 +1,7 @@
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
+import colors from 'colors';
 
-// const moment = require('moment')
-exports.getMain = (req, res) => {
+export const getMain = (req, res) => {
   console.log(req.session);
   // console.log(req.session.isLoggedIn);
   console.log(`User session: ${JSON.stringify(req.session.user)}`);

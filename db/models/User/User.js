@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
-
-// const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+import validator from 'validator';
+// import bcrypt from 'bcryptjs';
 
 const ParentSchema = new mongoose.Schema({
   // _id: Schema.Types.ObjectId,
@@ -37,5 +35,4 @@ const ParentSchema = new mongoose.Schema({
 // ParentSchema.pre('save', async function(next) {
 //   this.password = await bcrypt.hash(this.password, 12);
 // });
-
-module.exports.User = mongoose.model('User', ParentSchema);
+export const User = mongoose.model('User', ParentSchema);

@@ -1,27 +1,28 @@
-const buySellTicket = document.querySelector(".jsBtnList");
-buySellTicket.addEventListener("click", getModalInfo);
+const buySellTicket = document.querySelector('.jsBtnList');
+buySellTicket.addEventListener('click', getModalInfo);
 
 class UI {
   constructor() {
-    this.show = document.querySelector("#modalContent");
+    this.show = document.querySelector('#modalContent');
   }
+
   showData(e) {
     // const userId = '5cb018905f293858a48565fe';
-    let qtyAskValue = document.querySelector("#qtyAsk").value.trim();
-    let qtyBidValue = document.querySelector("#qtyBid").value.trim();
-    let askPriceValue = document.querySelector("#askPrice").value;
-    let bidPriceValue = document.querySelector("#bidPrice").value;
-    const companyNameValue = document.querySelector("#companyName").value;
-    const companySymbolValue = document.querySelector("#companySymbol").value;
+    let qtyAskValue = document.querySelector('#qtyAsk').value.trim();
+    const qtyBidValue = document.querySelector('#qtyBid').value.trim();
+    let askPriceValue = document.querySelector('#askPrice').value;
+    const bidPriceValue = document.querySelector('#bidPrice').value;
+    const companyNameValue = document.querySelector('#companyName').value;
+    const companySymbolValue = document.querySelector('#companySymbol').value;
 
     const btnObject = {
-      buy: "Buy",
-      sell: "Sell"
+      buy: 'Buy',
+      sell: 'Sell',
     };
-    const target = e.target;
+    const { target } = e;
     const arg = btnObject[target.dataset.fetcher];
 
-    if (arg !== "Buy")
+    if (arg !== 'Buy')
       (qtyAskValue = qtyBidValue) && (askPriceValue = bidPriceValue);
 
     // this.show.innerHTML = `<form action="/transaction" method="post">
@@ -47,7 +48,7 @@ class UI {
   }
 }
 const ui = new UI();
-//Model
+// Model
 function getModalInfo(e) {
   ui.showData(e);
 }

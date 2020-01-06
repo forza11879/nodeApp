@@ -1,14 +1,12 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-const colors = require('colors');
+import colors from 'colors';
 
-const Db = require('../db/models/Portfolio');
-const UserModal = require('../db/models/User');
-const { User } = require('../db/models/User/User');
-const { Portfolio } = require('../db/models/Portfolio/Portfolio');
-// const Transaction = require('../db/models/Transaction');
+import * as Db from '../db/models/Portfolio/index.js';
+import * as UserModal from '../db/models/User/index.js';
+import { User } from '../db/models/User/User.js';
 
-exports.getPortfolio = async (req, res) => {
+export const getPortfolio = async (req, res) => {
   try {
     res.render('portfolio', {
       isAuthenticated: req.session.isLoggedIn, // use it when needed - example
@@ -18,7 +16,7 @@ exports.getPortfolio = async (req, res) => {
   }
 };
 
-exports.getPortfolioList = async (req, res) => {
+export const getPortfolioList = async (req, res) => {
   try {
     const userId = req.session.user._id;
     // console.log(`getPortfolioList userId: ${userId}`);
@@ -32,7 +30,7 @@ exports.getPortfolioList = async (req, res) => {
   }
 };
 
-exports.getBuySellTicket = async (req, res) => {
+export const getBuySellTicket = async (req, res) => {
   try {
     const { symbol } = req.params;
     const userId = req.session.user._id;
@@ -46,7 +44,10 @@ exports.getBuySellTicket = async (req, res) => {
     const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
     const data = await Db.fetchWebApiQuote(url);
-    const userData = await User.findById({ _id: userId }).select('_id cash');
+
+    const userData = await User.findById({ _id: userId }).select(
+      '_id name cash equity'
+    );
 
     const { cash } = userData;
 
@@ -66,8 +67,18 @@ exports.getBuySellTicket = async (req, res) => {
 
       userData.equity = totalEquity;
 
-      userData.save();
+      await userData.save();
     }
+
+    console.log('userId: ', userId);
+    console.log('typeof userId: ', typeof userId);
+
+    // const userDataUpdated = await User.findById({ _id: userId }).select(
+    //   '-_id name cash equity'
+    // );
+
+    // console.log('userDataUpdated: ', userDataUpdated);
+    // console.log('typeof userDataUpdated: ', typeof userDataUpdated);
 
     res.render('buysell', {
       data,
@@ -79,7 +90,7 @@ exports.getBuySellTicket = async (req, res) => {
   }
 };
 
-exports.postBuySellTicket = async (req, res) => {
+export const postBuySellTicket = async (req, res) => {
   try {
     const { symbol } = req.params;
     const userId = req.session.user._id;
@@ -103,6 +114,6 @@ exports.postBuySellTicket = async (req, res) => {
   }
 };
 
-exports.notFoundPage = (req, res) => {
+export const notFoundPage = (req, res) => {
   res.status(404).render('portfolio-404');
 };
