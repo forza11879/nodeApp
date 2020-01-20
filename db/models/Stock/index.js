@@ -104,7 +104,7 @@ const createUpdateStock = async (symbol, webApiData) => {
     await positionTwo.save();
     // await position.save();
   } catch (ex) {
-    console.log(`creatStock error: ${ex}`.red);
+    console.log('creatUpdateStock error: ', ex.red);
   }
 };
 

@@ -1,48 +1,31 @@
-const SocketServer = require('ws').Server;
-const express = require('express');
+const userClicksSearchButton = Rx.Observable.fromEvent(
+  $('#search-button'),
+  'click'
+).map(event => $('#search-box').val());
 
-const connectedUsers = [];
-
-// init Express
-const app = express();
-
-// init Express Router
-const router = express.Router();
-const port = process.env.PORT || 80;
-
-// REST route for GET /status
-router.get('/status', function(req, res) {
-  res.json({ status: 'App is running!' });
+userClicksSearchButton.subscribe(searchTerm => {
+  alert(searchTerm);
 });
 
-// connect path to router
-app.use('/', router);
+async function getWithRetry(url, numRetries) {
+  let lastError = null;
+  for (let i = 0; i < numRetries; ++i) {
+    try {
+      // Note that `await superagent.get(url).body` doesn't work
+      const res = await superagent.get(url); // Early return with async functions works as you'd expect
+      return res.body;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
+}
 
-// add middleware for static content
-app.use(express.static('static'));
-const server = app.listen(port, function() {
-  console.log(
-    `node.js static, REST server and websockets listening on port: ${port}`
-  );
-});
-
-// if serving static app from another server/port, send CORS headers in response
-// { headers: {
-// "Access-Control-Allow-Origin": "*",
-//    "Access-Control-Allow-Headers": "http://localhost:3000",
-//    "Access-Control-Allow-Methods": "PUT, GET, POST, DELETE, OPTIONS"
-// } }
-const wss = new SocketServer({ server });
-
-// init Websocket ws and handle incoming connect requests
-wss.on('connection', function connection(ws) {
-  console.log('connection ...');
-
-  // on connect message
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
-    connectedUsers.push(message);
-  });
-
-  ws.send('something');
-});
+async function run() {
+  const root = 'https://jsonplaceholder.typicode.com';
+  const posts = await getWithRetry(`${root}/posts`, 3);
+  for (const { id } of posts) {
+    const comments = await getWithRetry(`${root}/comments?postId=${id}`, 3);
+    console.log(comments);
+  }
+}

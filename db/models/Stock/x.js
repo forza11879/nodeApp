@@ -135,60 +135,112 @@
 //     });
 // };
 
-const result = async () => {
-  const response = await fetch(
-    'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=aapl&outputsize=compact&apikey=6BUYSS9QR8Y9HH15'
-  );
-  const myJson = await response.json();
+const mongoose = require('mongoose');
+const express = require('express');
 
-  console.log('result data one:', myJson['Time Series (Daily)']);
+mongoose.connect(
+  'mongodb://localhost:27017,localhost:27018,localhost:27019/myapp?replicaSet=rs',
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
 
-  const dataWebApi = Object.entries(myJson['Time Series (Daily)']).map(
-    ([date, dateObj]) => ({
-      date: Date.parse(date),
-      open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
-      high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
-      low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
-      close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-      volume: parseInt(dateObj['5. volume']),
-      // parseInt vs unary plus  +dateObj["5. volume"]
-    })
-  );
+const Stock = mongoose.model(
+  'Stock',
+  mongoose.Schema({
+    symbol: String,
+    data: [],
+  })
+);
 
-  const dataWebApiW = Object.entries(myJson).map(
-    item => console.log(item)
-    // ([date, dateObj]) => ({
-    //   date: Date.parse(date),
-    //   open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
-    //   high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
-    //   low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
-    //   close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-    //   volume: parseInt(dateObj['5. volume']),
-    //   // parseInt vs unary plus  +dateObj["5. volume"]
-    // })
-  );
-  console.log('result final:', dataWebApiW);
+const fetchWebApiStock = async url => [
+  { date: '2019-06-01', open: 100, high: 101, low: 99, close: 100, volume: 5 },
+];
+
+const createUpdateStock = async (symbol, webApiData) => {
+  try {
+    const webApiDataReversed = webApiData.reverse();
+    const query = { symbol };
+
+    const position = await Stock.findOne(query);
+
+    if (!position) {
+      return Stock.create({
+        symbol,
+        data: webApiDataReversed,
+      });
+    }
+    await Stock.bulkWrite([
+      {
+        updateOne: {
+          filter: query,
+          update: { $pop: { data: 1 } },
+        },
+      },
+      {
+        updateOne: {
+          filter: query,
+          update: {
+            $addToSet: {
+              data: webApiDataReversed,
+            },
+          },
+        },
+      },
+    ]);
+  } catch (err) {
+    console.log('creatUpdateStock error: ', err);
+  }
 };
-result();
 
-// return Object.entries(response.data['Time Series (Daily)']).map(
-//   ([date, dateObj]) => ({
-//     date: Date.parse(date),
-//     open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
-//     high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
-//     low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
-//     close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-//     volume: parseInt(dateObj['5. volume']),
-//     // parseInt vs unary plus  +dateObj["5. volume"]
-//   })
-// );
+const getWebApi = async (req, res) => {
+  try {
+    const { symbol } = req.params;
 
-response.data['Time Series (Daily)'].map(([date, dateObj]) => ({
-  date: Date.parse(date),
-  open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
-  high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
-  low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
-  close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-  volume: parseInt(dateObj['5. volume']),
-  // parseInt vs unary plus  +dateObj["5. volume"]
-}));
+    console.log('on entry req.params.symbol: ', symbol);
+    console.log(typeof symbol);
+
+    const apiKeyAlpha = process.env.API_KEY_ALPHAVANTAGE;
+
+    const urlCompact = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=compact&apikey=${apiKeyAlpha}`;
+
+    const webApiData = await fetchWebApiStock(urlCompact);
+    await createUpdateStock(symbol, webApiData);
+
+    const pipeline = [
+      {
+        $match: {
+          'ns.db': 'myapp',
+          'ns.coll': 'stocks',
+          'fullDocument.symbol': symbol,
+        },
+      },
+    ];
+
+    const options = { fullDocument: 'updateLookup' };
+    const changeStream = Stock.watch(pipeline, options);
+
+    changeStream.on('change', change => {
+      console.log('req.params.symbol in change: ', symbol);
+
+      const { fullDocument } = change;
+
+      const webApiDataParsed = fullDocument.data.map(item => ({
+        date: parseFloat(item.date),
+        open: parseFloat(item.open),
+        high: parseFloat(item.high),
+        low: parseFloat(item.low),
+        close: parseFloat(item.close),
+        volume: parseInt(item.volume),
+      }));
+    });
+
+    res.send(webApiData);
+  } catch (ex) {
+    console.log('getWebApi error:', ex);
+  }
+};
+
+const app = express();
+
+app.get('/listen/:symbol', getWebApi);
+
+app.listen(5001);
