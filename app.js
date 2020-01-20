@@ -91,7 +91,7 @@ const port = process.env.PORT;
 
 const server = createServer(app);
 server.listen(port, function() {
-  console.log(`Server is up on portt ${port}`);
+  console.log(`Server is up on port ${port}`);
 });
 
 // once app is ready connect to DB
