@@ -5,9 +5,13 @@ import colors from 'colors';
 
 import axios from 'axios';
 import { Stock } from './Stock.js';
+import * as util from '../common/util.js';
 
 // const startTime = Date.now();
 // console.log('Executed QUEURY in', Date.now() - startTime, 'ms');
+
+// console.log(JSON.stringify(`fetchWebApiStock response data: ${item}`)),
+//   console.log(`typeof item: ${typeof item}`);
 
 const searchWebApi = async url => {
   try {
@@ -22,15 +26,10 @@ const searchWebApi = async url => {
     console.log(`searchWebApi error: ${ex}`.red);
   }
 };
-// console.log(JSON.stringify(`fetchWebApiStock response data: ${item}`)),
-//   console.log(`typeof item: ${typeof item}`);
 
 const fetchWebApiStock = async url => {
   try {
-    // console.log('fetchWebApiStock url:', url);
-
-    const response = await axios.get(url);
-    const { data } = response;
+    const data = await util.getWithRetry(url);
 
     const result = Object.entries(data['Time Series (Daily)']).map(
       ([date, dateObj]) => ({

@@ -4,6 +4,7 @@ import colors from 'colors';
 import axios from 'axios';
 import moment from 'moment';
 import { List } from './List.js';
+import * as util from '../common/util.js';
 
 const saveToDbList = async (symbol, userId) => {
   try {
@@ -68,25 +69,22 @@ const fetchDataFromDbList = async (query, projection) => {
 
 const fetchWebApiList = async url => {
   try {
-    const myJson = await axios.get(url);
-
-    // const globalQuote = myJson.data['Global Quote'];
-    const myJsonData = myJson.data;
+    const data = await util.getWithRetry(url);
 
     return {
       // symbol: globalQuote['01. symbol'],
-      symbol: myJsonData.symbol,
-      open: myJsonData.open,
-      high: myJsonData.high,
-      low: myJsonData.low,
-      price: myJsonData.latestPrice,
-      volume: myJsonData.latestVolume,
-      latestTrdDay: moment(parseFloat(myJsonData.latestUpdate))
+      symbol: data.symbol,
+      open: data.open,
+      high: data.high,
+      low: data.low,
+      price: data.latestPrice,
+      volume: data.latestVolume,
+      latestTrdDay: moment(parseFloat(data.latestUpdate))
         .utcOffset(-240)
         .format('lll'),
-      previousClose: myJsonData.previousClose,
-      change: myJsonData.change,
-      changePercent: myJsonData.changePercent,
+      previousClose: data.previousClose,
+      change: data.change,
+      changePercent: data.changePercent,
     };
   } catch (ex) {
     console.log(`fetchWebApiList error: ${ex}`);
