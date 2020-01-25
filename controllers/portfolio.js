@@ -2,9 +2,10 @@
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
 
-import * as Db from '../db/models/Portfolio/index.js';
+import * as Portfolio from '../db/models/Portfolio/index.js';
 import * as UserModal from '../db/models/User/index.js';
 import { User } from '../db/models/User/User.js';
+import * as util from '../db/models/common/util.js';
 
 export const getPortfolio = async (req, res) => {
   try {
@@ -20,7 +21,7 @@ export const getPortfolioList = async (req, res) => {
   try {
     const userId = req.session.user._id;
     // console.log(`getPortfolioList userId: ${userId}`);
-    const portfolioList = await Db.fetchPortfolioList(userId);
+    const portfolioList = await Portfolio.fetchPortfolioList(userId);
 
     // console.log(`getPortfolioList Portfolio List: ${portfolioList}`);
 
@@ -43,7 +44,7 @@ export const getBuySellTicket = async (req, res) => {
     const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
     const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
-    const data = await Db.fetchWebApiQuote(url);
+    const data = await util.fetchWebApiQuote(url);
 
     const userData = await User.findById({ _id: userId }).select(
       '_id name cash equity'
@@ -51,7 +52,7 @@ export const getBuySellTicket = async (req, res) => {
 
     const { cash } = userData;
 
-    const stockValue = await Db.calculateTotalValueOfStock(userId);
+    const stockValue = await Portfolio.calculateTotalValueOfStock(userId);
     console.log('stockValue: ', stockValue);
 
     if (Array.isArray(stockValue) && stockValue.length) {
@@ -102,7 +103,7 @@ export const postBuySellTicket = async (req, res) => {
     // const apiTokenQuote = process.env.API_TOKEN_QUOTE;
     // const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
-    const data = await Db.fetchWebApiQuote(url);
+    const data = await util.fetchWebApiQuote(url);
     const userData = await UserModal.fetchUserDataDB(userId);
 
     res.render('buysell', {

@@ -1,7 +1,6 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
-import axios from 'axios';
 import moment from 'moment';
 import { List } from './List.js';
 import * as util from '../common/util.js';

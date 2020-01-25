@@ -1,11 +1,8 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
-import axios from 'axios';
-import moment from 'moment';
 // model
 import { Portfolio } from './Portfolio.js';
-import { Stock } from '../Stock/Stock.js';
 
 const fetchPortfolioList = async userId => {
   try {
@@ -86,30 +83,6 @@ const createUpdatePortfolioPosition = async arg => {
   }
 };
 
-const fetchWebApiQuote = async url => {
-  try {
-    const myJson = await axios.get(url);
-    const myJsonData = myJson.data;
-    return {
-      symbol: myJsonData.symbol,
-      companyName: myJsonData.companyName,
-      latestPrice: myJsonData.latestPrice,
-      change: myJsonData.change,
-      latestUpdate: moment(myJsonData.latestUpdate)
-        .utcOffset(-240)
-        .format('LLLL'),
-      high: myJsonData.high,
-      low: myJsonData.low,
-      week52High: myJsonData.week52High,
-      week52Low: myJsonData.week52Low,
-      open: myJsonData.open,
-      previousClose: myJsonData.previousClose,
-    };
-  } catch (ex) {
-    console.log(`fetchWebApiQuote error: ${ex}`.red);
-  }
-};
-
 const calculateTotalValueOfStock = async userId =>
   Portfolio.aggregate([
     { $match: { userId: userId } },
@@ -141,7 +114,6 @@ const calculateTotalValueOfStock = async userId =>
 
 export {
   fetchPortfolioList,
-  fetchWebApiQuote,
   createUpdatePortfolioPosition,
   calculateTotalValueOfStock,
 };

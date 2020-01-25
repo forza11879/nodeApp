@@ -8,6 +8,13 @@ import morgan from 'morgan';
 import session from 'express-session';
 import storeFabric from 'connect-mongodb-session';
 import cors from 'cors';
+import messagesExpress from 'express-messages';
+import connectFlash from 'connect-flash';
+import expressValidator from 'express-validator';
+
+// const { validationResult } = expressValidator;
+// app.use(require('connect-flash')());
+// require('express-messages')
 
 // routes
 import authRoute from './routes/auth.js';
@@ -51,13 +58,42 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 // serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
+
 // Session
 app.use(
   session({
     secret: process.env.MY_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // false
+    saveUninitialized: true, // false
     store,
+  })
+);
+
+// Express messages midelware
+app.use(connectFlash());
+
+app.use(function(req, res, next) {
+  res.locals.messages = messagesExpress(req, res);
+  next();
+});
+
+// Express Validator Middleware
+app.use(
+  expressValidator({
+    errorFormatter(param, msg, value) {
+      const namespace = param.split('.');
+      const root = namespace.shift();
+      let formParam = root;
+
+      while (namespace.length) {
+        formParam += `[${namespace.shift()}]`;
+      }
+      return {
+        param: formParam,
+        msg,
+        value,
+      };
+    },
   })
 );
 

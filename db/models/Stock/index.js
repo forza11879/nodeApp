@@ -3,7 +3,6 @@
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
 
-import axios from 'axios';
 import { Stock } from './Stock.js';
 import * as util from '../common/util.js';
 
@@ -15,11 +14,12 @@ import * as util from '../common/util.js';
 
 const searchWebApi = async url => {
   try {
-    const response = await axios.get(url);
+    const data = await util.getWithRetry(url);
 
-    const symbolData = response.data.bestMatches.map(item => ({
+    const symbolData = data.bestMatches.map(item => ({
       symbol: item['1. symbol'],
     }));
+
     console.log(symbolData.green);
     return symbolData;
   } catch (ex) {

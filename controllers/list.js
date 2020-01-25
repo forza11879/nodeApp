@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
-import * as Db from '../db/models/List/index.js';
+import * as List from '../db/models/List/index.js';
 
 export const getList = (req, res) => {
   console.log(`User session: ${JSON.stringify(req.session)}`);
@@ -32,13 +32,13 @@ export const getWebApiList = async (req, res) => {
     const userId = req.session.user._id;
     const { symbol } = req.params;
 
-    await Db.saveToDbList(symbol, userId);
+    await List.saveToDbList(symbol, userId);
 
-    const urlArray = await Db.generateUrlArrayList(userId);
+    const urlArray = await List.generateUrlArrayList(userId);
     // console.log(`urlArray list: ${urlArray}`.green);
 
     // Promise.all(urlArray.map(async url => await Db.fetchWebApiList(url)))
-    Promise.all(urlArray.map(async url => Db.fetchWebApiList(url)))
+    Promise.all(urlArray.map(async url => List.fetchWebApiList(url)))
       // Inside an async function, return await is seldom useful
       .then(item => {
         // console.log(`getWebApiList item: ${JSON.stringify(item)}`.green);

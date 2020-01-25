@@ -2,8 +2,6 @@
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
 
-import axios from 'axios';
-import moment from 'moment';
 // services
 import * as portfolio from '../Portfolio/index.js';
 // models
@@ -11,6 +9,7 @@ import { Transaction } from './Transaction.js';
 import { Stock } from '../Stock/Stock.js';
 import { ErrorResponse } from '../../../utils/errorResponse.js';
 import { asyncHandler } from '../../../middleware/async.js';
+import * as util from '../common/util.js';
 
 const addTransaction = async (arg, userId, webApiDataReversed) => {
   try {
@@ -43,28 +42,4 @@ const addTransaction = async (arg, userId, webApiDataReversed) => {
   }
 };
 
-const fetchWebApiQuote = async url => {
-  try {
-    const myJson = await axios.get(url);
-    const myJsonData = myJson.data;
-    return {
-      symbol: myJsonData.symbol,
-      companyName: myJsonData.companyName,
-      latestPrice: myJsonData.latestPrice,
-      change: myJsonData.change,
-      latestUpdate: moment(myJsonData.latestUpdate)
-        .utcOffset(-240)
-        .format('LLLL'),
-      high: myJsonData.high,
-      low: myJsonData.low,
-      week52High: myJsonData.week52High,
-      week52Low: myJsonData.week52Low,
-      open: myJsonData.open,
-      previousClose: myJsonData.previousClose,
-    };
-  } catch (ex) {
-    console.log(`fetchWebApiQuote error: ${ex}`.red);
-  }
-};
-
-export { addTransaction, fetchWebApiQuote };
+export { addTransaction };
