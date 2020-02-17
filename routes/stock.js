@@ -14,13 +14,13 @@ import {
 } from '../controllers/stock.js';
 
 // Include other resource routers
-import transactionRouter from './transaction.js';
+// import transactionRouter from './transaction.js';
 
 const router = express.Router();
 
 // Re-route into other resource routers
 router.get('/updatedb', getWebApiStock);
-router.use('/:symbol/transaction', transactionRouter);
+// router.use('/:symbol/transaction', transactionRouter);
 router.get('/websearch/:symbol', getSearchWebApi);
 router.get('/dbsearch/:symbol', getDbSearchApi);
 router.get('/dbapi/:symbol', getDbFetch);

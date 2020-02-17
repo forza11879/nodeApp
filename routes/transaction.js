@@ -3,6 +3,6 @@ import { postAddTransaction } from '../controllers/transaction.js';
 
 const router = express.Router({ mergeParams: true });
 
-router.post('/', postAddTransaction);
+router.post('/:symbol', postAddTransaction);
 
 export default router;

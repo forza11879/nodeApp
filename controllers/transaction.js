@@ -32,15 +32,15 @@ export const postAddTransaction = async (req, res) => {
     const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
 
     const dataThreeResult = await util.fetchWebApiQuote(url);
-    if (!dataThreeResult) {
-      req.flash('error', 'connection error');
-      return;
-    }
-
     const webApiData = await Stock.fetchWebApiStock(urlCompact);
-    if (!webApiData) {
-      req.flash('error', 'connection error');
-      return;
+
+    if (!dataThreeResult || !webApiData) {
+      req.session.message = {
+        type: 'danger',
+        intro: 'HTTP request failed! ',
+        message: 'Try again',
+      };
+      return res.redirect(`/portfolio/buysell/${symbol}`);
     }
 
     const promises = [
@@ -50,10 +50,18 @@ export const postAddTransaction = async (req, res) => {
 
     const [one, updatedUserDataTwoResult] = await Promise.all(promises);
 
-    res.render('buysell', {
-      data: dataThreeResult,
-      userData: updatedUserDataTwoResult,
-    });
+    req.session.message = {
+      type: 'success',
+      intro: 'HTTP Successfully done! ',
+      message: 'Go ahead!',
+    };
+
+    res.redirect(`/portfolio/buysell/${symbol}`);
+
+    // res.render('buysell', {
+    //   data: dataThreeResult,
+    //   userData: updatedUserDataTwoResult,
+    // });
   } catch (ex) {
     console.log(`postAddTransaction error${ex}`);
   }

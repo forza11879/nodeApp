@@ -10,8 +10,8 @@ class UI {
     // const userId = '5cb018905f293858a48565fe';
     let qtyAskValue = document.querySelector('#qtyAsk').value.trim();
     const qtyBidValue = document.querySelector('#qtyBid').value.trim();
-    let askPriceValue = document.querySelector('#askPrice').value;
-    const bidPriceValue = document.querySelector('#bidPrice').value;
+    let askPriceValue = document.querySelector('#askPrice').value.trim();
+    const bidPriceValue = document.querySelector('#bidPrice').value.trim();
     const companyNameValue = document.querySelector('#companyName').value;
     const companySymbolValue = document.querySelector('#companySymbol').value;
 
@@ -26,7 +26,8 @@ class UI {
       (qtyAskValue = qtyBidValue) && (askPriceValue = bidPriceValue);
 
     // this.show.innerHTML = `<form action="/transaction" method="post">
-    this.show.innerHTML = `<form action="/stock/${companySymbolValue}/transaction" method="post">
+    // this.show.innerHTML = `<form action="/stock/${companySymbolValue}/transaction" method="post">
+    this.show.innerHTML = `<form action="/transaction/${companySymbolValue}" method="post">
     <div class="modal-header">
           <h5 class="modal-title" id="exampleModalCenterTitle">${arg} order</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -38,6 +39,7 @@ class UI {
           </div>
           <div class="modal-footer">
           <input type="hidden" name="symbol" value="${companySymbolValue}"></input>
+       
           <input type="hidden" name="price" value="${askPriceValue}"></input>
           <input type="hidden" name="qty" value="${qtyAskValue}"></input>
           <input type="hidden" name="orderType" value="${arg}"></input>

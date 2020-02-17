@@ -17,6 +17,7 @@ class UI {
   constructor() {
     this.show = document.querySelector('#list');
   }
+
   showData(data) {
     // const userId = '5d5f6afb11a620047486274d';
     // const userId = req.session.use._id;
@@ -42,7 +43,7 @@ class UI {
   }
 }
 const ui = new UI();
-//List
+// List
 function requestSymbolSearchList() {
   getDataList()
     .then(data => {
@@ -53,13 +54,13 @@ function requestSymbolSearchList() {
 }
 
 function getDataList() {
-  let symbolTagsValue = symbolTagsList.value;
-  let curValueSymbol = symbolTagsValue ? symbolTagsValue : 'RY';
-  let url = `/list/add/${curValueSymbol}`;
+  const symbolTagsValue = symbolTagsList.value;
+  const curValueSymbol = symbolTagsValue || 'RY';
+  const url = `/list/add/${curValueSymbol}`;
   console.log(url);
   return fetchData(url);
 }
-//search box
+// search box
 symbolTagsList.addEventListener(
   'input',
   _.debounce(() => {
@@ -73,7 +74,7 @@ async function requestSymbolSearch() {
     console.log(dataList);
     $('#symbolTagsList').autocomplete({
       source: dataList.map(item => item.symbol),
-      autoFocus: true
+      autoFocus: true,
     });
   } catch (ex) {
     console.log(`requestSymbolSearch error: ${ex}`);
@@ -82,8 +83,8 @@ async function requestSymbolSearch() {
 
 function getDataSearchBox() {
   try {
-    let curValueSymbol = symbolTagsList.value;
-    let url = `/stock/websearch/${curValueSymbol}`;
+    const curValueSymbol = symbolTagsList.value;
+    const url = `/stock/websearch/${curValueSymbol}`;
     console.log(url);
     return fetchData(url);
   } catch (ex) {

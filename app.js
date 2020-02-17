@@ -8,12 +8,16 @@ import morgan from 'morgan';
 import session from 'express-session';
 import storeFabric from 'connect-mongodb-session';
 import cors from 'cors';
-import messagesExpress from 'express-messages';
-import connectFlash from 'connect-flash';
-import expressValidator from 'express-validator';
+// import messagesExpress from 'express-messages';
+// import flash from 'connect-flash';
+// import toastr from 'express-toastr';
+import cookieParser from 'cookie-parser';
+// import flash from 'express-flash-2';
+// import expressValidator from 'express-validator';
 
 // const { validationResult } = expressValidator;
 // app.use(require('connect-flash')());
+
 // require('express-messages')
 
 // routes
@@ -59,6 +63,9 @@ app.set('views', 'views');
 // serves up static files from the public folder.Anything in public folder will just served up as the file it is .Define path for Static folder Public
 app.use(express.static(path.join(__dirname, 'public')));
 
+// cookieParser
+app.use(cookieParser(process.env.MY_SECRET));
+
 // Session
 app.use(
   session({
@@ -66,36 +73,57 @@ app.use(
     resave: true, // false
     saveUninitialized: true, // false
     store,
+    // cookie: { maxAge: null },
   })
 );
 
-// Express messages midelware
-app.use(connectFlash());
-
-app.use(function(req, res, next) {
-  res.locals.messages = messagesExpress(req, res);
+// flash message middleware
+app.use((req, res, next) => {
+  res.locals.message = req.session.message;
+  delete req.session.message;
   next();
 });
 
-// Express Validator Middleware
-app.use(
-  expressValidator({
-    errorFormatter(param, msg, value) {
-      const namespace = param.split('.');
-      const root = namespace.shift();
-      let formParam = root;
+// Express messages midelware
+// app.use(flash());
+//
+// app.use(function(req, res, next) {
+//   res.locals.success_messages = req.flash('success_messages');
+//   res.locals.error_messages = req.flash('error_messages');
+//   next();
+// });
+// Load express-toastr
+// app.use(toastr());
+// express-toastr middleware
+// app.use(function(req, res, next) {
+//   res.locals.toasts = req.toastr.render();
+//   next();
+// });
 
-      while (namespace.length) {
-        formParam += `[${namespace.shift()}]`;
-      }
-      return {
-        param: formParam,
-        msg,
-        value,
-      };
-    },
-  })
-);
+// app.use(function(req, res, next) {
+//   res.locals.messages = messagesExpress(req, res);
+//   next();
+// });
+
+// Express Validator Middleware
+// app.use(
+//   expressValidator({
+//     errorFormatter(param, msg, value) {
+//       const namespace = param.split('.');
+//       const root = namespace.shift();
+//       let formParam = root;
+
+//       while (namespace.length) {
+//         formParam += `[${namespace.shift()}]`;
+//       }
+//       return {
+//         param: formParam,
+//         msg,
+//         value,
+//       };
+//     },
+//   })
+// );
 
 app.use((req, res, next) => {
   const { user } = req.session;
