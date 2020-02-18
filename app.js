@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable import/first */
 /* eslint-disable no-use-before-define */
 import { createServer } from 'http';
@@ -14,11 +15,6 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 // import flash from 'express-flash-2';
 // import expressValidator from 'express-validator';
-
-// const { validationResult } = expressValidator;
-// app.use(require('connect-flash')());
-
-// require('express-messages')
 
 // routes
 import authRoute from './routes/auth.js';
@@ -66,64 +62,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // cookieParser
 app.use(cookieParser(process.env.MY_SECRET));
 
-// Session
+// Initialize the Session
 app.use(
   session({
     secret: process.env.MY_SECRET,
-    resave: true, // false
-    saveUninitialized: true, // false
-    store,
-    // cookie: { maxAge: null },
+    resave: false, // does not save session on each request
+    saveUninitialized: false,
+    store: store,
   })
 );
 
 // flash message middleware
 app.use((req, res, next) => {
-  res.locals.message = req.session.message;
+  res.locals.message = req.session.message; // res.locals An object that contains response local variables scoped to the request, and therefore available only to the view(s) rendered during that request / response cycle (if any). Otherwise, this property is identical to app.locals.This property is useful for exposing request-level information such as the request path name, authenticated user, user settings, and so on.
   delete req.session.message;
   next();
 });
-
-// Express messages midelware
-// app.use(flash());
-//
-// app.use(function(req, res, next) {
-//   res.locals.success_messages = req.flash('success_messages');
-//   res.locals.error_messages = req.flash('error_messages');
-//   next();
-// });
-// Load express-toastr
-// app.use(toastr());
-// express-toastr middleware
-// app.use(function(req, res, next) {
-//   res.locals.toasts = req.toastr.render();
-//   next();
-// });
-
-// app.use(function(req, res, next) {
-//   res.locals.messages = messagesExpress(req, res);
-//   next();
-// });
-
-// Express Validator Middleware
-// app.use(
-//   expressValidator({
-//     errorFormatter(param, msg, value) {
-//       const namespace = param.split('.');
-//       const root = namespace.shift();
-//       let formParam = root;
-
-//       while (namespace.length) {
-//         formParam += `[${namespace.shift()}]`;
-//       }
-//       return {
-//         param: formParam,
-//         msg,
-//         value,
-//       };
-//     },
-//   })
-// );
 
 app.use((req, res, next) => {
   const { user } = req.session;
@@ -166,7 +120,7 @@ const wss = new WebSocket.Server({ server });
 // eslint-disable-next-line no-unused-vars
 wss.on('connection', ws => {
   console.info('Total connected clients:', wss.clients.size);
-  app.locals.clients = wss.clients;
+  app.locals.clients = wss.clients; // The app.locals object has properties that are local variables within the application. Once set, the value of app.locals properties persist throughout the life of the application, in contrast with res.locals properties that are valid only for the lifetime of the request.
 });
 
 // /////////////////
