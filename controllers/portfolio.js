@@ -36,9 +36,7 @@ export const getBuySellTicket = async (req, res) => {
     const { symbol } = req.params;
     const userId = req.session.user._id;
 
-    console.log('Authenticated User'.green);
     console.log(`userId : ${JSON.stringify(userId)}`.green);
-
     console.log(`res.session.isLoggedIn: ${req.session.isLoggedIn}`);
 
     const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
@@ -53,33 +51,17 @@ export const getBuySellTicket = async (req, res) => {
     const { cash } = userData;
 
     const stockValue = await Portfolio.calculateTotalValueOfStock(userId);
-    console.log('stockValue: ', stockValue);
 
-    if (Array.isArray(stockValue) && stockValue.length) {
-      const valueOfStock = stockValue[0].totalValueOfStock;
-      // console.log('stockValue: ', valueOfStock);
-      // console.log('cash: ', cash);
-      // console.log('typeof cash: ', typeof cash);
+    let valueOfStock;
 
-      const totalEquity = cash + valueOfStock;
-
-      console.log('totalEquity : ', totalEquity);
-      // console.log('typeof totalEquity: ', typeof totalEquity);
-
-      userData.equity = totalEquity;
-
-      await userData.save();
+    if (!stockValue.length) {
+      valueOfStock = 0;
     }
-
-    console.log('userId: ', userId);
-    console.log('typeof userId: ', typeof userId);
-
-    // const userDataUpdated = await User.findById({ _id: userId }).select(
-    //   '-_id name cash equity'
-    // );
-
-    // console.log('userDataUpdated: ', userDataUpdated);
-    // console.log('typeof userDataUpdated: ', typeof userDataUpdated);
+    //
+    valueOfStock = stockValue[0].totalValueOfStock;
+    const totalEquity = cash + valueOfStock;
+    userData.equity = Math.round(100 * totalEquity) / 100;
+    await userData.save();
 
     res.render('buysell', {
       data,

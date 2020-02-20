@@ -92,28 +92,28 @@ const calculateTotalValueOfStock = async userId =>
         totalValueOfStock: {
           $sum: { $multiply: ['$data.close', '$qtyPortfolio'] },
         },
-
         // count: { $sum: 1 }
       },
     },
     { $project: { _id: 0, totalValueOfStock: 1 } },
-
-    // { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
-    // {
-    //   $lookup: {
-    //     from: 'stocks', // collection name in db
-    //     let: { symbolId: '$symbolId' },
-    //     pipeline: [
-    //       { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
-    //       { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
-    //     ],
-    //     as: 'symbolDb',
-    //   },
-    // },
   ]);
+
+const getSymbolQty = async (userId, symbolId) => {
+  try {
+    const query = { userId: userId, symbolId: symbolId };
+    const projection = { _id: 0, qtyPortfolio: 1 };
+    const qtyPortfolioDb = await Portfolio.findOne(query, projection);
+    return qtyPortfolioDb;
+  } catch (ex) {
+    console.log(`getSymbolQty error: ${ex}`.red);
+  }
+};
+
+// const getSymbolQty = async (userId, symbolId) => {}
 
 export {
   fetchPortfolioList,
   createUpdatePortfolioPosition,
   calculateTotalValueOfStock,
+  getSymbolQty,
 };

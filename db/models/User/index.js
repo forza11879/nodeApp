@@ -8,18 +8,19 @@ const updateCash = async (arg, userId) => {
 
     const qty = parseInt(arg.qty);
     const price = parseFloat(arg.price);
+
     let transactionAmount = qty * price;
 
     const query = { _id: userId };
     const user = await User.findOne(query);
-
-    if (orderType === 'Sell')
-      transactionAmount = Math.abs(transactionAmount) * -1;
-
     const { cash } = user;
 
+    if (orderType === 'Sell') {
+      transactionAmount = Math.abs(transactionAmount) * -1;
+    }
+
     const newCash = parseFloat(cash) - transactionAmount;
-    user.cash = newCash;
+    user.cash = Math.round(100 * newCash) / 100;
     await user.save();
 
     console.log('cash: ', parseFloat(user.cash));

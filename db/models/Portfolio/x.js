@@ -187,3 +187,33 @@ module.exports.Portfolio = mongoose.model('Portfolio', ParentSchema);
 //     console.log(`updateToPortfolio error: ${ex}`.red);
 //   }
 // };
+
+// const calculateTotalValueOfStock = async userId =>{
+//   Portfolio.aggregate([
+//     { $match: { userId: userId } },
+//     {
+//       $group: {
+//         _id: userId,
+//         totalValueOfStock: {
+//           $sum: { $multiply: ['$data.close', '$qtyPortfolio'] },
+//         },
+
+//         // count: { $sum: 1 }
+//       },
+//     },
+//     { $project: { _id: 0, totalValueOfStock: 1 } },
+
+//     // { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
+//     // {
+//     //   $lookup: {
+//     //     from: 'stocks', // collection name in db
+//     //     let: { symbolId: '$symbolId' },
+//     //     pipeline: [
+//     //       { $match: { $expr: { $eq: ['$_id', '$$symbolId'] } } },
+//     //       { $project: { data: { $slice: ['$data', 1] }, symbol: 1 } },
+//     //     ],
+//     //     as: 'symbolDb',
+//     //   },
+//     // },
+//   ]);
+// }

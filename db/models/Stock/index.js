@@ -192,13 +192,16 @@ const generateUrlArrayStockChart = async () => {
   }
 };
 
-// Stock.find(
-//   { $text: { $search: `"${curValueDbSearch}"` } },
-//   { score: { $meta: 'textScore' } }
-// )
-//   .sort({
-//     score: { $meta: 'textScore' }
-//   })
+const getSymbolId = async symbol => {
+  try {
+    const query = { symbol };
+    const projection = { _id: 1 };
+    const symbolId = await Stock.findOne(query, projection);
+    return symbolId;
+  } catch (ex) {
+    console.log(`getSymbolId error: ${ex}`.red);
+  }
+};
 
 export {
   fetchWebApiStock,
@@ -208,4 +211,13 @@ export {
   searchWebApi,
   generateUrlArrayStock,
   generateUrlArrayStockChart,
+  getSymbolId,
 };
+
+// Stock.find(
+//   { $text: { $search: `"${curValueDbSearch}"` } },
+//   { score: { $meta: 'textScore' } }
+// )
+//   .sort({
+//     score: { $meta: 'textScore' }
+//   })

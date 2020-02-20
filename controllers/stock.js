@@ -15,25 +15,25 @@ const broadcast = (clients, message) => {
 };
 
 // exports.getSymbolId = async (req, res) => {
-export const getSymbolId = async (req, res) => {
-  try {
-    const { symbol } = req.params;
+// export const getSymbolId = async (req, res) => {
+//   try {
+//     const { symbol } = req.params;
 
-    console.log(`getSymbolId symbol: ${typeof symbol}`.green);
-    console.log(`getSymbolId symbol: ${JSON.stringify(symbol)}`.green);
+//     console.log(`getSymbolId symbol: ${typeof symbol}`.green);
+//     console.log(`getSymbolId symbol: ${JSON.stringify(symbol)}`.green);
 
-    const query = { symbol };
-    const projection = { _id: 1 };
-    const symbolId = await Stock.findOne(query, projection);
+//     const query = { symbol };
+//     const projection = { _id: 1 };
+//     const symbolId = await Stock.findOne(query, projection);
 
-    console.log(`getSymbolId symbol: ${typeof symbolId._id}`.green);
-    console.log(`getSymbolId symbol: ${JSON.stringify(symbolId._id)}`.green);
+//     console.log(`getSymbolId symbol: ${typeof symbolId._id}`.green);
+//     console.log(`getSymbolId symbol: ${JSON.stringify(symbolId._id)}`.green);
 
-    res.status(200).json({ data: symbolId._id });
-  } catch (err) {
-    console.log(`getSymbolId symbol Error: ${err}`.red);
-  }
-};
+//     res.status(200).json({ data: symbolId._id });
+//   } catch (err) {
+//     console.log(`getSymbolId symbol Error: ${err}`.red);
+//   }
+// };
 
 export const getChart = (req, res) => {
   const { symbol } = req.params;

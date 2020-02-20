@@ -9,7 +9,6 @@ import {
   getDbSearchApi,
   getDbFetch,
   getChart,
-  getSymbolId,
   getWebApiStock,
 } from '../controllers/stock.js';
 
@@ -26,7 +25,6 @@ router.get('/dbsearch/:symbol', getDbSearchApi);
 router.get('/dbapi/:symbol', getDbFetch);
 router.get('/app/:symbol', getWebApi);
 router.get('/chart/:symbol', getChart);
-router.get('/:symbol', getSymbolId);
 
 export default router;
 

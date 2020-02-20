@@ -4,8 +4,7 @@ import colors from 'colors';
 import * as Transaction from '../db/models/Transaction/index.js';
 import * as User from '../db/models/User/index.js';
 import * as Stock from '../db/models/Stock/index.js';
-import { Portfolio as PortfolioModel } from '../db/models/Portfolio/Portfolio.js';
-import { Stock as StockModel } from '../db/models/Stock/Stock.js';
+import * as Portfolio from '../db/models/Portfolio/index.js';
 
 const addTransaction = async (arg, userId, webApiData) => {
   const webApiDataReversed = webApiData.reverse();
@@ -23,16 +22,12 @@ export const postAddTransaction = async (req, res) => {
     const qty = parseInt(arg.qty);
     const userId = req.session.user._id;
     //
-    const querySymbol = { symbol };
-    const projectionSymbol = { _id: 1 };
-    const symbolId = await StockModel.findOne(querySymbol, projectionSymbol);
+    const symbolId = await Stock.getSymbolId(symbol);
     //
-    const query = { userId: userId, symbolId: symbolId };
-    const projection = { _id: 0, qtyPortfolio: 1 };
-    const qtyPortfolioDb = await PortfolioModel.findOne(query, projection);
+    const symbolQtyDb = await Portfolio.getSymbolQty(userId, symbolId);
 
-    if (qtyPortfolioDb) {
-      const { qtyPortfolio } = qtyPortfolioDb;
+    if (symbolQtyDb) {
+      const { qtyPortfolio } = symbolQtyDb;
       if (qtyPortfolio < qty && orderType === 'Sell') {
         req.session.message = {
           type: 'danger',
