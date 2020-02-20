@@ -31,26 +31,32 @@ export const getPortfolioList = async (req, res) => {
   }
 };
 
+const fetchWebApiQuote = async symbol => {
+  const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+  const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
+  return util.fetchWebApiQuote(url);
+};
+
+const fetchUserData = async userId =>
+  User.findById({ _id: userId }).select('_id name cash equity');
+
+const fetchStockValue = async userId =>
+  Portfolio.calculateTotalValueOfStock(userId);
+
 export const getBuySellTicket = async (req, res) => {
   try {
     const { symbol } = req.params;
     const userId = req.session.user._id;
 
-    console.log(`userId : ${JSON.stringify(userId)}`.green);
-    console.log(`res.session.isLoggedIn: ${req.session.isLoggedIn}`);
+    const promises = [
+      fetchWebApiQuote(symbol),
+      fetchUserData(userId),
+      fetchStockValue(userId),
+    ];
 
-    const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
-    const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
-
-    const data = await util.fetchWebApiQuote(url);
-
-    const userData = await User.findById({ _id: userId }).select(
-      '_id name cash equity'
-    );
+    const [data, userData, stockValue] = await Promise.all(promises);
 
     const { cash } = userData;
-
-    const stockValue = await Portfolio.calculateTotalValueOfStock(userId);
 
     let valueOfStock;
 
@@ -61,10 +67,15 @@ export const getBuySellTicket = async (req, res) => {
     }
 
     const totalEquity = cash + valueOfStock;
+
+    const initialInvestment = 50000;
+    const gainLossCalculation = totalEquity - initialInvestment;
+    const gainLoss = Math.round(100 * gainLossCalculation) / 100;
     userData.equity = Math.round(100 * totalEquity) / 100;
     await userData.save();
 
     res.render('buysell', {
+      gainLoss,
       data,
       userData,
       isAuthenticated: req.session.isLoggedIn, // use it when needed - example
