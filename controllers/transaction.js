@@ -25,7 +25,16 @@ export const postAddTransaction = async (req, res) => {
     const symbolId = await Stock.getSymbolId(symbol);
     //
     const symbolQtyDb = await Portfolio.getSymbolQty(userId, symbolId);
-
+    //
+    if (!symbolQtyDb && orderType === 'Sell') {
+      req.session.message = {
+        type: 'danger',
+        intro: 'Trade request failed.',
+        message: 'Position not held. Try again',
+      };
+      return res.redirect(`/portfolio/buysell/${symbol}`);
+    }
+    //
     if (symbolQtyDb) {
       const { qtyPortfolio } = symbolQtyDb;
       if (qtyPortfolio < qty && orderType === 'Sell') {

@@ -56,9 +56,10 @@ export const getBuySellTicket = async (req, res) => {
 
     if (!stockValue.length) {
       valueOfStock = 0;
+    } else {
+      valueOfStock = stockValue[0].totalValueOfStock;
     }
-    //
-    valueOfStock = stockValue[0].totalValueOfStock;
+
     const totalEquity = cash + valueOfStock;
     userData.equity = Math.round(100 * totalEquity) / 100;
     await userData.save();
