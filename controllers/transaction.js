@@ -5,11 +5,12 @@ import * as Transaction from '../db/models/Transaction/index.js';
 import * as User from '../db/models/User/index.js';
 import * as Stock from '../db/models/Stock/index.js';
 import * as Portfolio from '../db/models/Portfolio/index.js';
+import * as util from '../db/models/common/util.js';
 
-const addTransaction = async (arg, userId, webApiData) => {
+const addTransaction = async (arg, symbolId, userId, webApiData) => {
   const webApiDataReversed = webApiData.reverse();
 
-  await Transaction.addTransaction(arg, userId, webApiDataReversed);
+  await Transaction.addTransaction(arg, symbolId, userId, webApiDataReversed);
 };
 
 const updateCash = async (arg, userId) => User.updateCash(arg, userId);
@@ -22,7 +23,7 @@ export const postAddTransaction = async (req, res) => {
     const qty = parseInt(arg.qty);
     const userId = req.session.user._id;
     //
-    const symbolId = await Stock.getSymbolId(symbol);
+    const symbolId = await util.getSymbolId(symbol);
     //
     const symbolQtyDb = await Portfolio.getSymbolQty(userId, symbolId);
     //
@@ -67,11 +68,16 @@ export const postAddTransaction = async (req, res) => {
     }
 
     const promises = [
-      addTransaction(arg, userId, webApiData),
+      addTransaction(arg, symbolId, userId, webApiData),
       updateCash(arg, userId),
     ];
 
-    await Promise.all(promises);
+    // Promise.all is rejected if any of the elements are rejected. Verify try/catch is at lower level otherwise if one promise is rejected the resolved one will get executed.
+    await Promise.all(promises).catch(error =>
+      console.log(
+        `postAddTransaction Error: addTransaction and updateCash ${error}`
+      )
+    );
 
     req.session.message = {
       type: 'success',

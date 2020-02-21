@@ -2,6 +2,9 @@
 import colors from 'colors';
 import { User } from './User.js';
 
+const fetchUserData = async userId =>
+  User.findById({ _id: userId }).select('_id name cash equity');
+
 const updateCash = async (arg, userId) => {
   try {
     const { orderType } = arg;
@@ -23,8 +26,8 @@ const updateCash = async (arg, userId) => {
     user.cash = Math.round(100 * newCash) / 100;
     await user.save();
 
-    console.log('cash: ', parseFloat(user.cash));
-    console.log('totalEquity: ', parseFloat(user.equity));
+    // console.log('cash: ', parseFloat(user.cash));
+    // console.log('totalEquity: ', parseFloat(user.equity));
 
     return {
       name: user.name,
@@ -36,4 +39,4 @@ const updateCash = async (arg, userId) => {
   }
 };
 
-export { updateCash };
+export { fetchUserData, updateCash };

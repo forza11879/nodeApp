@@ -11,13 +11,9 @@ import { ErrorResponse } from '../../../utils/errorResponse.js';
 import { asyncHandler } from '../../../middleware/async.js';
 import * as util from '../common/util.js';
 
-const addTransaction = async (arg, userId, webApiDataReversed) => {
+const addTransaction = async (arg, symbolId, userId, webApiDataReversed) => {
   try {
-    const { price, qty, orderType, symbol } = arg;
-
-    const query = { symbol: symbol };
-    const projection = { _id: 1 };
-    const symbolId = await Stock.findOne(query, projection);
+    const { price, qty, orderType } = arg;
 
     const lastIndex = webApiDataReversed.length - 1;
 

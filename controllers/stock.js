@@ -3,8 +3,8 @@
 import colors from 'colors';
 import WebSocket from 'ws';
 
-import * as Db from '../db/models/Stock/index.js';
-import { Stock } from '../db/models/Stock/Stock.js';
+import * as Stock from '../db/models/Stock/index.js';
+import { Stock as StockModel } from '../db/models/Stock/Stock.js';
 
 const broadcast = (clients, message) => {
   clients.forEach(client => {
@@ -13,27 +13,6 @@ const broadcast = (clients, message) => {
     }
   });
 };
-
-// exports.getSymbolId = async (req, res) => {
-// export const getSymbolId = async (req, res) => {
-//   try {
-//     const { symbol } = req.params;
-
-//     console.log(`getSymbolId symbol: ${typeof symbol}`.green);
-//     console.log(`getSymbolId symbol: ${JSON.stringify(symbol)}`.green);
-
-//     const query = { symbol };
-//     const projection = { _id: 1 };
-//     const symbolId = await Stock.findOne(query, projection);
-
-//     console.log(`getSymbolId symbol: ${typeof symbolId._id}`.green);
-//     console.log(`getSymbolId symbol: ${JSON.stringify(symbolId._id)}`.green);
-
-//     res.status(200).json({ data: symbolId._id });
-//   } catch (err) {
-//     console.log(`getSymbolId symbol Error: ${err}`.red);
-//   }
-// };
 
 export const getChart = (req, res) => {
   const { symbol } = req.params;
@@ -58,8 +37,8 @@ export const getWebApi = async (req, res) => {
 
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
-    const webApiData = await Db.fetchWebApiStock(urlCompact);
-    await Db.createUpdateStock(symbol, webApiData);
+    const webApiData = await Stock.fetchWebApiStock(urlCompact);
+    await Stock.createUpdateStock(symbol, webApiData);
 
     const pipeline = [
       {
@@ -72,7 +51,7 @@ export const getWebApi = async (req, res) => {
     ];
 
     const options = { fullDocument: 'updateLookup' };
-    const changeStream = Stock.watch(pipeline, options);
+    const changeStream = StockModel.watch(pipeline, options);
 
     changeStream.on('change', event => {
       const { operationType, fullDocument } = event;
@@ -106,13 +85,16 @@ export const getWebApi = async (req, res) => {
 export const getWebApiStock = async (req, res) => {
   try {
     // const urlArray = await Db.generateUrlArrayStock();
-    const urlArray = await Db.generateUrlArrayStockChart();
+    const urlArray = await Stock.generateUrlArrayStockChart();
     // console.log('getWebApiStock urlArray: ', JSON.stringify(urlArray));
 
     const promises = urlArray.map(async item => ({
       symbol: item.symbol,
-      webApiData: await Db.fetchWebApiStock(item.url),
+      webApiData: await Stock.fetchWebApiStock(item.url),
     }));
+    // .catch(error => console.log('getWebApiStock promises: ', error));
+    // It does not work not sure why
+    // Handling the error for each promise. If you need to execute all the promises even if some have failed, or maybe you can handle the failed promises later. https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/
 
     // Since MAP always return promises (if you use await), you have to wait for the array of promises to get resolved. You can do this with await Promise.all
 
@@ -120,8 +102,11 @@ export const getWebApiStock = async (req, res) => {
 
     await Promise.all(
       promisesResult.map(async item =>
-        Db.createUpdateStock(item.symbol, item.webApiData)
+        Stock.createUpdateStock(item.symbol, item.webApiData)
       )
+      // .catch(error => console.log('getWebApiStock promisesResult: ', error))
+      // It does not work not sure why
+      // Handling the error for each promise. If you need to execute all the promises even if some have failed, or maybe you can handle the failed promises later.https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/
     );
 
     res.sendStatus(200);
@@ -139,7 +124,7 @@ export const getDbFetch = async (req, res) => {
     const { symbol } = req.params;
     console.log(symbol.green);
 
-    const chartData = await Db.fetchDb(symbol);
+    const chartData = await Stock.fetchDb(symbol);
     res.send(chartData);
   } catch (ex) {
     console.log(`getDbFetch error: ${ex}`.red);
@@ -150,7 +135,7 @@ export const getDbSearchApi = async (req, res) => {
   try {
     const { symbol } = req.params;
 
-    const dbSearchApiData = await Db.dbSearchApi(symbol);
+    const dbSearchApiData = await Stock.dbSearchApi(symbol);
 
     res.send(dbSearchApiData);
   } catch (ex) {
@@ -168,7 +153,7 @@ export const getSearchWebApi = async (req, res) => {
     // console.log(`reqBody:${JSON.stringify(req.body)}`.green);
     // console.log(`reqParamsSymbol:${symbol}`.green);
 
-    const webApiData = await Db.searchWebApi(url);
+    const webApiData = await Stock.searchWebApi(url);
 
     res.send(webApiData);
   } catch (ex) {

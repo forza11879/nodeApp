@@ -52,8 +52,6 @@ const fetchWebApiStock = async url => {
     //   volume: item.volume,
     // }));
 
-    // console.log('fetchWebApiStock result data:', result);
-
     return result;
   } catch (err) {
     console.log('fetchWebApiStock error: ', err);
@@ -192,17 +190,6 @@ const generateUrlArrayStockChart = async () => {
   }
 };
 
-const getSymbolId = async symbol => {
-  try {
-    const query = { symbol };
-    const projection = { _id: 1 };
-    const symbolId = await Stock.findOne(query, projection);
-    return symbolId;
-  } catch (ex) {
-    console.log(`getSymbolId error: ${ex}`.red);
-  }
-};
-
 export {
   fetchWebApiStock,
   createUpdateStock,
@@ -211,7 +198,6 @@ export {
   searchWebApi,
   generateUrlArrayStock,
   generateUrlArrayStockChart,
-  getSymbolId,
 };
 
 // Stock.find(

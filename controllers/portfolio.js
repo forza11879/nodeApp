@@ -3,8 +3,8 @@
 import colors from 'colors';
 
 import * as Portfolio from '../db/models/Portfolio/index.js';
-import * as UserModal from '../db/models/User/index.js';
-import { User } from '../db/models/User/User.js';
+import * as User from '../db/models/User/index.js';
+// import { User } from '../db/models/User/User.js';
 import * as util from '../db/models/common/util.js';
 
 export const getPortfolio = async (req, res) => {
@@ -37,8 +37,7 @@ const fetchWebApiQuote = async symbol => {
   return util.fetchWebApiQuote(url);
 };
 
-const fetchUserData = async userId =>
-  User.findById({ _id: userId }).select('_id name cash equity');
+const fetchUserData = async userId => User.fetchUserData(userId);
 
 const fetchStockValue = async userId =>
   Portfolio.calculateTotalValueOfStock(userId);
@@ -54,7 +53,13 @@ export const getBuySellTicket = async (req, res) => {
       fetchStockValue(userId),
     ];
 
-    const [data, userData, stockValue] = await Promise.all(promises);
+    const [data, userData, stockValue] = await Promise.all(
+      promises
+    ).catch(error =>
+      console.log(
+        `getBuySellTicket Error: fetchWebApiQuote, fetchUserData, fetchStockValue ${error}`
+      )
+    ); // Promise.all is rejected if any of the elements are rejected. Verify try/catch is at lower level otherwise if one promise is rejected the resolved one will get executed. https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/
 
     const { cash } = userData;
 
@@ -65,13 +70,15 @@ export const getBuySellTicket = async (req, res) => {
     } else {
       valueOfStock = stockValue[0].totalValueOfStock;
     }
-
+    //
     const totalEquity = cash + valueOfStock;
-
+    //
     const initialInvestment = 50000;
     const gainLossCalculation = totalEquity - initialInvestment;
+    //
     const gainLoss = Math.round(100 * gainLossCalculation) / 100;
     userData.equity = Math.round(100 * totalEquity) / 100;
+
     await userData.save();
 
     res.render('buysell', {
@@ -98,7 +105,7 @@ export const postBuySellTicket = async (req, res) => {
     // const url = `https://cloud.iexapis.com/beta/stock/${symbol}/quote?token=${apiTokenQuote}`;
 
     const data = await util.fetchWebApiQuote(url);
-    const userData = await UserModal.fetchUserDataDB(userId);
+    const userData = await User.fetchUserDataDB(userId);
 
     res.render('buysell', {
       data,

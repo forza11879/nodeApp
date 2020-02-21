@@ -11,12 +11,12 @@ const saveToDbList = async (symbol, userId) => {
     // console.log(`saveToDbList symbol: ${symbol}`);
 
     const stockList = new List({
-      data: { symbol }, // subDocuments accept objects I think so!!!
+      data: { symbol: symbol },
       userId: userId,
     });
 
     const query = { userId: stockList.userId };
-    const update = { $addToSet: { data: stockList.data } };
+    const update = { $addToSet: { data: stockList.data } }; // The $addToSet operator adds a value to an array unless the value is already present, in which case $addToSet does nothing to that array.
     const options = { upsert: true, new: true };
     await List.findOneAndUpdate(query, update, options);
   } catch (ex) {
