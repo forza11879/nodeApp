@@ -1,6 +1,8 @@
+/* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
 import * as List from '../db/models/List/index.js';
+import { List as ModalList } from '../db/models/List/List.js';
 
 export const getList = (req, res) => {
   console.log(`User session: ${JSON.stringify(req.session)}`);
@@ -32,12 +34,20 @@ export const getWebApiList = async (req, res) => {
     const userId = req.session.user._id;
     const { symbol } = req.params;
 
-    await List.saveToDbList(symbol, userId);
+    const query = { userId: userId };
+
+    const element = await ModalList.findOne(query)
+      .where('data')
+      .elemMatch({ symbol: symbol });
+
+    // console.log('List: ', position);
+    // console.log('List typeof: ', typeof position);
+    // console.log('list Object: ', Object.prototype.toString.call(position));
+
+    if (element === null) await List.saveToDbList(symbol, userId);
 
     const urlArray = await List.generateUrlArrayList(userId);
-    // console.log(`urlArray list: ${urlArray}`.green);
 
-    // Promise.all(urlArray.map(async url => await Db.fetchWebApiList(url)))
     Promise.all(
       urlArray.map(async url => List.fetchWebApiList(url))
       // .catch(error => console.log('getWebApiList urlArray: ', error))

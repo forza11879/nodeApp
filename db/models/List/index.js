@@ -4,6 +4,7 @@ import colors from 'colors';
 import moment from 'moment';
 import { List } from './List.js';
 import * as util from '../common/util.js';
+import { clearHash } from '../common/cache.js';
 
 const saveToDbList = async (symbol, userId) => {
   try {
@@ -18,7 +19,11 @@ const saveToDbList = async (symbol, userId) => {
     const query = { userId: stockList.userId };
     const update = { $addToSet: { data: stockList.data } }; // The $addToSet operator adds a value to an array unless the value is already present, in which case $addToSet does nothing to that array.
     const options = { upsert: true, new: true };
-    await List.findOneAndUpdate(query, update, options);
+    // await List.findOneAndUpdate(query, update, options);
+    await List.updateOne(query, update, options);
+
+    console.log('clearing HASH');
+    clearHash(userId);
   } catch (ex) {
     console.log(`saveToDbList error: ${ex}`.red);
   }
@@ -30,7 +35,9 @@ const generateUrlArrayList = async userId => {
 
     const query = { userId: userId };
     const projection = { _id: 0 };
-    const dataFromDB = await List.findOne(query, projection).select('data');
+    const dataFromDB = await List.findOne(query, projection)
+      .select('data')
+      .cache({ key: userId });
 
     return dataFromDB.data.map(
       item =>

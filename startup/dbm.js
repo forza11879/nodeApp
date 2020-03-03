@@ -86,3 +86,36 @@
 //   //     // } else if (change.operationType === 'delete') {
 //   //     //   pusher.trigger(channel, 'deleted', change.documentKey._id);
 //   //     // }
+
+const client = require('./db');
+
+exports.listSuggestions = (username, callback) => {
+  client.query(
+    `select * from suggestions where username = '${username}'`,
+    (err, res) => {
+      // ...
+    }
+  );
+};
+
+exports.newSuggestion = (username, callback) => {
+  // ...
+};
+// //////////////////////////////////////////////////////
+module.exports = db => {
+  const movieSuggestion = {};
+  movieSuggestion.listSuggestions = (username, callback) => {
+    db.query(
+      `select * from suggestions where username = '${username}'`,
+      (err, res) => {
+        // ...
+      }
+    );
+  };
+
+  movieSuggestion.newSuggestion = (username, callback) => {
+    // ...
+  };
+
+  return movieSuggestion;
+};

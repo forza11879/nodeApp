@@ -2,6 +2,18 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 // import bcrypt from 'bcryptjs';
 
+// const ChildSchemaData = new mongoose.Schema({
+//   _id: false,
+//   symbol: {
+//     type: String,
+//     trim: true,
+//     minlength: 1,
+//     maxlength: 50,
+//     uppercase: true,
+//     require: true,
+//   },
+// });
+
 const ParentSchema = new mongoose.Schema({
   // _id: Schema.Types.ObjectId,
   name: String,
@@ -29,6 +41,7 @@ const ParentSchema = new mongoose.Schema({
     type: Number,
     default: 50000.0,
   },
+  // data: [ChildSchemaData],
 });
 
 // Encrypt password using bcrypt. Auto-gen a salt and hash - async
