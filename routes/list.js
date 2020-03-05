@@ -1,6 +1,7 @@
 import express from 'express';
 import isAuth from '../middleware/is-auth.js';
-import { getWebApiList, getList } from '../controllers/list.js';
+// import { getWebApiList, getList } from '../controllers/list.js';
+import { getWebApiList, getList } from '../controllers/user.js';
 import cleanHash from '../middleware/cleanCache.js';
 
 const router = express.Router();

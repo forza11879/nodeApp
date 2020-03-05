@@ -12,6 +12,7 @@ const { exec } = mongoose.Query.prototype;
 
 mongoose.Query.prototype.cache = function(options = {}) {
   this.useCache = true;
+  console.log('OPTION KEY: ', options);
   this.hashKey = JSON.stringify(options.key || '');
   return this;
 };
@@ -30,8 +31,11 @@ mongoose.Query.prototype.exec = async function() {
   );
 
   console.log('KEY: ', key);
+  console.log('this.hashKey: ', this.hashKey);
 
   const cacheValue = await client.hget(this.hashKey, key);
+
+  console.log('cacheValue: ', cacheValue);
 
   if (cacheValue) {
     const doc = JSON.parse(cacheValue);
@@ -51,14 +55,5 @@ mongoose.Query.prototype.exec = async function() {
 const clearHash = hashKey => {
   client.del(JSON.stringify(hashKey));
 };
-// export default hashKey => {
-//   client.del(JSON.stringify(hashKey));
-// };
 
 export { clearHash };
-
-// module.exports = {
-//   clearHash(hashKey) {
-//     client.del(JSON.stringify(hashKey));
-//   },
-// };
