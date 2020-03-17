@@ -18,38 +18,42 @@ mongoose.Query.prototype.cache = function(options = {}) {
 };
 
 mongoose.Query.prototype.exec = async function() {
-  console.log('I am about to run a query');
+  try {
+    console.log('I am about to run a query');
 
-  if (!this.useCache) {
-    return exec.apply(this, arguments);
+    if (!this.useCache) {
+      return exec.apply(this, arguments);
+    }
+
+    const key = JSON.stringify(
+      Object.assign({}, this.getQuery(), {
+        collection: this.mongooseCollection.name,
+      })
+    );
+
+    console.log('KEY: ', key);
+    console.log('this.hashKey: ', this.hashKey);
+
+    const cacheValue = await client.hget(this.hashKey, key);
+
+    console.log('cacheValue: ', cacheValue);
+
+    if (cacheValue) {
+      const doc = JSON.parse(cacheValue);
+      return Array.isArray(doc)
+        ? doc.map(item => new this.model(item))
+        : new this.model(doc);
+    }
+
+    const result = await exec.apply(this, arguments);
+
+    client.hset(this.hashKey, key, JSON.stringify(result));
+    //   client.set(key, JSON.stringify(result), 'EX', 20);
+
+    return result;
+  } catch (error) {
+    console.log('cache exec error: ', error);
   }
-
-  const key = JSON.stringify(
-    Object.assign({}, this.getQuery(), {
-      collection: this.mongooseCollection.name,
-    })
-  );
-
-  console.log('KEY: ', key);
-  console.log('this.hashKey: ', this.hashKey);
-
-  const cacheValue = await client.hget(this.hashKey, key);
-
-  console.log('cacheValue: ', cacheValue);
-
-  if (cacheValue) {
-    const doc = JSON.parse(cacheValue);
-    return Array.isArray(doc)
-      ? doc.map(item => new this.model(item))
-      : new this.model(doc);
-  }
-
-  const result = await exec.apply(this, arguments);
-
-  client.hset(this.hashKey, key, JSON.stringify(result));
-  //   client.set(key, JSON.stringify(result), 'EX', 20);
-
-  return result;
 };
 
 const clearHash = hashKey => {

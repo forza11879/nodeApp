@@ -15,6 +15,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 // import flash from 'express-flash-2';
 // import expressValidator from 'express-validator';
+import { Stock as StockModel } from './db/models/Stock/Stock.js';
 
 // routes
 import authRoute from './routes/auth.js';
@@ -30,6 +31,7 @@ const __dirname = path.resolve();
 // import errorHandler from './middleware/error';????
 // const errorHandler = require('./middleware/error');
 
+import { changeStreams } from './startup/changeStreams.js';
 import { connectDb } from './startup/db.js';
 import { User } from './db/models/User/User.js';
 
@@ -114,29 +116,5 @@ server.listen(port, function() {
 
 // once app is ready connect to DB
 connectDb();
-
-// websocket
-const wss = new WebSocket.Server({ server });
-// eslint-disable-next-line no-unused-vars
-wss.on('connection', ws => {
-  console.info('Total connected clients:', wss.clients.size);
-  app.locals.clients = wss.clients; // The app.locals object has properties that are local variables within the application. Once set, the value of app.locals properties persist throughout the life of the application, in contrast with res.locals properties that are valid only for the lifetime of the request.
-});
-
-// /////////////////
-// app.on('ready', function() {
-//   app.listen(port, function() {
-//     console.log(`Server is up on port ${port}`);
-//   });
-// });
-
-// const db = mongoose.connection;
-// once connected to DB emit app ready
-// db.once('open', function() {
-//   // All OK - fire (emit) a ready event.
-//   app.emit('ready');
-// });
-
-// db.on('error', err => {
-//   console.error('connection error:', err);
-// });
+// MongoDB change Streams
+changeStreams(app, server);

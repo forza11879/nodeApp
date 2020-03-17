@@ -40,37 +40,44 @@ export const getWebApi = async (req, res) => {
     const webApiData = await Stock.fetchWebApiStock(urlCompact);
     await Stock.createUpdateStock(symbol, webApiData);
 
-    const pipeline = [
-      {
-        $match: {
-          'ns.db': 'myapp',
-          'ns.coll': 'stocks',
-          // 'fullDocument.symbol': 'RY' || req.symbol,
-        },
-      },
-    ];
+    // res.app.locals.symbol = symbol;
+    // global.globalString = symbol;
 
-    const options = { fullDocument: 'updateLookup' };
-    const changeStream = StockModel.watch(pipeline, options);
+    // console.log('req.fullDocument: ', req.fullDocument);
 
-    changeStream.on('change', event => {
-      const { operationType, fullDocument } = event;
-      const symbolDb = event.fullDocument.symbol;
+    // broadcast(req.app.locals.clients, JSON.stringify(req.fullDocument));
 
-      if (symbol === symbolDb) {
-        broadcast(req.app.locals.clients, JSON.stringify(fullDocument));
-      }
+    // const pipeline = [
+    //   {
+    //     $match: {
+    //       'ns.db': 'myapp',
+    //       'ns.coll': 'stocks',
+    //       // 'fullDocument.symbol': 'RY' || req.symbol,
+    //     },
+    //   },
+    // ];
 
-      // if (operationType === 'update') {
-      // }
-    });
+    // const options = { fullDocument: 'updateLookup' };
+    // const changeStream = StockModel.watch(pipeline, options);
+
+    // changeStream.on('change', event => {
+    //   const { operationType, fullDocument } = event;
+    //   const symbolDb = event.fullDocument.symbol;
+
+    //   if (symbol === symbolDb) {
+    //     broadcast(req.app.locals.clients, JSON.stringify(fullDocument));
+    //   }
+
+    //   // if (operationType === 'update') {
+    //   // }
+    // });
 
     // we need to handle the changeStream error separatley from try/catch to trap the errors
-    changeStream.on('error', err => {
-      console.log(err);
-      changeStream.close();
-      throw err;
-    });
+    // changeStream.on('error', err => {
+    //   console.log(err);
+    //   changeStream.close();
+    //   throw err;
+    // });
     // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
 
     res.send({
@@ -108,6 +115,42 @@ export const getWebApiStock = async (req, res) => {
       // It does not work not sure why
       // Handling the error for each promise. If you need to execute all the promises even if some have failed, or maybe you can handle the failed promises later.https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/
     );
+
+    // const pipeline = [
+    //   {
+    //     $match: {
+    //       'ns.db': 'myapp',
+    //       'ns.coll': 'stocks',
+    //       // 'fullDocument.symbol': 'RY' || req.symbol,
+    //     },
+    //   },
+    // ];
+
+    // const options = { fullDocument: 'updateLookup' };
+    // const changeStream = StockModel.watch(pipeline, options);
+
+    // changeStream.on('change', event => {
+    //   const { operationType, fullDocument } = event;
+    //   const symbolDb = event.fullDocument.symbol;
+    //   console.log('symbolDb: ', symbolDb);
+    //   broadcast(req.app.locals.clients, JSON.stringify(fullDocument));
+    //   changeStream.close();
+
+    //   // if (symbol === symbolDb) {
+    //   //   broadcast(req.app.locals.clients, JSON.stringify(fullDocument));
+    //   // }
+
+    //   // if (operationType === 'update') {
+    //   // }
+    // });
+
+    // we need to handle the changeStream error separatley from try/catch to trap the errors
+    // changeStream.on('error', err => {
+    //   console.log(err);
+    //   changeStream.close();
+    //   throw err;
+    // });
+    // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
 
     res.sendStatus(200);
     // .json({
