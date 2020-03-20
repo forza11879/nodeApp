@@ -9,8 +9,13 @@ import * as util from '../db/models/common/util.js';
 
 const addTransaction = async (arg, symbolId, userId, webApiData) => {
   const webApiDataReversed = webApiData.reverse();
+  const lastIndex = webApiDataReversed.length - 1;
 
-  await Transaction.addTransaction(arg, symbolId, userId, webApiDataReversed);
+  await Transaction.addTransaction(arg, symbolId, userId);
+
+  arg.data = webApiDataReversed[lastIndex];
+
+  await Portfolio.createUpdatePortfolioPosition(arg);
 };
 
 const updateCash = async (arg, userId) => User.updateCash(arg, userId);

@@ -23,7 +23,7 @@ const updateCash = async (arg, userId) => {
     const { cash } = user;
 
     if (orderType === 'Sell') {
-      transactionAmount = Math.abs(transactionAmount) * -1;
+      transactionAmount = Math.abs(transactionAmount) * -1; // converting positive Number to Negative Number in JavaScript
     }
 
     const newCash = parseFloat(cash) - transactionAmount;

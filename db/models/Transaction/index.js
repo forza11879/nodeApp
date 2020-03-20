@@ -15,11 +15,11 @@ const addTransaction = async (arg, symbolId, userId, webApiDataReversed) => {
   try {
     const { price, qty, orderType } = arg;
 
-    const lastIndex = webApiDataReversed.length - 1;
+    // const lastIndex = webApiDataReversed.length - 1;
 
     arg.userId = userId;
     arg.symbolId = symbolId;
-    arg.data = webApiDataReversed[lastIndex];
+    // arg.data = webApiDataReversed[lastIndex];
 
     // error is catched by try/catch
     Transaction.create({
@@ -29,8 +29,6 @@ const addTransaction = async (arg, symbolId, userId, webApiDataReversed) => {
       userId: userId,
       symbolId: symbolId,
     });
-
-    await portfolio.createUpdatePortfolioPosition(arg);
   } catch (ex) {
     console.log(`addTransaction error: ${ex}`.red);
     // next(new ErrorResponse(`Error: ${ex}`, 404));

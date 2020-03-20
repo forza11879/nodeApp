@@ -39,9 +39,9 @@ const createUpdatePortfolioPosition = async arg => {
   try {
     const { userId, symbolId, orderType, symbol, data } = arg;
 
-    // console.log(`fetchPortfolioPosition userId: ${typeof userId}`.green);
+    // console.log(`createUpdatePortfolioPosition data: ${typeof data}`.green);
     // console.log(
-    //   `fetchPortfolioPosition userId: ${JSON.stringify(userId)}`.green
+    //   `createUpdatePortfolioPosition data: ${JSON.stringify(data)}`.green
     // );
 
     let qty = parseInt(arg.qty);

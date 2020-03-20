@@ -46,3 +46,5 @@ export const errorHandler = (err, req, res, next) => {
   //   error: error.message || 'Server Error'
   // });
 };
+
+// Request failed with status code 429
