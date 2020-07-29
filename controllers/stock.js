@@ -38,6 +38,7 @@ export const getWebApi = async (req, res) => {
     // const urlCompact = `https://sandbox.iexapis.com/stable/stock/${symbol}/chart?token=${apiKey}`;
 
     const webApiData = await Stock.fetchWebApiStock(urlCompact);
+    // console.log('webApiData', webApiData);
     await Stock.createUpdateStock(symbol, webApiData);
 
     // res.app.locals.symbol = symbol;

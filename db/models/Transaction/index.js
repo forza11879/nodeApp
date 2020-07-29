@@ -21,6 +21,8 @@ const addTransaction = async (arg, symbolId, userId, webApiDataReversed) => {
     arg.symbolId = symbolId;
     // arg.data = webApiDataReversed[lastIndex];
 
+    console.log('symbolId', symbolId);
+
     // error is catched by try/catch
     Transaction.create({
       price: price,

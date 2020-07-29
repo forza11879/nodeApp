@@ -94,6 +94,7 @@ const getSymbolId = async symbol => {
     const query = { symbol };
     const projection = { _id: 1 };
     const symbolId = await Stock.findOne(query, projection);
+    // console.log('symbolId in GetSymbol', symbolId);
     return symbolId;
   } catch (ex) {
     console.log(`getSymbolId error: ${ex}`.red);

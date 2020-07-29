@@ -1,8 +1,9 @@
 // import mongoose from 'mongoose';
 import WebSocket from 'ws';
-import { Stock as StockModel } from '../db/models/Stock/Stock.js';
+import { Stock } from '../db/models/Stock/Stock.js';
 
 const broadcast = (clients, message) => {
+  console.log('clients WS', clients);
   clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(message);
@@ -19,6 +20,7 @@ export const changeStreams = (app, server) => {
     wss.on('connection', ws => {
       console.info('Total connected clients:', wss.clients.size);
       app.locals.clients = wss.clients; // The app.locals object has properties that are local variables within the application. Once set, the value of app.locals properties persist throughout the life of the application, in contrast with res.locals properties that are valid only for the lifetime of the request.
+      console.log('app.locals.clients', app.locals.clients);
     });
 
     const pipeline = [
@@ -32,7 +34,7 @@ export const changeStreams = (app, server) => {
     ];
 
     const options = { fullDocument: 'updateLookup' };
-    const changeStream = StockModel.watch(pipeline, options);
+    const changeStream = Stock.watch(pipeline, options);
 
     changeStream.on('change', event => {
       const { operationType, fullDocument } = event;

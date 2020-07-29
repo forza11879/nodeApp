@@ -28,7 +28,9 @@ export const postAddTransaction = async (req, res) => {
     const qty = parseInt(arg.qty);
     const userId = req.session.user._id;
     //
+    // console.log('symbol', symbol);
     const symbolId = await util.getSymbolId(symbol);
+    // console.log('symbolId', symbolId);
     //
     const symbolQtyDb = await Portfolio.getSymbolQty(userId, symbolId);
     //
@@ -77,7 +79,7 @@ export const postAddTransaction = async (req, res) => {
       updateCash(arg, userId),
     ];
 
-    // Promise.all is rejected if any of the elements are rejected. Verify try/catch is at lower level otherwise if one promise is rejected the resolved one will get executed.
+    // Promise.all is rejected if any of the elements are rejected. Verify try/catch is at lower level otherwise if one promise is rejected the resolved one will get executed. - look into Promise.allSettled()
     await Promise.all(promises).catch(error =>
       console.log(
         `postAddTransaction Error: addTransaction and updateCash ${error}`

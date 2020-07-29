@@ -52,7 +52,7 @@ export const getWebApiList = async (req, res) => {
       urlArray.map(async url => User.fetchWebApiList(url))
       // .catch(error => console.log('getWebApiList urlArray: ', error))
       // It does not work not sure why
-      // Handling the error for each promise. If you need to execute all the promises even if some have failed, or maybe you can handle the failed promises later. https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/
+      // Handling the error for each promise. If you need to execute all the promises even if some have failed, or maybe you can handle the failed promises later. https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/ - look into WES BOS as well
     );
     // // Inside an async function, return await is seldom useful
     // .then(item => {

@@ -1,8 +1,9 @@
 /* eslint-disable object-shorthand */
 /* eslint-disable import/first */
 /* eslint-disable no-use-before-define */
+import dotnev from 'dotenv';
 import { createServer } from 'http';
-import WebSocket from 'ws';
+// import WebSocket from 'ws';
 import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
@@ -15,7 +16,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 // import flash from 'express-flash-2';
 // import expressValidator from 'express-validator';
-import { Stock as StockModel } from './db/models/Stock/Stock.js';
+// import { Stock as StockModel } from './db/models/Stock/Stock.js';
 
 // routes
 import authRoute from './routes/auth.js';
@@ -25,6 +26,8 @@ import stockRoute from './routes/stock.js';
 import listRoute from './routes/list.js';
 import mainRoute from './routes/main.js';
 import errorRoute from './routes/error.js';
+
+dotnev.config({ path: './config/dev.env' });
 
 const __dirname = path.resolve();
 
@@ -69,7 +72,7 @@ app.use(
   session({
     secret: process.env.MY_SECRET,
     resave: false, // does not save session on each request
-    saveUninitialized: false,
+    saveUninitialized: false, // false
     store: store,
   })
 );
@@ -111,7 +114,7 @@ const port = process.env.PORT;
 
 const server = createServer(app);
 server.listen(port, function() {
-  console.log(`Server is up on portt ${port}`);
+  console.log(`Server is up on port ${port}`);
 });
 
 // once app is ready connect to DB

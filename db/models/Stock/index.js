@@ -1,8 +1,6 @@
 /* eslint-disable dot-notation */
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
-import colors from 'colors';
-
 import { Stock } from './Stock.js';
 import * as util from '../common/util.js';
 
@@ -20,10 +18,10 @@ const searchWebApi = async url => {
       symbol: item['1. symbol'],
     }));
 
-    console.log(symbolData.green);
+    console.log(symbolData);
     return symbolData;
   } catch (ex) {
-    console.log(`searchWebApi error: ${ex}`.red);
+    console.log(`searchWebApi error: ${ex}`);
   }
 };
 
@@ -60,7 +58,7 @@ const fetchWebApiStock = async url => {
 
 const createUpdateStock = async (symbol, webApiData) => {
   try {
-    // console.log('creatStock symbol', symbol.green);
+    // console.log('creatStock symbol', symbol);
     // console.log('creatStock webApiData', JSON.stringify(webApiData));
 
     const webApiDataReversed = webApiData.reverse();
@@ -68,8 +66,10 @@ const createUpdateStock = async (symbol, webApiData) => {
 
     const position = await Stock.findOne(query);
 
+    // console.log('position', position);
+
     if (!position) {
-      console.log('New stock'.green);
+      // console.log('New stock');
       return Stock.create({
         symbol,
         data: webApiDataReversed,
@@ -101,7 +101,8 @@ const createUpdateStock = async (symbol, webApiData) => {
     await positionTwo.save();
     // await position.save();
   } catch (ex) {
-    console.log('creatUpdateStock error: ', ex.red);
+    // console.log('creatUpdateStock error: ', ex);
+    console.log('creatUpdateStock error: ', ex);
   }
 };
 
@@ -111,7 +112,7 @@ const fetchDb = async symbol => {
     const projection = { _id: 0, data: 1 };
 
     const chartData = await Stock.findOne(query, projection).sort({ date: -1 });
-    // console.log(`chartData in services:${JSON.stringify(chartData)}`.green);
+    // console.log(`chartData in services:${JSON.stringify(chartData)}`);
     return chartData.data.map(item => ({
       date: parseFloat(item.date),
       open: parseFloat(item.open),
@@ -121,7 +122,7 @@ const fetchDb = async symbol => {
       volume: parseFloat(item.volume),
     }));
   } catch (ex) {
-    console.log(`fetchDb error: ${ex}`.red);
+    console.log(`fetchDb error: ${ex}`);
   }
 };
 
@@ -136,7 +137,7 @@ const dbSearchApi = async curValueDbSearch => {
       symbol: item.symbol,
     }));
   } catch (ex) {
-    console.log(`dbSearchApi error: ${ex}`.red);
+    console.log(`dbSearchApi error: ${ex}`);
   }
 };
 
@@ -161,7 +162,7 @@ const generateUrlArrayStock = async () => {
     //   );
     // });
   } catch (ex) {
-    console.log(`generateUrlArrayList error: ${ex}`.red);
+    console.log(`generateUrlArrayList error: ${ex}`);
   }
 };
 
@@ -186,7 +187,7 @@ const generateUrlArrayStockChart = async () => {
     //   );
     // });
   } catch (ex) {
-    console.log(`generateUrlArrayList error: ${ex}`.red);
+    console.log(`generateUrlArrayList error: ${ex}`);
   }
 };
 
