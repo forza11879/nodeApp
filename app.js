@@ -121,3 +121,75 @@ server.listen(port, function() {
 connectDb();
 // MongoDB change Streams
 changeStreams(app, server);
+
+// back-end
+
+// const log = console.log;
+// const api = require('binance');
+// const express = require('express');
+// const app = express();
+// const server = app.listen('4000',() => log(`Kline Data Server started on port 4000`));
+// const socket = require('socket.io');
+// const io = socket(server);
+
+// const bRest = new api.BinanceRest({
+//         key: "", // Get this from your account on binance.com
+//         secret: "", // Same for this
+//         timeout: 15000, // Optional, defaults to 15000, is the request time out in milliseconds
+//         recvWindow: 20000, // Optional, defaults to 5000, increase if you're getting timestamp errors
+//         disableBeautification: false,
+//         handleDrift: true
+// });
+// const binanceWS = new api.BinanceWS(true);
+// const bws = binanceWS.onKline('BTCUSDT', '1m', (data) => {
+//     io.sockets.emit('KLINE',{time:Math.round(data.kline.startTime/1000),open:parseFloat(data.kline.open),high:parseFloat(data.kline.high),low:parseFloat(data.kline.low),close:parseFloat(data.kline.close)});
+// });
+
+// front-end
+
+// Pseudo code
+// Step 1: Define chart properties.
+// Step 2: Create the chart with defined properties and bind it to the DOM element.
+// Step 3: Add the CandleStick Series.
+// Step 4: Set the data and render.
+// Step5 : Plug the socket to the chart
+
+// Code
+// const { log } = console;
+
+// const chartProperties = {
+//   width: 1500,
+//   height: 600,
+//   timeScale: {
+//     timeVisible: true,
+//     secondsVisible: false,
+//   },
+// };
+
+// const domElement = document.getElementById('tvchart');
+// const chart = LightweightCharts.createChart(domElement, chartProperties);
+// const candleSeries = chart.addCandlestickSeries();
+
+// fetch(
+//   `http://127.0.0.1:9665/fetchAPI?endpoint=https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000`
+// )
+//   .then(res => res.json())
+//   .then(data => {
+//     const cdata = data.map(d => ({
+//       time: d[0] / 1000,
+//       open: parseFloat(d[1]),
+//       high: parseFloat(d[2]),
+//       low: parseFloat(d[3]),
+//       close: parseFloat(d[4]),
+//     }));
+//     candleSeries.setData(cdata);
+//   })
+//   .catch(err => log(err));
+
+// // Dynamic Chart
+// const socket = io.connect('http://127.0.0.1:4000/');
+
+// socket.on('KLINE', pl => {
+//   // log(pl);
+//   candleSeries.update(pl);
+// });
