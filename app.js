@@ -120,7 +120,7 @@ server.listen(port, function() {
 // once app is ready connect to DB
 connectDb();
 // MongoDB change Streams
-changeStreams(app, server);
+// changeStreams(app, server);
 
 // back-end
 

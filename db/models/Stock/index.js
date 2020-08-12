@@ -15,7 +15,8 @@ const searchWebApi = async url => {
     const data = await util.getWithRetry(url);
 
     const symbolData = data.bestMatches.map(item => ({
-      symbol: item['1. symbol'],
+      label: item['1. symbol'],
+      value: item['9. matchScore'],
     }));
 
     console.log(symbolData);
@@ -25,18 +26,36 @@ const searchWebApi = async url => {
   }
 };
 
+function timeConverter(unixTimestamp) {
+  const a = new Date(unixTimestamp);
+  const year = a.getFullYear();
+  let month = a.getMonth();
+  let date = a.getDate();
+
+  if (month < 10) {
+    month = `0${month}`;
+  }
+
+  if (date < 10) {
+    date = `0${date}`;
+  }
+
+  const time = `${year}-${month}-${date}`;
+  return time;
+}
+
 const fetchWebApiStock = async url => {
   try {
     const data = await util.getWithRetry(url);
 
     const result = Object.entries(data['Time Series (Daily)']).map(
       ([date, dateObj]) => ({
-        date: Date.parse(date),
+        time: timeConverter(Date.parse(date)),
         open: Math.round(parseFloat(dateObj['1. open']) * 100) / 100,
         high: Math.round(parseFloat(dateObj['2. high']) * 100) / 100,
         low: Math.round(parseFloat(dateObj['3. low']) * 100) / 100,
         close: Math.round(parseFloat(dateObj['4. close']) * 100) / 100,
-        volume: parseInt(dateObj['5. volume']),
+        // volume: parseInt(dateObj['5. volume']),
         // parseInt vs unary plus  +dateObj["5. volume"]
       })
     );
