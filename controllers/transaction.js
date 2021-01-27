@@ -1,40 +1,29 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
-import * as Transaction from '../db/models/Transaction/index.js';
-import * as User from '../db/models/User/index.js';
+import { addTransaction } from '../db/models/Transaction/index.js';
+import { updateCash } from '../db/models/User/index.js';
 import * as Stock from '../db/models/Stock/index.js';
-import * as Portfolio from '../db/models/Portfolio/index.js';
-import * as util from '../db/models/common/util.js';
-
-const addTransaction = async (arg, symbolId, userId, webApiData) => {
-  const webApiDataReversed = webApiData.reverse();
-  const lastIndex = webApiDataReversed.length - 1;
-
-  await Transaction.addTransaction(arg, symbolId, userId);
-
-  arg.data = webApiDataReversed[lastIndex];
-
-  await Portfolio.createUpdatePortfolioPosition(arg);
-};
-
-const updateCash = async (arg, userId) => User.updateCash(arg, userId);
+import {
+  createUpdatePortfolioPosition,
+  getSymbolQty,
+} from '../db/models/Portfolio/index.js';
+import { getSymbolId } from '../db/models/common/util.js';
 
 export const postAddTransaction = async (req, res) => {
   try {
-    const { symbol } = req.body;
+    const { symbol, orderType, qty } = req.body;
     const arg = req.body;
-    const { orderType } = arg;
-    const qty = parseInt(arg.qty);
-    const userId = req.session.user._id;
+    const qtyStock = parseInt(qty);
+    const {
+      user: { _id: userId },
+    } = req.session;
     //
-    // console.log('symbol', symbol);
-    const symbolId = await util.getSymbolId(symbol);
-    // console.log('symbolId', symbolId);
+    const symbolId = await getSymbolId(symbol);
     //
-    const symbolQtyDb = await Portfolio.getSymbolQty(userId, symbolId);
+    const symbolQty = await getSymbolQty(userId, symbolId);
     //
-    if (!symbolQtyDb && orderType === 'Sell') {
+    if (!symbolQty && orderType === 'Sell') {
       req.session.message = {
         type: 'danger',
         intro: 'Trade request failed.',
@@ -43,9 +32,9 @@ export const postAddTransaction = async (req, res) => {
       return res.redirect(`/portfolio/buysell/${symbol}`);
     }
     //
-    if (symbolQtyDb) {
-      const { qtyPortfolio } = symbolQtyDb;
-      if (qtyPortfolio < qty && orderType === 'Sell') {
+    if (symbolQty) {
+      const { qtyPortfolio } = symbolQty;
+      if (qtyPortfolio < qtyStock && orderType === 'Sell') {
         req.session.message = {
           type: 'danger',
           intro: 'Trade request failed.',
@@ -75,8 +64,9 @@ export const postAddTransaction = async (req, res) => {
     }
 
     const promises = [
-      addTransaction(arg, symbolId, userId, webApiData),
-      updateCash(arg, userId),
+      await addTransaction(arg, symbolId, userId),
+      await createUpdatePortfolioPosition(arg, webApiData),
+      await updateCash(arg, userId),
     ];
 
     // Promise.all is rejected if any of the elements are rejected. Verify try/catch is at lower level otherwise if one promise is rejected the resolved one will get executed. - look into Promise.allSettled()

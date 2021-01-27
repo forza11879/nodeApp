@@ -1,8 +1,9 @@
 /* eslint-disable object-shorthand */
 // eslint-disable-next-line no-unused-vars
 import colors from 'colors';
-// model
 import { Portfolio } from './Portfolio.js';
+import * as User from '../User/index.js';
+import * as util from '../common/util.js';
 
 const fetchPortfolioList = async userId => {
   try {
@@ -35,14 +36,13 @@ const fetchPortfolioList = async userId => {
   }
 };
 
-const createUpdatePortfolioPosition = async arg => {
+const createUpdatePortfolioPosition = async (arg, webApiData) => {
   try {
-    const { userId, symbolId, orderType, symbol, data } = arg;
+    const { userId, symbolId, orderType, symbol } = arg;
+    const webApiDataReversed = webApiData.reverse();
+    const lastIndex = webApiDataReversed.length - 1;
 
-    // console.log(`createUpdatePortfolioPosition data: ${typeof data}`.green);
-    // console.log(
-    //   `createUpdatePortfolioPosition data: ${JSON.stringify(data)}`.green
-    // );
+    const data = webApiDataReversed[lastIndex];
 
     let qty = parseInt(arg.qty);
     const price = parseFloat(arg.price);
@@ -79,7 +79,7 @@ const createUpdatePortfolioPosition = async arg => {
     position.data = data;
     await position.save();
   } catch (ex) {
-    console.log(`fetchPortfolioPosition error: ${ex}`.red);
+    console.log(`createUpdatePortfolioPosition error: ${ex}`.red);
   }
 };
 
@@ -109,11 +109,69 @@ const getSymbolQty = async (userId, symbolId) => {
   }
 };
 
-// const getSymbolQty = async (userId, symbolId) => {}
+const fetchWebApiQuote = async symbol => {
+  const apiKey = process.env.API_TOKEN_QUOTE_SANDBOX;
+  // console.log('apiKey: ', apiKey);
+  const url = `https://sandbox.iexapis.com/stable/stock/${symbol}/quote?token=${apiKey}`;
+  // console.log('url: ', url);
+  return util.fetchWebApiQuote(url);
+};
+
+const fetchUserData = async userId => User.fetchUserData(userId);
+
+const fetchStockValue = async userId => calculateTotalValueOfStock(userId);
+
+const fetchBuySellTicket = async (symbol, userId) => {
+  try {
+    // console.log('symbol: ', symbol);
+    const promises = [
+      fetchWebApiQuote(symbol),
+      fetchUserData(userId),
+      fetchStockValue(userId),
+    ];
+
+    const [data, userData, stockValue] = await Promise.all(
+      promises
+    ).catch(error =>
+      console.log(
+        `fetchBuySellTicket Error: fetchWebApiQuote, fetchUserData, fetchStockValue ${error}`
+      )
+    ); // Promise.all is rejected if any of the elements are rejected. Verify try/catch is at lower level otherwise if one promise is rejected the resolved one will get executed. https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/
+
+    const { cash } = userData;
+
+    let valueOfStock;
+
+    if (!stockValue.length) {
+      valueOfStock = 0;
+    } else {
+      valueOfStock = stockValue[0].totalValueOfStock;
+    }
+    //
+    const totalEquity = cash + valueOfStock;
+    //
+    const initialInvestment = 50000;
+    const gainLossCalculation = totalEquity - initialInvestment;
+    //
+    const gainLoss = Math.round(100 * gainLossCalculation) / 100;
+    userData.equity = Math.round(100 * totalEquity) / 100;
+
+    await userData.save();
+
+    return {
+      gainLoss,
+      data,
+      userData,
+    };
+  } catch (ex) {
+    console.log(`fetchBuySellTicket error${ex}`.red);
+  }
+};
 
 export {
   fetchPortfolioList,
   createUpdatePortfolioPosition,
   calculateTotalValueOfStock,
   getSymbolQty,
+  fetchBuySellTicket,
 };

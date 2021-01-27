@@ -26,21 +26,27 @@ const searchWebApi = async url => {
   }
 };
 
+// function timeConverter(unixTimestamp) {
+//   const a = new Date(unixTimestamp);
+//   // console.log('a:', a);
+//   const year = a.getFullYear();
+//   let month = a.getMonth();
+//   let date = a.getDate();
+
+//   if (month < 10) {
+//     month = `0${month}`;
+//   }
+
+//   if (date < 10) {
+//     date = `0${date}`;
+//   }
+
+//   const time = `${year}-${month}-${date}`;
+//   return time;
+// }
+
 function timeConverter(unixTimestamp) {
-  const a = new Date(unixTimestamp);
-  const year = a.getFullYear();
-  let month = a.getMonth();
-  let date = a.getDate();
-
-  if (month < 10) {
-    month = `0${month}`;
-  }
-
-  if (date < 10) {
-    date = `0${date}`;
-  }
-
-  const time = `${year}-${month}-${date}`;
+  const time = unixTimestamp / 1000;
   return time;
 }
 

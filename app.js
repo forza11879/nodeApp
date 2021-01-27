@@ -1,7 +1,7 @@
 /* eslint-disable object-shorthand */
 /* eslint-disable import/first */
 /* eslint-disable no-use-before-define */
-import dotnev from 'dotenv';
+import dotenv from 'dotenv';
 import { createServer } from 'http';
 // import WebSocket from 'ws';
 import path from 'path';
@@ -27,7 +27,7 @@ import listRoute from './routes/list.js';
 import mainRoute from './routes/main.js';
 import errorRoute from './routes/error.js';
 
-dotnev.config({ path: './config/dev.env' });
+dotenv.config({ path: './config/dev.env' });
 
 const __dirname = path.resolve();
 
@@ -73,6 +73,7 @@ app.use(
     secret: process.env.MY_SECRET,
     resave: false, // does not save session on each request
     saveUninitialized: false, // false
+    httpOnly: true, // to prevent cross-site request forgery(CSRF), session hijacking and session fixation. The HTTP-Only attribute in cookies tells the browser to prevent cookie access through the DOM. By doing this, client-side script attacks are prevented from accessing sensitive data stored in cookies. https://www.securecoding.com/blog/most-common-security-vulnerabilities-using-javascript/
     store: store,
   })
 );

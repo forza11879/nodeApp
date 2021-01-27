@@ -6,14 +6,6 @@ import { User as ModalUser } from '../db/models/User/User.js';
 
 export const getList = (req, res) => {
   // console.log(`User session: ${JSON.stringify(req.session)}`);
-  // console.log(req.session.isLoggedIn);
-  // console.log(`User session user ID: ${JSON.stringify(req.session.user._id)}`);
-  // console.log(`User session: ${JSON.stringify(req.session.user)}`);
-  // console.log(`User session: ${JSON.stringify(req.session)}`);
-  // // console.log(req.session.user.name);
-  // console.log(req.session.user.cash);
-  // console.log(req.session.user._id);
-  // console.log(req.session.user._id);
   // console.log(req.get('Cookie'));
   // const isLoggedIn = req.get('Cookie');
   res.render('home', {
@@ -31,7 +23,9 @@ export const getList = (req, res) => {
 
 export const getWebApiList = async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const {
+      user: { _id: userId },
+    } = req.session;
     const { symbol } = req.params;
 
     const query = { _id: userId };
@@ -55,11 +49,6 @@ export const getWebApiList = async (req, res) => {
       // Handling the error for each promise. If you need to execute all the promises even if some have failed, or maybe you can handle the failed promises later. https://www.freecodecamp.org/news/promise-all-in-javascript-with-example-6c8c5aea3e32/ - look into WES BOS as well
     );
     // // Inside an async function, return await is seldom useful
-    // .then(item => {
-    //   // console.log(`getWebApiList item: ${JSON.stringify(item)}`.green);
-    //   res.send(item);
-    // })
-    // .catch(ex => console.log(`getWebApiList PromiseAll error: ${ex}`.red));
 
     res.send(result);
   } catch (ex) {

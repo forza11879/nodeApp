@@ -11,7 +11,7 @@ import { ErrorResponse } from '../../../utils/errorResponse.js';
 import { asyncHandler } from '../../../middleware/async.js';
 import * as util from '../common/util.js';
 
-const addTransaction = async (arg, symbolId, userId, webApiDataReversed) => {
+const addTransaction = async (arg, symbolId, userId) => {
   try {
     const { price, qty, orderType } = arg;
 

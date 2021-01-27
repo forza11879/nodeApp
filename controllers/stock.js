@@ -81,6 +81,7 @@ export const getWebApi = async (req, res) => {
     // });
     // web push https://thecodebarbarian.com/sending-web-push-notifications-from-node-js.html
 
+    // console.log(webApiData);
     res.send({
       webApiData: webApiData,
       symbol: symbol,
@@ -198,7 +199,7 @@ export const getSearchWebApi = async (req, res) => {
     // console.log(`reqParamsSymbol:${symbol}`.green);
 
     const webApiData = await Stock.searchWebApi(url);
-
+    // console.log(webApiData);
     res.send(webApiData);
   } catch (ex) {
     console.log('getSearchWebApi error: ', ex);

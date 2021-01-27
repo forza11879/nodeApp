@@ -73,12 +73,16 @@ export const postSignup = async (req, res) => {
     const userDoc = await User.findOne({ email });
     if (userDoc) {
       console.log('User already in DB');
-      return res.redirect('/');
+
+      return res.status(500).json({ error: 'Internal Server Errorr' });
     }
     await User.create({ name, email, password });
-    res.redirect('/');
+    console.log('auth/signup data submitted');
+
+    res.status(200).json({ message: 'ok' });
   } catch (ex) {
     console.log(`postSignup error: ${ex}`);
+    res.status(500).json({ ex: 'Internal Server Errorr' });
   }
 };
 
