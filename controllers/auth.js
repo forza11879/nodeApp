@@ -53,7 +53,7 @@ export const postLogin = asyncHandler(async (req, res, next) => {
     });
   } catch (ex) {
     console.log(`postLogin error: ${ex}`);
-    res.redirect('/');
+    res.redirect('/api/v1');
   }
 });
 
@@ -61,7 +61,7 @@ export const postLogout = (req, res) => {
   console.log('logged out');
   req.session.destroy(err => {
     console.log(err);
-    res.redirect('/');
+    res.redirect('/api/v1');
   });
 };
 
