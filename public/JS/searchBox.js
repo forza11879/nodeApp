@@ -1,5 +1,5 @@
 const symbolTagsList = document.querySelector('#symbolTagsList');
-//search box
+// search box
 symbolTagsList.addEventListener(
   'input',
   _.debounce(() => {
@@ -13,7 +13,7 @@ async function requestSymbolSearch() {
     console.log(dataList);
     $('#symbolTagsList').autocomplete({
       source: dataList.map(item => item.symbol),
-      autoFocus: true
+      autoFocus: true,
     });
   } catch (ex) {
     console.log(`requestSymbolSearch error: ${ex}`);
@@ -22,8 +22,8 @@ async function requestSymbolSearch() {
 
 function getDataSearchBox() {
   try {
-    let curValueSymbol = symbolTagsList.value;
-    let url = `/stock/websearch/${curValueSymbol}`;
+    const curValueSymbol = symbolTagsList.value;
+    const url = `/api/v1/stock/websearch/${curValueSymbol}`;
     console.log(url);
     return fetchData(url);
   } catch (ex) {

@@ -8,13 +8,16 @@ import {
   notFoundPage,
 } from '../controllers/portfolio.js';
 
-const router = express.Router();
+function getPortfolioRoutes() {
+  const router = express.Router();
 
-router.get('/', isAuth, getPortfolio);
-router.get('/list', isAuth, getPortfolioList);
-router.get('/buysell/:symbol', isAuth, getBuySellTicket);
-router.post('/buysell', isAuth, postBuySellTicket);
-// sub route error handling
-router.get('/*', notFoundPage);
+  router.get('/', isAuth, getPortfolio);
+  router.get('/list', isAuth, getPortfolioList);
+  router.get('/buysell/:symbol', isAuth, getBuySellTicket);
+  router.post('/buysell', isAuth, postBuySellTicket);
+  // sub route error handling
+  router.get('/*', notFoundPage);
 
-export default router;
+  return router;
+}
+export { getPortfolioRoutes };

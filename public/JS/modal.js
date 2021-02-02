@@ -27,7 +27,7 @@ class UI {
 
     // this.show.innerHTML = `<form action="/transaction" method="post">
     // this.show.innerHTML = `<form action="/stock/${companySymbolValue}/transaction" method="post">
-    this.show.innerHTML = `<form action="/transaction/${companySymbolValue}" method="post">
+    this.show.innerHTML = `<form action="/api/v1/transaction/${companySymbolValue}" method="post">
     <div class="modal-header">
           <h5 class="modal-title" id="exampleModalCenterTitle">${arg} order</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">

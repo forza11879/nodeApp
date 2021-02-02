@@ -1,17 +1,17 @@
-//GLOBAL value
+// GLOBAL value
 // const symbolTagsChart = document.querySelector('#symbolTagsChart')
 const symbolTagsOptionsChart = document.querySelector('#apiChart');
 
 const urlsObjectChart = {
-  websearch: '/stock/websearch/',
-  dbsearch: '/stock/dbsearch/'
+  websearch: '/api/v1/stock/websearch/',
+  dbsearch: '/api/v1/stock/dbsearch/',
 };
 
 symbolTagsChart.addEventListener(
   'input',
   _.debounce(() => {
-    let symbolTagsOptionsChartValue = symbolTagsOptionsChart.value;
-    let arg = urlsObjectChart[symbolTagsOptionsChartValue];
+    const symbolTagsOptionsChartValue = symbolTagsOptionsChart.value;
+    const arg = urlsObjectChart[symbolTagsOptionsChartValue];
     requestSymbolSearchChart(arg);
   }, 1000)
 );
@@ -22,7 +22,7 @@ async function requestSymbolSearchChart(arg) {
     console.log(dataList);
     $('#symbolTagsChart').autocomplete({
       source: dataList.map(item => item.symbol),
-      autoFocus: true
+      autoFocus: true,
     });
   } catch (ex) {
     console.log(`requestSymbolSearchChart error: ${ex}`);
@@ -31,8 +31,8 @@ async function requestSymbolSearchChart(arg) {
 
 function getDataList(url) {
   try {
-    let curValueSymbol = symbolTagsChart.value;
-    let urlPlus = `${url}${curValueSymbol}`;
+    const curValueSymbol = symbolTagsChart.value;
+    const urlPlus = `${url}${curValueSymbol}`;
     console.log(urlPlus);
     return fetchData(urlPlus);
   } catch (ex) {

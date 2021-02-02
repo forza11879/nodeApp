@@ -1,7 +1,11 @@
-<form class="form-inline ml-lg-5" action="/portfolio/buysell" method="post">
-  <label for="symbolTagsList">Symbol:</label>
+<form
+  className="form-inline ml-lg-5"
+  action="/api/v1/portfolio/buysell"
+  method="post"
+>
+  <label htmlFor="symbolTagsList">Symbol:</label>
   <input
-    class="form-control mr-sm-2"
+    className="form-control mr-sm-2"
     type="text"
     id="symbolTagsList"
     name="symbol"
@@ -11,9 +15,9 @@
   <input type="hidden" name="userId" value="5cb018905f293858a48565fe" />
   <button
     id="requestSymbolList"
-    class="btn btn-outline-secondary my-sm-0"
+    className="btn btn-outline-secondary my-sm-0"
     type="submit"
   >
     Get Quote
   </button>
-</form>
+</form>;

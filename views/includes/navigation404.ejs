@@ -1,14 +1,14 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light">
-  <a class="navbar-brand" href="/">Trading Platform</a>
+  <a class="navbar-brand" href="/api/v1/">Trading Platform</a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <%# {{>search-buysell}} %>
     <ul class="nav justify-content-end ml-auto">
       <li class="nav-item">
-        <a class="nav-link active" href="/">Home</a>
+        <a class="nav-link active" href="/api/v1/">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/stock/chart/{{ data.symbol }}">Chart</a>
+        <a class="nav-link" href="/api/v1/stock/chart/{{ data.symbol }}">Chart</a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"

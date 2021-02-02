@@ -1,8 +1,13 @@
 import express from 'express';
+
 import { postAddTransaction } from '../controllers/transaction.js';
 
-const router = express.Router({ mergeParams: true });
+function getTransactionRoutes() {
+  const router = express.Router({ mergeParams: true });
 
-router.post('/:symbol', postAddTransaction);
+  router.post('/:symbol', postAddTransaction);
 
-export default router;
+  return router;
+}
+
+export { getTransactionRoutes };

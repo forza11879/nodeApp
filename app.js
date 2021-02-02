@@ -19,13 +19,14 @@ import cookieParser from 'cookie-parser';
 // import { Stock as StockModel } from './db/models/Stock/Stock.js';
 
 // routes
-import authRoute from './routes/auth.js';
-import transactionRoute from './routes/transaction.js';
-import portfolioRoute from './routes/portfolio.js';
-import stockRoute from './routes/stock.js';
-import listRoute from './routes/list.js';
-import mainRoute from './routes/main.js';
-import errorRoute from './routes/error.js';
+// import authRoute from './routes/auth.js';
+// import transactionRoute from './routes/transaction.js';
+// import portfolioRoute from './routes/portfolio.js';
+// import stockRoute from './routes/stock.js';
+// import listRoute from './routes/list.js';
+// import mainRoute from './routes/main.js';
+// import errorRoute from './routes/error.js';
+import { getRoutes } from './routes/index.js';
 
 dotenv.config({ path: './config/dev.env' });
 
@@ -101,15 +102,16 @@ app.use((req, res, next) => {
 });
 
 // Mount Rout
-app.use('/auth', authRoute);
-app.use('/transaction', transactionRoute);
-app.use('/portfolio', portfolioRoute);
-app.use('/stock', stockRoute);
-app.use('/list', listRoute);
-app.use('/', mainRoute);
-// app.use('/', exampleRoute);
-app.use('*', errorRoute);
-// app.use(errorHandler);
+// app.use('/auth', authRoute);
+// app.use('/transaction', transactionRoute);
+// app.use('/portfolio', portfolioRoute);
+// app.use('/stock', stockRoute);
+// app.use('/list', listRoute);
+// app.use('/', mainRoute);
+// // app.use('/', exampleRoute);
+// app.use('*', errorRoute);
+// // app.use(errorHandler);
+app.use('/api/v1', getRoutes());
 
 const port = process.env.PORT;
 

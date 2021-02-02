@@ -29,7 +29,7 @@ export const postAddTransaction = async (req, res) => {
         intro: 'Trade request failed.',
         message: 'Position not held. Try again',
       };
-      return res.redirect(`/portfolio/buysell/${symbol}`);
+      return res.redirect(`/api/v1/portfolio/buysell/${symbol}`);
     }
     //
     if (symbolQty) {
@@ -41,7 +41,7 @@ export const postAddTransaction = async (req, res) => {
           message:
             'Number of shares requested to sell exceed position held. Try again',
         };
-        return res.redirect(`/portfolio/buysell/${symbol}`);
+        return res.redirect(`/api/v1/portfolio/buysell/${symbol}`);
       }
     }
 
@@ -60,7 +60,7 @@ export const postAddTransaction = async (req, res) => {
         intro: 'HTTP request failed! ',
         message: 'Try again',
       };
-      return res.redirect(`/portfolio/buysell/${symbol}`);
+      return res.redirect(`/api/v1/portfolio/buysell/${symbol}`);
     }
 
     const promises = [
@@ -82,7 +82,7 @@ export const postAddTransaction = async (req, res) => {
       message: 'Go ahead!',
     };
 
-    res.redirect(`/portfolio/buysell/${symbol}`);
+    res.redirect(`/api/v1/portfolio/buysell/${symbol}`);
   } catch (ex) {
     console.log(`postAddTransaction error${ex}`);
   }

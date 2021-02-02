@@ -49,7 +49,7 @@ export const postLogin = asyncHandler(async (req, res, next) => {
     req.session.user = user;
     return req.session.save(err => {
       console.log(err);
-      res.redirect('/list'); // it is better to save() before re-directing cause redirect() might hapend before the new session was created in DB
+      res.redirect('/api/v1/list'); // it is better to save() before re-directing cause redirect() might hapend before the new session was created in DB
     });
   } catch (ex) {
     console.log(`postLogin error: ${ex}`);

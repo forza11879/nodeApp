@@ -1,13 +1,13 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light">
-  <a class="navbar-brand" href="/list">Trading Platform</a>
+  <a class="navbar-brand" href="/api/v1/list">Trading Platform</a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <%- include('search-buysell.ejs') %>
     <ul class="nav justify-content-end ml-auto">
       <li class="nav-item">
-        <a class="nav-link active" href="/list">Home</a>
+        <a class="nav-link active" href="/api/v1/list">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/stock/chart/<%= data.symbol %>">Chart</a>
+        <a class="nav-link" href="/api/v1/stock/chart/<%= data.symbol %>">Chart</a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"

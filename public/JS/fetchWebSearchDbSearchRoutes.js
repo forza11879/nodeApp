@@ -1,17 +1,17 @@
-//GLOBAL value
+// GLOBAL value
 const symbolTags = document.querySelector('#symbolTags');
 const symbolTagsOptions = document.querySelector('#api');
 
 const urlsObject = {
-  websearch: '/stock/websearch/',
-  dbsearch: '/stock/dbsearch/'
+  websearch: '/api/v1/stock/websearch/',
+  dbsearch: '/api/v1/stock/dbsearch/',
 };
 
 symbolTags.addEventListener(
   'input',
   _.debounce(() => {
-    let symbolTagsOptionsValue = symbolTagsOptions.value;
-    let arg = urlsObject[symbolTagsOptionsValue];
+    const symbolTagsOptionsValue = symbolTagsOptions.value;
+    const arg = urlsObject[symbolTagsOptionsValue];
     requestSymbolSearch(arg);
   }, 2000)
 );
@@ -30,11 +30,11 @@ symbolTags.addEventListener(
 async function requestSymbolSearch(arg) {
   try {
     const dataList = await getDataList(arg);
-    console.log('dataList:' + typeof dataList);
-    console.log('dataList:' + JSON.stringify(dataList));
+    console.log(`dataList:${typeof dataList}`);
+    console.log(`dataList:${JSON.stringify(dataList)}`);
     $('#symbolTags').autocomplete({
       source: dataList.map(item => item.symbol),
-      autoFocus: true
+      autoFocus: true,
     });
   } catch (ex) {
     console.log(`requestSymbolSearch error: ${ex}`);
@@ -43,8 +43,8 @@ async function requestSymbolSearch(arg) {
 
 function getDataList(url) {
   try {
-    let curValueSymbol = symbolTags.value;
-    let urlPlus = `${url}${curValueSymbol}`;
+    const curValueSymbol = symbolTags.value;
+    const urlPlus = `${url}${curValueSymbol}`;
     console.log(urlPlus);
     return fetchData(urlPlus);
   } catch (ex) {

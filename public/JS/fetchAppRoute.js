@@ -11,28 +11,28 @@ function executeEnterKey(event) {
 }
 
 function getSymbolWebApi() {
-  let symbolTagsValue = symbolTags.value;
-  let curValueAjax = symbolTagsValue ? symbolTagsValue : 'RY';
+  const symbolTagsValue = symbolTags.value;
+  const curValueAjax = symbolTagsValue || 'RY';
 
-  fetch(`/stock/app/${curValueAjax}`)
+  fetch(`/api/v1/stock/app/${curValueAjax}`)
     .then(function(response) {
       return response.json();
     })
     .then(function(data) {
       // drawChart(data)
       // split the data set into ohlc and volume
-      var ohlc = [],
-        volume = [],
-        // dataLength = data.length,
-        // set the allowed units for data grouping
-        groupingUnits = [
-          [
-            'week', // unit name
-            [1] // allowed multiples
-          ],
-          ['month', [1, 2, 3, 4, 6]]
+      const ohlc = [];
+      const volume = [];
+      // dataLength = data.length,
+      // set the allowed units for data grouping
+      const groupingUnits = [
+        [
+          'week', // unit name
+          [1], // allowed multiples
         ],
-        i = 0;
+        ['month', [1, 2, 3, 4, 6]],
+      ];
+      const i = 0;
 
       data.map(item => {
         ohlc.push([
@@ -41,56 +41,56 @@ function getSymbolWebApi() {
           item.high,
           item.low,
           item.close,
-          item.volume
+          item.volume,
         ]);
         volume.push([
           item.date, // the date
-          item.volume // the volume
+          item.volume, // the volume
         ]);
       });
 
       // create the chart
       Highcharts.stockChart('container', {
         rangeSelector: {
-          selected: 5
+          selected: 5,
         },
 
         title: {
-          text: `${curValueAjax.toUpperCase()} Historical`
+          text: `${curValueAjax.toUpperCase()} Historical`,
         },
 
         yAxis: [
           {
             labels: {
               align: 'right',
-              x: -3
+              x: -3,
             },
             title: {
-              text: 'OHLC'
+              text: 'OHLC',
             },
             height: '60%',
             lineWidth: 2,
             resize: {
-              enabled: true
-            }
+              enabled: true,
+            },
           },
           {
             labels: {
               align: 'right',
-              x: -3
+              x: -3,
             },
             title: {
-              text: 'Volume'
+              text: 'Volume',
             },
             top: '65%',
             height: '35%',
             offset: 0,
-            lineWidth: 2
-          }
+            lineWidth: 2,
+          },
         ],
 
         tooltip: {
-          split: true
+          split: true,
         },
 
         series: [
@@ -99,8 +99,8 @@ function getSymbolWebApi() {
             name: `${curValueAjax.toUpperCase()}`,
             data: ohlc,
             dataGrouping: {
-              units: groupingUnits
-            }
+              units: groupingUnits,
+            },
           },
           {
             type: 'column',
@@ -108,10 +108,10 @@ function getSymbolWebApi() {
             data: volume,
             yAxis: 1,
             dataGrouping: {
-              units: groupingUnits
-            }
-          }
-        ]
+              units: groupingUnits,
+            },
+          },
+        ],
       });
     })
     .catch(error => console.error('Error:', error));

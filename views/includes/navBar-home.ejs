@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light">
-  <a class="navbar-brand" href="/list">Trading Platform</a>
+  <a class="navbar-brand" href="/api/v1/list">Trading Platform</a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <%- include('search-home.ejs') %>
     <ul class="nav justify-content-end ml-auto">
       <li class="nav-item">
-        <a class="nav-link active" href="/list">Home</a>
+        <a class="nav-link active" href="/api/v1/list">Home</a>
       </li>
       <% if (!isAuthenticated) { %>
       <li class="nav-item">
@@ -33,7 +33,7 @@
       </li>
       <% } else { %>
       <li class="nav-item">
-        <form action="/auth/logout" method="POST">
+        <form action="/api/v1/auth/logout" method="POST">
           <button class="btn nav-link" type="submit">Logout</button>
         </form>
       </li>
@@ -70,7 +70,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/auth/login" method="post">
+        <form action="/api/v1/auth/login" method="post">
           <div class="form-group">
             <label for="email" class="col-form-label">E-mail:</label>
             <input type="email" name="email" class="form-control" id="email" />
@@ -124,7 +124,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/auth/signup" method="post">
+        <form action="/api/v1/auth/signup" method="post">
           <div class="form-group">
             <label for="name" class="col-form-label">Name:</label>
             <input type="text" name="name" class="form-control" id="name" />

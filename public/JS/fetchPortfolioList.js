@@ -58,7 +58,7 @@ async function fetchData(url) {
 }
 
 function getDataList() {
-  const url = `/portfolio/list`;
+  const url = `/api/v1/portfolio/list`;
   // console.log(url);
   return fetchData(url);
 }

@@ -26,7 +26,7 @@ class UI {
       .map(
         item =>
           `<tr>
-              <td><strong><a href="/stock/chart/${item.symbol}">${item.symbol}</a></strong></td>
+              <td><strong><a href="/api/v1/stock/chart/${item.symbol}">${item.symbol}</a></strong></td>
               <td>${item.open}</td>
               <td>${item.high}</td>
               <td>${item.low}</td>
@@ -36,7 +36,7 @@ class UI {
               <td>${item.previousClose}</td>
               <td>${item.change}</td>
               <td>${item.changePercent}</td>
-              <td><strong><a href="/portfolio/buysell/${item.symbol}">buy/sell</a></strong></td>
+              <td><strong><a href="/api/v1/portfolio/buysell/${item.symbol}">buy/sell</a></strong></td>
               </tr>`
       )
       .join('');
@@ -56,7 +56,7 @@ function requestSymbolSearchList() {
 function getDataList() {
   const symbolTagsValue = symbolTagsList.value;
   const curValueSymbol = symbolTagsValue || 'RY';
-  const url = `/list/add/${curValueSymbol}`;
+  const url = `/api/v1/list/add/${curValueSymbol}`;
   console.log(url);
   return fetchData(url);
 }
@@ -84,7 +84,7 @@ async function requestSymbolSearch() {
 function getDataSearchBox() {
   try {
     const curValueSymbol = symbolTagsList.value;
-    const url = `/stock/websearch/${curValueSymbol}`;
+    const url = `/api/v1/stock/websearch/${curValueSymbol}`;
     console.log(url);
     return fetchData(url);
   } catch (ex) {

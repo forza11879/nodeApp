@@ -21,7 +21,7 @@ function executeEnterKey(event) {
 
 async function updateDB() {
   try {
-    await fetch('/stock/updatedb');
+    await fetch('/api/v1/stock/updatedb');
   } catch (err) {
     console.log(err);
   }
@@ -43,7 +43,7 @@ async function getSymbolWebApiLoad() {
   // console.log(curValueAjax);
 
   try {
-    const response = await fetch(`/stock/app/${curValueAjax}`);
+    const response = await fetch(`/api/v1/stock/app/${curValueAjax}`);
     const data = await response.json();
     console.log('data webApiData from the back: ', data.webApiData);
     console.log('data symbol from the back: ', data.symbol);
@@ -164,7 +164,7 @@ async function getSymbolWebApiClick() {
   console.log(curValueAjax);
 
   try {
-    const response = await fetch(`/stock/app/${curValueAjax}`);
+    const response = await fetch(`/api/v1/stock/app/${curValueAjax}`);
     const data = await response.json();
     console.log('data webApiData from the back: ', data.webApiData);
     console.log('data symbol from the back: ', data.symbol);
@@ -275,7 +275,7 @@ async function getSymbolWebApiClick() {
 }
 
 // web socket
-const socket = new WebSocket('ws://localhost:3000');
+const socket = new WebSocket('ws://localhost:3000/api/v1');
 
 socket.addEventListener('message', event => {
   const symbol = symbolValueCurValue.value;
